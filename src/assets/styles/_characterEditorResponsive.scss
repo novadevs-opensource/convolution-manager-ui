@@ -1,0 +1,151 @@
+/* =========================
+   Adaptaciones Responsive
+   ========================= */
+
+/* Medium screens */
+@media (max-width: 1400px) {
+  .container {
+    --sidebar-width: 290px;
+    --credits-width: 250px;
+    --column-gap: 24px;
+  }
+
+  .sidebar {
+    position: static;
+    width: auto;
+  }
+
+  .main-content {
+    margin: 0;
+    min-width: auto;
+  }
+
+  .credits-column {
+    display: none;
+  }
+
+  .sidebar {
+    width: auto;
+    left: 24px;
+  }
+
+  .main-content {
+    margin-left: calc(var(--sidebar-width, 260px) + 12px);
+    margin-right: calc(var(--credits-width, 180px) + 12px);
+    width: calc(100% - 598px);
+  }
+}
+
+/* Smaller screens */
+@media (max-width: 1200px) {
+  .container {
+    display: block;
+    min-width: auto;
+    padding: 12px 24px;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    max-width: none;
+    left: auto;
+  }
+
+  .main-content {
+    margin: 0;
+    min-width: auto;
+    width: 100%;
+  }
+
+  .credits-column {
+    display: none;
+  }
+
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablets y móviles medianos */
+@media (max-width: 768px) {
+  .top-frame {
+    padding: 12px 0;
+  }
+
+  .frame-content {
+    gap: 16px;
+    padding: 0 24px;
+  }
+
+  .site-branding {
+    gap: 8px;
+  }
+
+  .site-title {
+    font-size: 18px;
+  }
+
+  .external-links {
+    gap: 12px;
+  }
+
+  .backup-item {
+    grid-template-columns: 1fr auto;
+  }
+
+  .backup-timestamp {
+    grid-column: 1 / -1;
+  }
+
+  .message-example {
+    grid-template-columns: 1fr;
+  }
+
+  .client-toggles {
+    flex-direction: column;
+  }
+
+  .client-toggle {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .container {
+    padding: 8px 12px;
+  }
+
+  .section {
+    border-radius: 8px;
+  }
+
+  .section-header {
+    padding: 12px 16px;
+  }
+
+  .section-content {
+    padding: 16px;
+  }
+
+  .input-group {
+    flex-direction: column;
+
+    .action-button {
+      align-self: flex-end;
+    }
+  }
+
+  .backup-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .backup-item {
+    grid-template-columns: 1fr;
+
+    button {
+      width: 100%;
+    }
+  }
+}

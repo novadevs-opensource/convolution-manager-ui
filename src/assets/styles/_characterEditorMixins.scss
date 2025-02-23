@@ -1,0 +1,95 @@
+@use 'characterEditorVariables' as v;
+
+// Responsive Mixins
+@mixin mobile {
+  @media (max-width: v.$mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: v.$tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (max-width: v.$desktop) {
+    @content;
+  }
+}
+
+// Flexbox Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Transition Mixin
+@mixin transition($property: all, $duration: v.$transition-speed-fast, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+// Theme Mixin
+@mixin theme($property, $light-value, $dark-value) {
+  #{$property}: map-get(map-get(v.$theme-colors, light), $light-value);
+
+  [data-theme='dark'] & {
+    #{$property}: map-get(map-get(v.$theme-colors, dark), $dark-value);
+  }
+}
+
+// Border Radius
+@mixin border-radius($radius: v.$border-radius-md) {
+  border-radius: $radius;
+}
+
+// Box Shadow
+@mixin box-shadow($shadow: 0 2px 4px rgba(0,0,0,0.1)) {
+  box-shadow: $shadow;
+}
+
+// Gradient Text
+@mixin gradient-text($start-color, $end-color) {
+  background: linear-gradient(to right, $start-color, $end-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// Button Base
+@mixin button-base {
+  @include border-radius();
+  @include transition;
+  padding: v.$spacing-md v.$spacing-lg;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Input Base
+@mixin input-base {
+  width: 100%;
+  padding: v.$spacing-md;
+  @include border-radius();
+  @include transition;
+  border: 1px solid transparent;
+
+  &:focus {
+    outline: none;
+    border-color: v.$purple;
+  }
+}

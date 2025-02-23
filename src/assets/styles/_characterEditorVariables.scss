@@ -1,0 +1,60 @@
+// ===================================
+// SCSS Variables
+// ===================================
+$Black:  #232323;
+$Purple: #6E1FCE;
+$Blue:   #82EAFF;
+$Green:  #9BFFD4;
+$White:  #FFF;
+
+$Gradient-1: linear-gradient(90deg, #{$Purple} 0%, #{$Blue} 100%);
+$Gradient-2: linear-gradient(90deg, #{$Blue} 0%, #{$Green} 100%);
+
+// ===================================
+// Root Custom Properties (CSS Variables)
+// ===================================
+:root {
+  /* Colores principales */
+  --color-bg: #FFFFFF;          /* Fondo general */
+  --color-surface: #FAFAFA;     /* Superficies de secciones / tarjetas */
+  --color-text: #232323;        /* Texto principal */
+  --color-heading: #232323;     /* Títulos, aunque podrías usar la principal */
+  
+  /* Paleta de acento */
+  --color-primary: #6E1FCE;     /* Morado como color principal (botones primarios) */
+  --color-primary-hover: #5A19A3; 
+  --color-secondary: #82EAFF;   /* Azul como color secundario (opcional) */
+  --color-success: #9BFFD4;     /* Verde, lo podemos usar como "success" */
+  --color-error: #FF4444;       /* Rojo para error */
+
+  /* Bordes y sombras */
+  --border-color: #E0E0E0;
+  --shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+  /* Gradientes (puedes usarlos en secciones “destacadas”) */
+  --gradient-1: #{$Gradient-1};
+  --gradient-2: #{$Gradient-2};
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --color-bg: #232323;          /* Fondo */
+  --color-surface: #2C2C2C;     /* Superficie de secciones */
+  --color-text: #FFFFFF;        /* Texto */
+  --color-heading: #FFFFFF;     /* Titulares */
+  
+  /* Mantén la misma paleta de acento, o adáptala si quieres variar */
+  --color-primary: #6E1FCE;
+  --color-primary-hover: #5A19A3;
+  --color-secondary: #82EAFF;
+  --color-success: #9BFFD4;
+  --color-error: #FF4444;
+
+  /* Bordes y sombras en modo oscuro */
+  --border-color: #404040;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  /* Gradientes pueden ser los mismos o diferentes */
+  --gradient-1: #{$Gradient-1}; 
+  --gradient-2: #{$Gradient-2};
+}
