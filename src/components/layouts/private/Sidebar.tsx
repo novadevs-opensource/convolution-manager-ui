@@ -1,3 +1,4 @@
+// src/components/layouts/private/Sidebar.tsx
 import React from 'react'
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
@@ -23,7 +24,7 @@ type SidebarProps = {
             <li key={item.path}>
               <Link
                 to={item.path}
-                className="block p-2 hover:bg-gray-700 rounded"
+                className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300 font-bold"
               >
                 {item.name}
               </Link>
@@ -34,7 +35,7 @@ type SidebarProps = {
         <ul>
           {isAuthenticated && (
             <a
-              className="block p-2 hover:bg-gray-700 rounded"
+              className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300 font-bold"
               href="#"
               title="Convolution Main Repository"
               rel="noopener"

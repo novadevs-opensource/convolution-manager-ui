@@ -42,9 +42,20 @@ export interface CharacterData {
 // Represents pagination info returned by the API
 export interface Pagination {
   current_page: number;
-  total_pages: number;
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  links: [{
+    url: string|null,
+    label: string,
+    active: boolean,
+  }];
   next_page_url: string | null;
+  per_page: number,
   prev_page_url: string | null;
+  to: number;
+  total: number;
 }
 
 // Represents the agent (character) object
@@ -71,12 +82,22 @@ export interface LlmProviderSettings {
 
 // Response for fetching a list of characters (with pagination)
 export interface CharactersResponse {
-  current_page: number;
   data: Agent[];
-  total: number;
+  current_page: number;
+  first_page_url: string;
+  from: number;
   last_page: number;
+  last_page_url: string;
+  links: [{
+    url: string|null,
+    label: string,
+    active: boolean,
+  }];
   next_page_url: string | null;
+  per_page: number,
   prev_page_url: string | null;
+  to: number;
+  total: number;
 }
 
 // Response for fetching a single character

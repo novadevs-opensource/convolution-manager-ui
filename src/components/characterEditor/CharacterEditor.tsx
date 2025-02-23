@@ -321,7 +321,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
             <div className="form-group">
               <label htmlFor="model-provider">Model Provider</label>
               <ModelProviderSelect
-                selected={character.settings.secrets.OPENROUTER_MODEL || ''}
+                selected={character.settings?.secrets?.OPENROUTER_MODEL || ''}
                 onChange={(value) => {
                   handleInputChange('settings.secrets.OPENROUTER_MODEL', value)
                   handleInputChange('settings.secrets.SMALL_OPENROUTER_MODEL', value)
@@ -331,41 +331,6 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
                 }}
                 models={openRouterAvailableModels}
               />
-              {/*
-              <label htmlFor="model-provider">Model Provider</label>
-              <select
-                id="model-provider"
-                onChange={(e) => handleInputChange('modelProvider', e.target.value)}
-                value={character.modelProvider}
-              >
-                <option value="">Select a provider</option>
-                <option value="openai">OpenAI</option>
-                <option value="deepseek">DeepSeek</option>
-                <option value="eternalai">EternalAI</option>
-                <option value="anthropic">Anthropic</option>
-                <option value="grok">Grok</option>
-                <option value="groq">Groq</option>
-                <option value="llama_cloud">Llama Cloud</option>
-                <option value="together">Together</option>
-                <option value="llama_local">Llama Local</option>
-                <option value="google">Google</option>
-                <option value="claude_vertex">Claude Vertex</option>
-                <option value="redpill">Redpill</option>
-                <option value="openrouter">OpenRouter</option>
-                <option value="ollama">Ollama</option>
-                <option value="heurist">Heurist</option>
-                <option value="galadriel">Galadriel</option>
-                <option value="falai">FalAI</option>
-                <option value="gaianet">GaiaNet</option>
-                <option value="ali_bailian">Ali Bailian</option>
-                <option value="volengine">VolEngine</option>
-                {openRouterAvailableModels.map((model: OpenRouterModel, index: number) => (
-                  <option key={index} value="openrouter">
-                    {model.name} {model.pricing.completion === "0" && model.pricing.completion === "0" && model.pricing.image === "0" && model.pricing.request === "0" ? '[FREE]' : '[PAID]'}
-                  </option>
-                ))}
-              </select>
-                */}
             </div>
 
             <div className="form-group">

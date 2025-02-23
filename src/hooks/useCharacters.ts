@@ -1,29 +1,15 @@
 // src/hooks/useCharacters.ts
 import { useState, useEffect } from 'react';
 import api from '../services/apiClient';
-import { Agent, Pagination } from '../types'; // Assuming `Agent` and `Pagination` types are declared in `types`
+import { Agent, CharactersResponse, Pagination } from '../types'; // Assuming `Agent` and `Pagination` types are declared in `types`
 
-interface CharactersResponse {
-  current_page: number;
-  data: Agent[];
-  total: number;
-  last_page: number;
-  next_page_url: string | null;
-  prev_page_url: string | null;
-}
-
-export function useCharacters(page: number = 1, perPage: number = 10) {
-  const [characters, setCharacters] = useState<Agent[]>([]);
+export function useCharacters(page: number = 1, perPage: number = 2) {
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<Pagination>({
-    current_page: 1,
-    total_pages: 1,
-    next_page_url: null,
-    prev_page_url: null,
-  });
+  const [pagination, setPagination] = useState<Pagination>();
 
-  const fetchCharacters = async () => {
+  const fetchAgents = async () => {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
@@ -31,12 +17,19 @@ export function useCharacters(page: number = 1, perPage: number = 10) {
         params: { page, per_page: perPage },
       });
 
-      setCharacters(response.data.data);
+      setAgents(response.data.data);
       setPagination({
         current_page: response.data.current_page,
-        total_pages: response.data.last_page,
+        first_page_url: response.data.first_page_url,
+        from: response.data.from,
+        last_page: response.data.last_page,
+        last_page_url: response.data.last_page_url,
+        links: response.data.links,
         next_page_url: response.data.next_page_url,
+        per_page: response.data.per_page,
         prev_page_url: response.data.prev_page_url,
+        to: response.data.to,
+        total: response.data.total,
       });
     } catch (err) {
       setError('Failed to fetch characters');
@@ -47,8 +40,8 @@ export function useCharacters(page: number = 1, perPage: number = 10) {
   };
 
   useEffect(() => {
-    fetchCharacters();
+    fetchAgents();
   }, [page, perPage]);
 
-  return { characters, loading, error, pagination, refetch: fetchCharacters };
+  return { agents, loading, error, pagination, refetch: fetchAgents };
 }
