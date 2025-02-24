@@ -4,6 +4,7 @@ interface ImportMetaEnv {
   VITE_EVENTS_QUEUE_PATH: string,
   VITE_EVENTS_QUEUE_CREDENTIALS_KEY_ID: string,
   VITE_EVENTS_QUEUE_CREDENTIALS_ACCESS_KEY: string,
+  VITE_BACKEND_API_BASE: string,
 }
 
 interface ImportMeta {

@@ -1,8 +1,8 @@
+// src/services/apiClient.ts
 import axios from 'axios';
 
-// Create an axios instance with the base configuration
 const api = axios.create({
-  baseURL: 'http://localhost:9090/api', // Adjust this to your real domain
+  baseURL: import.meta.env.VITE_BACKEND_API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },
