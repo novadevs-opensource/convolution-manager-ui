@@ -1,8 +1,6 @@
 export interface BootAgentEvent {
     action: AgentRuntimeAction,
     agentId: string,
-    apiKey: string,
-    llmModel: string,
 }
 
 export interface StopAgentEvent {
@@ -10,4 +8,9 @@ export interface StopAgentEvent {
     agentId: string,
 }
 
-export type AgentRuntimeAction = 'boot' | 'stop'
+export interface UpdateAgentEvent {
+    action: AgentRuntimeAction,
+    agentId: string,
+}
+
+export type AgentRuntimeAction = 'boot' | 'stop' | 'update'

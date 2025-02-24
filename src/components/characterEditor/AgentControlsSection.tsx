@@ -1,7 +1,7 @@
 // src/components/characterEditor/GenerateCharacterSection.tsx
 import React, { useEffect, useState } from 'react';
 import { enqueueEvent } from '../../services/messageHandler';
-import { BootAgentEvent, StopAgentEvent } from '../../types/commEvents';
+import { BootAgentEvent, StopAgentEvent, UpdateAgentEvent } from '../../types/commEvents';
 import useMessageListener from '../../hooks/useMessageListener';
 import { CharacterData } from '../../types';
 import { useAgent } from '../../hooks/useAgent';
@@ -36,26 +36,24 @@ const AgentControlsSection: React.FC<GenerateCharacterSectionProps> = ({
       let eventBody: BootAgentEvent = {
         action: "boot",
         agentId: agentId,
-        apiKey: llm_provider_api_key,
-        llmModel: llm_provider_model,
       }
       enqueueEvent(eventBody, eventBody.action, userId, eventBody.agentId);
       setAgentStatus(true) 
     } else {
-      alert('faltan datos');
+      console.error('Unable to launch agent, invalid data.')
     }
   }
 
   const stopAgent = () => {
     if (agentId) {
       let eventBody: StopAgentEvent = {
-        action: "boot",
+        action: "stop",
         agentId: agentId,
       }
-      enqueueEvent(eventBody, eventBody.action, "<FIXME>idUsuario 1</FIXME>", eventBody.agentId);
+      enqueueEvent(eventBody, eventBody.action, userId, eventBody.agentId);
       setAgentStatus(true) 
     } else {
-      alert('faltan id agente');
+      console.error('Unable to stop agent, invalid data.')
     }
     setAgentStatus(false)
   }
@@ -76,6 +74,11 @@ const AgentControlsSection: React.FC<GenerateCharacterSectionProps> = ({
   const updateAgent = () => {
     if (agentId && llm_provider_model && llm_provider_api_key && definition) {
       updateHandler(agentId, llm_provider_model, llm_provider_api_key, definition)
+      let eventBody: UpdateAgentEvent = {
+        action: "update",
+        agentId: agentId,
+      }
+      enqueueEvent(eventBody, eventBody.action, userId, eventBody.agentId)
     } else {
       alert('faltan datos');
     }
