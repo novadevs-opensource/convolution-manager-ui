@@ -33,7 +33,7 @@ const Pagination: React.FC<PaginationProps> = ({ pagination, onPageChange, isLoa
   return (
     <div className="flex justify-between items-center px-4 py-3">
       <div className="text-sm text-slate-500">
-        Showing <b>{pagination.from} to {pagination.to}</b> of {pagination.total}
+        Showing <b>{pagination.from ?? 0} to {pagination.to ?? 0}</b> of {pagination.total}
       </div>
       <div className="flex space-x-1">
         {isLoading ? (
