@@ -182,8 +182,8 @@ const DashboardPage: React.FC = () => {
                 </td>
                 <td className="p-4 py-5">
                   <p className="text-sm text-slate-500">
-                    {agent.definition.clients.map((client: string) => (
-                      <span className='rounded-xl bg-black text-white px-3 py-1'>{client}</span>
+                    {agent.definition.clients.map((client: string, index: number) => (
+                      <span className='rounded-xl bg-black text-white px-3 py-1' key={index}>{client}</span>
                     ))}
                   </p>
                 </td>

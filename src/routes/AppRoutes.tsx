@@ -9,6 +9,7 @@ import EditCharacterPage from '../pages/character/EditCharacterPage';
 import AgentDetailPage from '../pages/character/CharacterDetailPage';
 import CreateCharacterPage from '../pages/character/CreateCharacterPage';
 import PublicLayout from '../components/layouts/public/PublicLayout';
+import RegisterPage from '../pages/RegisterPage';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -22,6 +23,11 @@ const AppRoutes: React.FC = () => {
       <Route path="/login" element={
         <PublicLayout>
           <LoginPage />
+        </PublicLayout>
+      } />
+      <Route path="/register" element={
+        <PublicLayout>
+          <RegisterPage />
         </PublicLayout>
       } />
 

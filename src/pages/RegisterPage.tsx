@@ -1,26 +1,36 @@
 // src/pages/LoginPage.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
-import { loginService } from '../services/authService';
 import { useAuth } from '../hooks/useAuth';
+import { useNotifications } from '../hooks/useNotifications';
+
+import { registerService } from '../services/authService';
 import convolutionLogo from '../assets/images/convolution-square.svg';
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { addNotification } = useNotifications();
+  const { login, isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const token = await loginService(email, password);
+      const token = await registerService(name, email, password, passwordConfirmation);
       login(token);
+      addNotification('Register successful!', 'success');
       navigate('/dashboard');
     } catch (error) {
       console.error('Error en el login', error);
-      alert('Error al iniciar sesión');
+      addNotification(JSON.stringify(error), 'error');
     }
   };
 
@@ -58,26 +68,30 @@ const LoginPage: React.FC = () => {
           <div className="mt-4 text-sm text-gray-600 text-center">
             <p>or with email</p>
           </div>
-          <form action="#" method="POST" className="space-y-4">
-
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-              <input type="text" id="username" name="username" className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"/>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">Name</label>
+              <input onChange={(e) => setName(e.target.value)} value={name} type="text" id="username" name="username" className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"/>
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-              <input type="text" id="email" name="email" className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"/>
+              <input onChange={(e) => setEmail(e.target.value)} value={email} type="text" id="email" name="email" className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"/>
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <input type="password" id="password" name="password" className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"/>
+              <input onChange={(e) => setPassword(e.target.value)} value={password} type="password" id="password" name="password" className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"/>
+            </div>
+            <div>
+              <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">Password confirmation</label>
+              <input onChange={(e) => setPasswordConfirmation(e.target.value)} value={passwordConfirmation} type="password" id="password_confirmation" name="password_confirmation" className="mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-300"/>
             </div>
             <div>
               <button type="submit" className="w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300">Sign Up</button>
             </div>
           </form>
+
           <div className="mt-4 text-sm text-gray-600 text-center">
-            <p>Already have an account? <a href="#" className="text-black hover:underline">Login here</a>
+            <p>Already have an account? <a href="/login" className="text-black hover:underline">Login here</a>
             </p>
           </div>
         </div>
@@ -86,4 +100,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
