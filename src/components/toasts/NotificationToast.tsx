@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNotifications } from '../../hooks/useNotifications';
 
 const NotificationToast: React.FC = () => {
   const { notifications, removeNotification } = useNotifications();
 
   return (
-    <div className="fixed top-0 right-0 m-4 z-50 flex flex-col gap-3">
+    <div className="fixed top-0 right-40 m-4 z-50 flex flex-col gap-3">
       {notifications.map((notification) => (
         <div
-          key={notification.id} // Usamos el ID único para cada notificación
+          key={notification.id}
           className={`p-4 rounded-md ${
             notification.type === 'error' ? 'bg-red-500' : 'bg-green-500'
           } text-white transition-all duration-500 ease-in-out transform`}
@@ -25,7 +25,7 @@ const NotificationToast: React.FC = () => {
               {notification.message}
             </span>
             <button
-              onClick={() => removeNotification(notification.id)} // Usamos el ID para remover
+              onClick={() => removeNotification(notification.id)}
               type="button"
               className="inline-flex flex-shrink-0 justify-center items-center h-4 w-4 rounded-md text-white/[.5] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-red-800 focus:ring-red-500 transition-all text-sm dark:focus:ring-offset-red-500 dark:focus:ring-red-700"
             >
