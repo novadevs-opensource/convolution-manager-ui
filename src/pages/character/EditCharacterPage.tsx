@@ -8,7 +8,7 @@ import { useAuth } from '../../hooks/useAuth';
 const EditCharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { character, loading, error } = useCharacter(id!);
-  const { token, logout, userProfile, isAuthenticated, loadUserProfile } = useAuth();
+  const { userProfile, isAuthenticated, loadUserProfile } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated && !userProfile) {

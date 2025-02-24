@@ -10,7 +10,6 @@ import convolutionLogoBlack from '../assets/images/convolution-square-black.svg'
 import { LuBadgeAlert } from "react-icons/lu";
 import { LuBadgeCheck } from "react-icons/lu";
 import { MdOutlineTimer } from "react-icons/md";
-import { TbSum } from "react-icons/tb";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { IoIosPlay } from "react-icons/io";
 
