@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from '../routes/AppRoutes';
 import NotificationLayout from './layouts/public/NotificationLayout';
+import { AgentStatusProvider } from '../context/AgentStatusContext';
 
 
 const App: React.FC = () => {
@@ -46,7 +47,9 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <NotificationLayout>
-        <AppRoutes />
+        <AgentStatusProvider>
+          <AppRoutes />
+        </AgentStatusProvider>
       </NotificationLayout>
     </BrowserRouter>
   );

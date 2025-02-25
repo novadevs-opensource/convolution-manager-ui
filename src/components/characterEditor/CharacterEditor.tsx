@@ -1,13 +1,13 @@
 // src/components/characterEditor/CharacterEditor.tsx
 import React, { useEffect, useState } from 'react';
 
-import Sidebar from '../Sidebar';
+import Sidebar from './Sidebar';
 import CharacterDetailsSection from './CharacterDetailsSection';
 import KnowledgeProcessingSection from './KnowledgeProcessingSection';
 import ExamplesSection from './ExamplesSection';
 import AdjectivesAndPeopleSection from './AdjectivesAndPeopleSection';
 import CharacterResultSection from './CharacterResultSection';
-import { CharacterData, MessageExample, BackupListItem, OpenRouterModel } from '../../types';
+import { CharacterData, MessageExample, BackupListItem, OpenRouterModel, Client } from '../../types';
 import ClientToggles from './ClientToggles';
 import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import AgentControlsSection from './AgentControlsSection';
@@ -258,16 +258,13 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
               />
             </div>
 
-            <div className="form-group">
-              <label>Available Clients</label>
-              <ClientToggles
-                availableClients={['discord', 'direct', 'twitter', 'telegram', 'farcaster']}
-                selectedClients={character.clients}
-                onChange={(value: string[]) =>
-                  setCharacter(prev => ({ ...prev, clients: value }))
-                }
-              />
-            </div>
+            <ClientToggles
+              availableClients={['discord', 'direct', 'twitter', 'telegram', 'farcaster'] as Client[]}
+              selectedClients={character.clients}
+              onChange={(value: Client[]) =>
+                setCharacter(prev => ({ ...prev, clients: value }))
+              }
+            />
 
             {showTelegramConfigForm && (
               <div className="form-group">

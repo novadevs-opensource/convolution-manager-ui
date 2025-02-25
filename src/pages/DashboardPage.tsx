@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { useCharacters } from '../hooks/useCharacters';
 import { Link } from 'react-router-dom';
-import Pagination from '../components/Pagination';
-import Separator from '../components/Separator';
+import Pagination from '../components/common/Pagination';
+import Separator from '../components/common/Separator';
 import { Agent } from '../types';
 import { useCredits } from '../hooks/useCredits';
 import convolutionLogoBlack from '../assets/images/convolution-square-black.svg';
@@ -30,7 +30,7 @@ const DashboardPage: React.FC = () => {
 
       <div className="min-w-[375px] md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         {/* $CNVLTN balance */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] border-gray-200 bg-white bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
               <span className="flex items-center text-brand-500 dark:text-white">
@@ -44,7 +44,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* remaining credits */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] border-gray-200 bg-white bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
               <span className="flex items-center text-brand-500 dark:text-white">
@@ -58,7 +58,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* used credits */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] border-gray-200 bg-white bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
               <span className="flex items-center text-brand-500 dark:text-white">
@@ -72,7 +72,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* total uptime */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] border-gray-200 bg-white bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
               <span className="flex items-center text-brand-500 dark:text-white">
@@ -86,7 +86,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* Total agents */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] border-gray-200 bg-white bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
               <span className="flex items-center text-brand-500 dark:text-white">
@@ -100,7 +100,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* running agents */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] border-gray-200 bg-white bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
               <span className="flex items-center text-brand-500 dark:text-white">

@@ -1,14 +1,15 @@
 // src/components/characterEditor/ClientToggles.tsx
 import React from 'react';
+import { Client } from '../../types';
 
 interface ClientTogglesProps {
-  availableClients: string[];
-  selectedClients: string[];
-  onChange: (selected: string[]) => void;
+  availableClients: Client[];
+  selectedClients: Client[];
+  onChange: (selected: Client[]) => void;
 }
 
 const ClientToggles: React.FC<ClientTogglesProps> = ({ availableClients, selectedClients, onChange }) => {
-  const toggleClient = (client: string) => {
+  const toggleClient = (client: Client) => {
     const newSelected = selectedClients.includes(client)
       ? selectedClients.filter(c => c !== client)
       : [...selectedClients, client];

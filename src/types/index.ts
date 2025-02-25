@@ -1,7 +1,7 @@
 // src/types/index.ts
 export interface CharacterData {
   name: string;
-  clients: string[];
+  clients: Client[];
   modelProvider: string;
   settings: {
     secrets: {
@@ -80,6 +80,8 @@ export interface LlmProviderSettings {
   updated_at: string;
 }
 
+export type Client = 'discord' | 'direct' | 'twitter' | 'telegram' | 'farcaster';
+
 // Response for fetching a list of characters (with pagination)
 export interface CharactersResponse {
   data: Agent[];
@@ -105,7 +107,6 @@ export interface CharacterResponse {
   character: Agent;
 }
 
-
 export interface MessageExample {
   user: string;
   content: {
@@ -113,6 +114,7 @@ export interface MessageExample {
   };
 }
 
+// Backup
 export interface Backup {
   name: string;
   timestamp: string;
@@ -125,49 +127,7 @@ export interface BackupListItem {
   key: string;
 }
 
-export interface UIElements {
-  characterPrompt: HTMLTextAreaElement;
-  generateFromPromptBtn: HTMLButtonElement & { disabled: boolean };
-  promptStatus: HTMLDivElement;
-  processingStatus: HTMLDivElement;
-  dropZone: HTMLDivElement;
-  fileList: HTMLDivElement;
-  downloadBtn: HTMLButtonElement & { disabled: boolean };
-  knowledgeContent: HTMLDivElement;
-  messageExamplesContainer: HTMLDivElement;
-  modelSelect: HTMLSelectElement;
-  apiKeyInput: HTMLInputElement;
-  apiKeyStatus: HTMLDivElement;
-  characterDropZone: HTMLDivElement;
-  characterFileStatus: HTMLDivElement;
-  knowledgeEntries: HTMLDivElement;
-  addExampleBtn:HTMLButtonElement;
-  saveKeyBtn: HTMLButtonElement;
-  characterFileInput:HTMLInputElement;
-  characterFileButton: HTMLButtonElement;
-  fileInput: HTMLInputElement;
-  fileButton: HTMLButtonElement;
-  generateJsonBtn: HTMLButtonElement;
-  peopleContainer: HTMLDivElement;
-  addPersonBtn: HTMLButtonElement;
-  adjectivesContainer: HTMLDivElement;
-  addAdjectiveBtn: HTMLButtonElement;
-  processKnowledgeBtn: HTMLButtonElement;
-  addKnowledgeBtn: HTMLButtonElement;
-  clientToggles: HTMLButtonElement[];
-  characterName: HTMLInputElement;
-  modelProvider: HTMLInputElement;
-  voiceModel: HTMLInputElement;
-  bioInput: HTMLInputElement;
-  loreInput: HTMLInputElement;
-  topicsInput: HTMLInputElement;
-  styleAllInput: HTMLInputElement;
-  styleChatInput: HTMLInputElement;
-  stylePostInput: HTMLInputElement;
-  adjectivesInput: HTMLInputElement;
-  postExamplesInput: HTMLInputElement;
-}
-
+// Files
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -181,8 +141,7 @@ export interface ProcessFilesResponse {
 export interface FixJsonResponse {
   character: CharacterData;
 }
-
-// Tipos para los eventos personalizados
+// Events
 export interface FileUploadEvent extends Event {
   detail: {
     files: File[];
@@ -194,7 +153,7 @@ export interface KnowledgeUpdateEvent extends Event {
     knowledge: string[];
   };
 }
-
+// Openrouter
 export interface OpenRouterModel {
   id: string
   name: string
