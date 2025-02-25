@@ -8,13 +8,13 @@ export interface Notification {
   isVisible: boolean;
 }
 
-interface NotificationContextType {
+interface ToastContextType {
   notifications: Notification[];
   addNotification: (message: string, type: 'success' | 'error') => void;
   removeNotification: (id: string) => void;
 }
 
-export const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 interface NotificationProviderProps {
   children: ReactNode;
@@ -136,8 +136,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
   };
 
   return (
-    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
+    <ToastContext.Provider value={{ notifications, addNotification, removeNotification }}>
       {children}
-    </NotificationContext.Provider>
+    </ToastContext.Provider>
   );
 };

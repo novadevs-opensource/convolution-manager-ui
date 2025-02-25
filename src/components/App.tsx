@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from '../routes/AppRoutes';
 import NotificationLayout from './layouts/public/NotificationLayout';
-import { AgentStatusProvider } from '../context/AgentStatusContext';
-
+import { AgentProvider } from '../context/AgentContext';
+import { EventsQueueProvider } from '../context/EventsQueueContext';
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -47,9 +47,11 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <NotificationLayout>
-        <AgentStatusProvider>
-          <AppRoutes />
-        </AgentStatusProvider>
+        <EventsQueueProvider>
+          <AgentProvider>
+            <AppRoutes />
+          </AgentProvider>
+        </EventsQueueProvider>
       </NotificationLayout>
     </BrowserRouter>
   );

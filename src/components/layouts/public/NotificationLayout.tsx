@@ -1,7 +1,8 @@
 // src/components/NotificationLayout.tsx
 import React from 'react';
-import { NotificationProvider } from '../../../context/NotificationContext';
+
 import NotificationToast from '../../toasts/NotificationToast';
+import { NotificationProvider } from '../../../context/ToastContext';
 
 interface NotificationLayoutProps {
   children: React.ReactNode;

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
-import { useNotifications } from '../hooks/useNotifications';
+import { useToasts } from '../hooks/useToasts';
 
 import { registerService } from '../services/authService';
 import convolutionLogo from '../assets/images/convolution-square.svg';
@@ -14,7 +14,7 @@ const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const navigate = useNavigate();
-  const { addNotification } = useNotifications();
+  const { addNotification } = useToasts();
   const { login, isAuthenticated } = useAuth();
 
   if (isAuthenticated) {

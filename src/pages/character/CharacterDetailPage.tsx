@@ -8,23 +8,30 @@ import { CiImageOn } from "react-icons/ci";
 import { FaRegHeart } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
 import ClientStatus from '../../components/agent/ClientStatus';
-import AgentControlsSection from '../../components/characterEditor/AgentControlsSection';
-import { useAuth } from '../../hooks/useAuth';
 import AgentStatus from '../../components/agent/AgentStatus';
 import { useAgentControls } from '../../hooks/useAgentControls';
+import StartAgentButton from '../../components/agent/buttons/StartAgentButton';
+import StopAgentButton from '../../components/agent/buttons/StopAgentButton';
+import useAgentHooks from '../../hooks/useAgentHooks';
 
 const CharacterDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { character, loading, error } = useCharacter(id!);
-  const {userProfile} = useAuth();
-
-  const {agentStatus} = useAgentControls(
-    userProfile?.id, 
-    character?.id, 
+  
+  // Initialize context with character data when available
+  const { agentStatus } = useAgentControls(
+    id,
     character?.definition,
     character?.llm_provider_settings.llm_provider_name,
     character?.llm_provider_settings.llm_provider_model
   );
+  
+  // Get hooks for individual buttons
+  const { 
+    isRunning, 
+    hasProviderData,
+    startAgent,
+    stopAgent  } = useAgentHooks(id);
 
   if (loading) return <p>Loading character...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -34,11 +41,10 @@ const CharacterDetailPage: React.FC = () => {
       <div className='flex sm:flex-row flex-col gap-4 mb-8'>
         {/* general */}
         <div className='flex flex-col sm:w-8/12 w-full flex-grow '>
-          <div className='px-4 py-2 mb-5 bg-gray-50 border-gray-200 border rounded-lg flex flex-row justify-between'>
+          <div className='px-4 py-2 mb-5 bg-gray-50 border-gray-200 border rounded-lg'>
             <h2 className='font-semibold text-lg'>
               General
             </h2>
-            <AgentStatus status={agentStatus} />
           </div>
 
           <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow'>
@@ -47,11 +53,14 @@ const CharacterDetailPage: React.FC = () => {
             <div className='flex flex-col gap-4 p-4 flex-grow'>
               {/* name, socials */}
               <div className='flex sm:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between'>
-                <div className='flex flex-row'>
+                <div className='flex flex-row gap-6'>
                   {/* name */}
                   <div className='flex flex-col'>
                     <span className='text-sm text-black-light'>Name</span>
                     <span className='font-semibold'>{character?.definition.name}</span>
+                  </div>
+                  <div className='flex flex-col flex-grow justify-end'>
+                    <AgentStatus status={agentStatus} />
                   </div>
                 </div>
                 {/* socials */}
@@ -97,35 +106,38 @@ const CharacterDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+        {/* clients */}
+        <div className='flex flex-col gap-4 sm:w-4/12'>
+          <div className='px-4 py-2 bg-gray-50 border-gray-200 border rounded-lg'>
+            <h2 className='font-semibold text-lg'>
+              Clients
+            </h2>
+          </div>
 
-        {/* Controls */}
-        <div className='flex flex-col sm:w-4/12 w-full'>
-          <AgentControlsSection userId={userProfile?.id} agentId={character?.id}  llm_provider_name={character?.definition.modelProvider} llm_provider_model={character?.definition.settings.secrets?.OPENROUTER_MODEL} />
+          <ClientStatus character={character} />
         </div>
       </div>
+
 
       <div className='flex sm:flex-row flex-col gap-4 mb-8'>
-        {/* Bio */}
-        <div className='flex flex-col gap-4 sm:w-4/12'>
+        {/* bio */}
+        <div className='flex flex-col gap-4'>
           <div className='px-4 py-2 bg-gray-50 border-gray-200 border rounded-lg'>
             <h2 className='font-semibold text-lg'>
-              Clients
+              Bio
             </h2>
           </div>
-
-          <ClientStatus character={character} />
-        </div>
-        {/* Clients */}
-        <div className='flex flex-col gap-4 sm:w-4/12'>
-          <div className='px-4 py-2 bg-gray-50 border-gray-200 border rounded-lg'>
-            <h2 className='font-semibold text-lg'>
-              Clients
-            </h2>
-          </div>
-
-          <ClientStatus character={character} />
         </div>
       </div>
+
+      <div className='flex justify-center p-4 border rounded-lg'>
+            {!isRunning && hasProviderData && (
+              <StartAgentButton onClick={startAgent} />
+            )}
+            {isRunning && hasProviderData && (
+              <StopAgentButton onClick={stopAgent} />
+            )}
+          </div>
     </>
   );
 };

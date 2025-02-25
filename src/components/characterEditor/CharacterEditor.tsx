@@ -10,7 +10,6 @@ import CharacterResultSection from './CharacterResultSection';
 import { CharacterData, MessageExample, BackupListItem, OpenRouterModel, Client } from '../../types';
 import ClientToggles from './ClientToggles';
 import ModelProviderSelect from '../inputs/ModelProviderSelect';
-import AgentControlsSection from './AgentControlsSection';
 import { ApiKeyService } from '../../services/apiKeyService';
 
 
@@ -42,7 +41,7 @@ interface CharacterEditorProps {
   selectedModel?: string,
 }
 
-const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentId, userId }) => {
+const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData }) => {
   const apiKeyService = ApiKeyService.getInstance();
 
   const [character, setCharacter] = useState<CharacterData>(characterData || initialCharacter);
@@ -365,8 +364,6 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
           onPeopleChange={updatePeople}
         />
         <CharacterResultSection character={character} />
-
-        <AgentControlsSection userId={userId} characterData={character} agentId={agentId}  llm_provider_name={'openrouter'} llm_provider_model={character.settings.secrets?.OPENROUTER_MODEL} llm_provider_api_key={apiKeyService.getApiKey()!} />
       </div>
     </div>
   );

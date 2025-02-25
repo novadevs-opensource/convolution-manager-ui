@@ -5,12 +5,12 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { loginService } from '../services/authService';
 import { useAuth } from '../hooks/useAuth';
 import convolutionLogo from '../assets/images/convolution-square.svg';
-import { useNotifications } from '../hooks/useNotifications';
+import { useToasts } from '../hooks/useToasts';
 
 const LoginPage: React.FC = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const { addNotification } = useNotifications();
+  const { addNotification } = useToasts();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
