@@ -13,4 +13,4 @@ export interface UpdateAgentEvent {
     agentId: string,
 }
 
-export type AgentRuntimeAction = 'boot' | 'stop' | 'update'
+export type AgentRuntimeAction = 'boot' | 'stop' | 'update' | 'bootACK' | 'stopACK' | 'updateACK'
