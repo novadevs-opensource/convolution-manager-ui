@@ -32,7 +32,7 @@ const ClientStatus: React.FC<ClientStatusProps> = ({ character }) => {
       !!char.definition.settings.secrets.TWITTER_USERNAME
     ),
     discord: (char) => !!char.definition.settings.secrets.DISCORD_BOT_TOKEN,
-    direct: (char) => true, // Direct no requiere validaciones específicas
+    direct: (char) => char, // Direct no requiere validaciones específicas
     farcaster: (char) => (
       !!char.definition.settings.secrets.FARCASTER_API_KEY &&
       !!char.definition.settings.secrets.FARCASTER_SECRET_KEY
