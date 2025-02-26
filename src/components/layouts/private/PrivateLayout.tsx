@@ -1,11 +1,8 @@
 // src/components/layouts/PrivateLayout.tsx
-import React from 'react'
-//import { useLocation } from 'react-router-dom'
+import React, { useState } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
-//import Breadcrumbs from './Breadcrumbs'
 import UserBlock from './userBlock/UserBlock'
-
 
 type LayoutProps = {
   pageTitle: string,
@@ -13,27 +10,48 @@ type LayoutProps = {
 }
 
 const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
-  //const { pathname } = useLocation()
+  const [sidebarIsVisible, setSidebarIsVisible] = useState<boolean>(false)
+  
   const menuItems = [
     { name: 'Home', path: '/dashboard' },
     { name: 'Create Character', path: '/agent/character' },
   ]
-  /*
-  const getBreadcrumbs = () => {
-    // Aquí calculamos las migas de pan según la ruta actual
-    const pathArray = pathname.split('/').filter(Boolean)
-    return pathArray.map((part) => (
-      part.charAt(0).toUpperCase() + part.slice(1)
-    ))
+
+  // Toggle sidebar visibility
+  const toggleSidebar = () => {
+    setSidebarIsVisible(!sidebarIsVisible)
   }
-  */
+
+  // Close sidebar explicitly
+  const closeSidebar = () => {
+    setSidebarIsVisible(false)
+  }
 
   return (
     <div className="m-0 font-sans bg-gray-50 flex">
-      <Sidebar menuItems={menuItems} />
+      {/* Overlay para cerrar el sidebar cuando se hace click fuera (solo en móvil) */}
+      {sidebarIsVisible && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
+          onClick={closeSidebar}
+        />
+      )}
+      
+      <Sidebar 
+        show={sidebarIsVisible} 
+        menuItems={menuItems} 
+        onClose={closeSidebar} 
+      />
+      
       <main className="p-4 w-full overflow-hidden">
-        {/* <Breadcrumbs items={getBreadcrumbs()} /> */}
         <div className='flex flex-row justify-between gap-4'>
+          <button 
+            className='sm:hidden block bg-white rounded-lg border p-4 mb-4' 
+            onClick={toggleSidebar}
+            aria-label="Toggle menu"
+          >
+            Menu
+          </button>
           <Header title={pageTitle} />
           <UserBlock/>
         </div>

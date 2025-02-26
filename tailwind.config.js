@@ -71,6 +71,11 @@ export default {
       }, {})
       
       addUtilities(utilities)
-    }
+    },
+    function({ addBase }) {
+      addBase({
+         'html': { fontSize: "12px" },// If you change this, you'll need to adjust the "Chatbot" mockup
+       })
+     },
   ],
 }

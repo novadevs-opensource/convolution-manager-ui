@@ -53,7 +53,7 @@ const CharacterDetailPage: React.FC = () => {
           <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow'>
             <CiImageOn size={160} /> {/* TODO: Change by agent image */}
 
-            <div className='flex flex-col gap-4 p-4 flex-grow'>
+            <div className='flex flex-col gap-4 p-4 flex-grow w-full'>
               {/* name, socials */}
               <div className='flex sm:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between'>
                 <div className='flex flex-row gap-6'>
@@ -279,7 +279,7 @@ const CharacterDetailPage: React.FC = () => {
               <p className="text-sm text-[#6b7280] leading-3">Powered by Convolution</p>
             </div>
             {/* Chat Container */}
-            <div className="h-[465px]" style={{overflowY: 'scroll'}}>
+            <div className="h-full" style={{overflowY: 'scroll'}}>
               <div className="p-4 h-[474px] bg-gray-50" style={{minWidth: '100%', display: 'table', overflowY: 'scroll'}}>
               {character?.definition.messageExamples.map((conversation: MessageExample[], index: number) => (
                 <div key={index}>
@@ -327,7 +327,7 @@ const CharacterDetailPage: React.FC = () => {
               </div>
             </div>
             {/* Input box  */}
-            <div className="-mx-6  flex items-center p-4">
+            <div className="-mx-6 absolute top-[91.5%] w-full bg-white flex items-center p-4">
               <form className="flex items-center justify-center w-full space-x-2">
                 <input disabled className="disabled:opacity-75 flex h-10 w-full rounded-md border border-[#e5e7eb] px-3 py-2 text-sm placeholder-[#6b7280] focus:outline-none focus:ring-2 focus:ring-[#9ca3af] disabled:cursor-not-allowed disabled:opacity-50 text-[#030712] focus-visible:ring-offset-2" placeholder="Type your message" value=""/>
                 <button disabled className="disabled:opacity-50 inline-flex items-center justify-center rounded-md text-sm font-medium text-[#f9fafb] disabled:pointer-events-none disabled:opacity-50 bg-black hover:bg-[#111827E6] h-10 px-4 py-2">
