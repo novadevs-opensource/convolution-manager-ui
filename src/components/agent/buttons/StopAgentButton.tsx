@@ -2,7 +2,7 @@
 import React from 'react';
 import Button from '../../common/Button';
 
-interface SaveButtonProps {
+interface StopButtonProps {
   onClick: () => void;
   className?: string;
   disabled?: boolean;
@@ -11,7 +11,7 @@ interface SaveButtonProps {
 /**
  * Button to save an agent - UI only
  */
-const SaveAgentButton: React.FC<SaveButtonProps> = ({ 
+const StopAgentButton: React.FC<StopButtonProps> = ({ 
   onClick, 
   className = '',
   disabled = false
@@ -27,4 +27,4 @@ const SaveAgentButton: React.FC<SaveButtonProps> = ({
   );
 };
 
-export default SaveAgentButton;
+export default StopAgentButton;
