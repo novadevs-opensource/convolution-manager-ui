@@ -8,9 +8,9 @@ interface AgentStatusProps {
 
 const AgentStatus: React.FC<AgentStatusProps> = ({ status }) => {
   return (
-    <div className='border inline-flex px-4 py-1 rounded-full border-gray-200 bg-white'>
+    <div>
         {status ? (
-        <div className='flex flex-row gap-2 items-center'>
+        <div className='border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase'>
             <span className='text-black-light text-xs uppercase'>
                 Running
             </span>
@@ -19,7 +19,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({ status }) => {
             </span>
         </div>
         ) : (
-        <div className='flex flex-row gap-2 items-center uppercase'>
+        <div className='border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase'>
             <span className='text-black-light text-xs'>
                 Stopped
             </span>

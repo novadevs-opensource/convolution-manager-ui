@@ -13,7 +13,7 @@ interface ButtonProps {
  * Base button component for agent actions
  * Pure UI component with no business logic
  */
-const AgentButton: React.FC<ButtonProps> = ({ 
+const Button: React.FC<ButtonProps> = ({ 
   onClick, 
   label, 
   icon,
@@ -33,4 +33,4 @@ const AgentButton: React.FC<ButtonProps> = ({
   );
 };
 
-export default AgentButton;
+export default Button;

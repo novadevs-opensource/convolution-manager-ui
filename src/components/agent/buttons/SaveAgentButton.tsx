@@ -1,6 +1,6 @@
 // src/components/agent/buttons/SaveAgentButton.tsx
 import React from 'react';
-import AgentButton from '../../common/Button';
+import Button from '../../common/Button';
 import { useAgentControls } from '../../../hooks/useAgentControls';
 
 interface SaveButtonProps {
