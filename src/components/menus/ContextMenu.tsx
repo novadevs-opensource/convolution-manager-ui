@@ -38,13 +38,13 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ button, options }) => {
   }, []);
 
   return (
-    <div className="relative inline-block text-left">
+    <div className="relative inline-block text-left w-full">
       <span
         ref={buttonRef}
         onClick={() => setIsMenuOpened(prev => !prev)}
         aria-expanded={isMenuOpened}
         aria-haspopup="true"
-        className='flex cursor-pointer'
+        className='flex cursor-pointer w-full block'
       >
         {button}
       </span>

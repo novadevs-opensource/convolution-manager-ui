@@ -2,6 +2,7 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
+import UserBlock from './userBlock/UserBlock';
 
 type SidebarProps = {
   menuItems: { name: string; path: string }[];
@@ -16,20 +17,20 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
     <aside 
       className={`
         fixed sm:static bg-white sm:max-w-[300px] sm:w-2/12 w-[80%] z-40 
-        min-h-screen p-4 flex flex-col border-r border-r-black-50 
+        h-screen p-4 flex flex-col border border-black-50
         transition-transform duration-300 ease-in-out transform
         ${show ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'}
       `}
     >
       {/* logo */}
-      <div className="ml-2 p-2 flex mb-8 justify-between">
+      <div className="ml-4 py-4 flex mb-8 justify-between items-center">
         <img
           src="https://staging.convolution.agency/assets/convolution-logo-main-DniIUzDJ.svg"
           alt="Logo"
           className="h-12 max-w-[150px]"
         />
         <button 
-          className='sm:hidden block bg-white rounded-lg border p-4 mb-4' 
+          className='sm:hidden block bg-white rounded-lg border p-4' 
           onClick={onClose}
           aria-label="Close menu"
         >
@@ -62,8 +63,10 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
         
         <div>
           <hr className='my-8'/>
-          <ul>
             {isAuthenticated && (
+          <div>
+
+              <UserBlock className={'block sm:hidden'} hasBorder={true} hasMenu={false}/>
               <a
                 className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300 font-bold"
                 href="#"
@@ -76,9 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
               >
                 Logout
               </a>
-            )}
-          </ul>
         </div>
+
+            )}
+          </div>
       </div>
     </aside>
   )
