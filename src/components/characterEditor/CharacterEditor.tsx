@@ -13,6 +13,10 @@ import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import { ApiKeyService } from '../../services/apiKeyService';
 import useAgentHooks from '../../hooks/useAgentHooks';
 import useAgentControls from '../../hooks/useAgentControls';
+import GenericTextInput from '../inputs/GenericTextInput';
+import FormGroup from '../common/FormGroup';
+import Separator from '../common/Separator';
+import CharacterEditorSection from './CharacterEditorSection';
 
 
 const initialCharacter: CharacterData = {
@@ -249,118 +253,111 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
       />
       <div className="flex-grow">
         {/* Basic Information */}
-        <section className="section">
-          <div className="section-header">
-            <span>Basic Information</span>
-            <button className="icon-button help-button" title="Set the character's name, model provider, and voice settings">
+        <CharacterEditorSection
+          title={'Basic Information'}
+          headerIcon={
+            <button className="h-[2.5em] w-[2.5em] border border-gray-200 bg-white rounded-full" title="Set the character's name, model provider, and voice settings">
               <i className="fa-solid fa-id-card"></i>
             </button>
-          </div>
-          <div className="section-content">
-            <div className="form-group">
-              <label htmlFor="character-name">Character Name</label>
-              <input
-                type="text"
-                id="character-name"
+          }
+        >
+          <FormGroup>
+            <GenericTextInput 
+              label='Character Name'
+                name='character-name'
                 placeholder="Enter the character's full name (e.g., John Smith, Lady Catherine)"
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                value={character.name}
-              />
-            </div>
+              value={character.name}
+            />
+          </FormGroup>
 
+          <FormGroup>
             <ClientToggles
               availableClients={['discord', 'direct', 'twitter', 'telegram', 'farcaster'] as Client[]}
               selectedClients={character.clients}
               onChange={(value: Client[]) =>
                 setCharacter(prev => ({ ...prev, clients: value }))
               }
+              label='Available clients'
             />
+          </FormGroup>
 
-            {showTelegramConfigForm && (
-              <div className="form-group">
-                <label htmlFor="character-name">Telegram bot token</label>
-                <input
-                  type="text"
-                  placeholder="Your Telegram's bot ID"
-                  onChange={(e) => handleInputChange('settings.secrets.TELEGRAM_BOT_TOKEN', e.target.value)}
-                  value={character.settings?.secrets?.TELEGRAM_BOT_TOKEN}
-                />
-                <small>required</small>
-              </div>
-            )}
-
-            {showTwitterConfigForm && (
-              <>
-              <div className="form-group">
-                <label htmlFor="character-name">X account handler (without @)</label>
-                <input
-                  type="text"
-                  placeholder="Your X handler here"
-                  onChange={(e) => handleInputChange('settings.secrets.TWITTER_USERNAME', e.target.value)}
-                  value={character.settings?.secrets?.TWITTER_USERNAME}
-                />
-                <small>required</small>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="character-name">X account password</label>
-                <input
-                  type="password"
-                  onChange={(e) => handleInputChange('settings.secrets.TWITTER_PASSWORD', e.target.value)}
-                  value={character.settings?.secrets?.TWITTER_PASSWORD}
-                />
-                <small>required</small>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="character-name">X (formerly Twitter) email</label>
-                <input
-                  type="text"
-                  placeholder="Your X mail here"
-                  onChange={(e) => handleInputChange('settings.secrets.TWITTER_EMAIL', e.target.value)}
-                  value={character.settings?.secrets?.TWITTER_EMAIL}
-                />
-                <small>required</small>
-              </div>
-              </>
-            )}
-
-            <div className="form-group">
-              <label htmlFor="model-provider">Model Provider</label>
-              <ModelProviderSelect
-                selected={character.settings?.secrets?.OPENROUTER_MODEL || ''}
-                onChange={(value) => {
-                  handleInputChange('settings.secrets.OPENROUTER_MODEL', value)
-                  handleInputChange('settings.secrets.SMALL_OPENROUTER_MODEL', value)
-                  handleInputChange('settings.secrets.MEDIUM_OPENROUTER_MODEL', value)
-                  handleInputChange('settings.secrets.LARGE_OPENROUTER_MODEL', value)
-                  handleInputChange('modelProvider', 'openrouter')
-                }}
-                models={openRouterAvailableModels}
+          {showTelegramConfigForm && (
+            <FormGroup>
+              <GenericTextInput 
+                label='Telegram bot token'
+                name='telegram-bot-token'
+                placeholder="Your Telegram's bot ID"
+                onChange={(e) => handleInputChange('settings.secrets.TELEGRAM_BOT_TOKEN', e.target.value)}
+                value={character.settings?.secrets?.TELEGRAM_BOT_TOKEN}
+                required={true}
               />
-            </div>
+            </FormGroup>
+          )}
 
-            <div className="form-group">
-              <label htmlFor="voice-model">Voice Model</label>
-              <input
-                type="text"
-                id="voice-model"
-                placeholder="Voice synthesis model identifier for text-to-speech"
-                onChange={(e) => updateNestedField('settings.voice.model', e.target.value)}
-                value={character.settings?.voice?.model}
+          {showTwitterConfigForm && (
+            <FormGroup>
+              <GenericTextInput 
+                label='X account handler (without @)'
+                name=''
+                placeholder="Your X handler here"
+                onChange={(e) => handleInputChange('settings.secrets.TWITTER_USERNAME', e.target.value)}
+                value={character.settings?.secrets?.TWITTER_USERNAME}
+                required={true}
               />
-            </div>
-          </div>
-        </section>
+              <GenericTextInput 
+                label='X account password'
+                name=''
+                type="password"
+                onChange={(e) => handleInputChange('settings.secrets.TWITTER_PASSWORD', e.target.value)}
+                value={character.settings?.secrets?.TWITTER_PASSWORD}
+                required={true}
+              />
+              <GenericTextInput 
+                label='X account email'
+                name=''
+                placeholder="Your X mail here"
+                onChange={(e) => handleInputChange('settings.secrets.TWITTER_EMAIL', e.target.value)}
+                value={character.settings?.secrets?.TWITTER_EMAIL}
+                required={true}
+              />
+            </FormGroup>
+          )}
 
+          <FormGroup className='flex sm:flex-row flex-col'>
+            <ModelProviderSelect
+              label='Model Provider'
+              selected={character.settings?.secrets?.OPENROUTER_MODEL || ''}
+              onChange={(value) => {
+                handleInputChange('settings.secrets.OPENROUTER_MODEL', value)
+                handleInputChange('settings.secrets.SMALL_OPENROUTER_MODEL', value)
+                handleInputChange('settings.secrets.MEDIUM_OPENROUTER_MODEL', value)
+                handleInputChange('settings.secrets.LARGE_OPENROUTER_MODEL', value)
+                handleInputChange('modelProvider', 'openrouter')
+              }}
+              models={openRouterAvailableModels}
+            />
+            <GenericTextInput 
+              label='Voice Model'
+              name='voice-model'
+              placeholder="Voice synthesis model identifier for text-to-speech"
+              onChange={(e) => updateNestedField('settings.voice.model', e.target.value)}
+              value={character.settings?.voice?.model}
+            />
+          </FormGroup>
+        </CharacterEditorSection>
+
+        {/* bio and communication style */}
         <CharacterDetailsSection
           character={character}
           handleInputChange={handleInputChange}
         />
+        {/* RAG */}
         <KnowledgeProcessingSection
           knowledge={character.knowledge}
           onKnowledgeChange={updateKnowledge}
         />
+        {/* communication examples */}
         <ExamplesSection
           messageExamples={character.messageExamples}
           postExamples={character.postExamples}
@@ -368,12 +365,14 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
           onMessageExamplesChange={updateMessageExamples}
           onPostExamplesChange={updatePostExamples}
         />
+        {/* adjetives and people */}
         <AdjectivesAndPeopleSection
           adjectives={character.adjectives}
           people={character.people}
           onAdjectivesChange={updateAdjectives}
           onPeopleChange={updatePeople}
         />
+        {/* results */}
         <CharacterResultSection character={character} />
       </div>
     </div>

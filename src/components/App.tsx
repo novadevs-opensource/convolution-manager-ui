@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from '../routes/AppRoutes';
-import NotificationLayout from './layouts/public/NotificationLayout';
+import NotificationLayout from './common/layouts/public/NotificationLayout';
 import { AgentProvider } from '../context/AgentContext';
 import { EventsQueueProvider } from '../context/EventsQueueContext';
 

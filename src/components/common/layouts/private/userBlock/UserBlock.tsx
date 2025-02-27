@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { SlUser } from "react-icons/sl";
-
-import { useAuth } from '../../../../hooks/useAuth';
-import ContextMenu from '../../../menus/ContextMenu';
+import { useAuth } from '../../../../../hooks/useAuth';
+import ContextMenu from '../../../../menus/ContextMenu';
 
 
 const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: boolean}> = ({ className, hasMenu, hasBorder }) => {

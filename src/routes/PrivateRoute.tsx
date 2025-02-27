@@ -2,7 +2,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import PrivateLayout from '../components/layouts/private/PrivateLayout';
+import PrivateLayout from '../components/common/layouts/private/PrivateLayout';
 
 type PrivateRouteProps = {
   children: React.ReactNode;

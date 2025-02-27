@@ -27,7 +27,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <div className="">
-
+      <GenerateCharacterSection
+        onGenerateCharacter={onGenerateCharacter}
+        onRefineCharacter={onRefineCharacter}
+      />
       <LoadCharacterSection
         onLoadCharacter={onLoadCharacter}
         backups={backups}
@@ -35,10 +38,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         onLoadBackup={onLoadBackup}
         onRenameBackup={onRenameBackup}
         onDeleteBackup={onDeleteBackup}
-      />
-      <GenerateCharacterSection
-        onGenerateCharacter={onGenerateCharacter}
-        onRefineCharacter={onRefineCharacter}
       />
     </div>
   );

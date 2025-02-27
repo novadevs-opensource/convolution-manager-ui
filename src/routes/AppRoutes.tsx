@@ -8,8 +8,9 @@ import PrivateRoute from './PrivateRoute';
 import EditCharacterPage from '../pages/character/EditCharacterPage';
 import AgentDetailPage from '../pages/character/CharacterDetailPage';
 import CreateCharacterPage from '../pages/character/CreateCharacterPage';
-import PublicLayout from '../components/layouts/public/PublicLayout';
+
 import RegisterPage from '../pages/RegisterPage';
+import PublicLayout from '../components/common/layouts/public/PublicLayout';
 
 const AppRoutes: React.FC = () => {
   return (

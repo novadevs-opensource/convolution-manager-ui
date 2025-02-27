@@ -1,7 +1,7 @@
 // src/components/layouts/private/Sidebar.tsx
 import React from 'react'
 import { Link } from "react-router-dom";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from '../../../../hooks/useAuth';
 import UserBlock from './userBlock/UserBlock';
 
 type SidebarProps = {
