@@ -1,5 +1,8 @@
 // src/components/characterEditor/AdjectivesAndPeopleSection.tsx
 import React from 'react';
+import CharacterEditorSection from './CharacterEditorSection';
+import FormGroup from '../common/FormGroup';
+import GenericTextInput from '../inputs/GenericTextInput';
 
 interface AdjectivesAndPeopleSectionProps {
   adjectives?: string[];
@@ -44,20 +47,20 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
 
   return (
     <div className="two-columns">
-      <section className="section">
-        <div className="section-header">
-          <span>Adjectives</span>
+      <CharacterEditorSection
+        title={'Adjectives'}
+        headerIcon={
           <button className="icon-button help-button" title="Add single-word traits that describe the character">
             <i className="fa-solid fa-tags"></i>
           </button>
-        </div>
-        <div className="section-content">
-          <div className="form-group">
+        }
+      >
+        <FormGroup>
             <div className="adjectives-header">
               <label>Character Adjectives</label>
               <button
                 id="add-adjective"
-                className="action-button add-button"
+                className="action-button add-button border-gray-300"
                 title="Add Adjective"
                 onClick={handleAddAdjective}
               >
@@ -67,15 +70,14 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
             <div id="adjectives-container">
               {adjectives.map((adj, index) => (
                 <div key={index} className="adjective-entry">
-                  <input
-                    type="text"
-                    className="adjective-name"
+                  <GenericTextInput
+                    plain={true}
                     placeholder="Enter an adjective"
                     value={adj}
                     onChange={(e) => handleAdjectiveChange(index, e.target.value)}
                   />
                   <button
-                    className="action-button delete-button"
+                    className="action-button delete-button border-gray-300"
                     title="Remove Adjective"
                     onClick={() => handleRemoveAdjective(index)}
                   >
@@ -84,24 +86,23 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
+        </FormGroup>
+      </CharacterEditorSection>
 
-      <section className="section">
-        <div className="section-header">
-          <span>People</span>
+      <CharacterEditorSection
+        title={'People'}
+        headerIcon={
           <button className="icon-button help-button" title="Add people that the character knows or has relationships with">
             <i className="fa-solid fa-user-group"></i>
           </button>
-        </div>
-        <div className="section-content">
-          <div className="form-group">
+        }
+      >
+        <FormGroup>
             <div className="people-header">
               <label>Known People</label>
               <button
                 id="add-person"
-                className="action-button add-button"
+                className="action-button add-button border-gray-300"
                 title="Add Person"
                 onClick={handleAddPerson}
               >
@@ -111,15 +112,15 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
             <div id="people-container">
               {people.map((person, index) => (
                 <div key={index} className="person-entry">
-                  <input
-                    type="text"
-                    className="person-name"
+                  <GenericTextInput
+                    plain={true}
                     placeholder="Enter person's name"
+                    className="person-name"
                     value={person}
                     onChange={(e) => handlePersonChange(index, e.target.value)}
                   />
                   <button
-                    className="action-button delete-button"
+                    className="action-button delete-button border-gray-300"
                     title="Remove Person"
                     onClick={() => handleRemovePerson(index)}
                   >
@@ -128,9 +129,8 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
+        </FormGroup>
+      </CharacterEditorSection>
     </div>
   );
 };

@@ -149,6 +149,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
         {savedApiKey ? (
           <div className='flex flex-row gap-2 items-end'>
             <GenericTextInput
+              plain={true}
               label='OpenRouter API Key'
               value={apiKey?.substring(0,20)+'...'}
               disabled={true}

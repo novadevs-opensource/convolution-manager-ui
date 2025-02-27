@@ -1,6 +1,9 @@
 // CharacterResultSection.tsx
 import React, { useState } from 'react';
 import { CharacterData } from '../../types';
+import CharacterEditorSection from './CharacterEditorSection';
+import FormGroup from '../common/FormGroup';
+import Button from '../common/Button';
 
 interface CharacterResultSectionProps {
   character: CharacterData;
@@ -45,42 +48,28 @@ const CharacterResultSection: React.FC<CharacterResultSectionProps> = ({ charact
   };
 
   return (
-    <section className="section">
-      <div className="section-header">
-        <span>Character Result</span>
+    <CharacterEditorSection
+      title={'Character Result'}
+      headerIcon={
         <button
           className="icon-button help-button"
           title="Generate and download the final character JSON"
         >
           <i className="fa-solid fa-code"></i>
         </button>
-      </div>
-      <div className="section-content">
+      }
+    >
+      <FormGroup>
         <div className="result-controls">
-          <button
-            id="generate-json"
-            className="action-button generate-button"
-            title="Generate Character"
-            onClick={handleGenerateJson}
-          >
-            <i className="fa-solid fa-bolt"></i>
-          </button>
-          <button
-            id="download-json"
-            className="action-button download-button"
-            title="Download JSON"
-            onClick={handleDownloadJson}
-            disabled={downloadDisabled}
-          >
-            <i className="fa-solid fa-download"></i>
-          </button>
+          <Button onClick={handleGenerateJson} label={'Generate'} icon='fa-bolt'/>
+          <Button onClick={handleDownloadJson} label='Download' disabled={downloadDisabled} icon='fa-download'/>
         </div>
         <div id="knowledge-content" className="debug-output">
           {/* Mostramos el JSON resultante en un bloque <pre> */}
           <pre>{resultJson}</pre>
         </div>
-      </div>
-    </section>
+      </FormGroup>
+    </CharacterEditorSection>
   );
 };
 

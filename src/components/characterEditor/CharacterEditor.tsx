@@ -15,7 +15,6 @@ import useAgentHooks from '../../hooks/useAgentHooks';
 import useAgentControls from '../../hooks/useAgentControls';
 import GenericTextInput from '../inputs/GenericTextInput';
 import FormGroup from '../common/FormGroup';
-import Separator from '../common/Separator';
 import CharacterEditorSection from './CharacterEditorSection';
 
 
@@ -47,7 +46,7 @@ interface CharacterEditorProps {
   selectedModel?: string,
 }
 
-const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData, agentId, selectedModel }) => {
+const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentId }) => {
   const apiKeyService = ApiKeyService.getInstance();
   const [character, setCharacter] = useState<CharacterData>(characterData || initialCharacter);
   useAgentControls(
@@ -262,7 +261,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
           }
         >
           <FormGroup>
-            <GenericTextInput 
+            <GenericTextInput
+                plain={true} 
               label='Character Name'
                 name='character-name'
                 placeholder="Enter the character's full name (e.g., John Smith, Lady Catherine)"
@@ -284,7 +284,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
 
           {showTelegramConfigForm && (
             <FormGroup>
-              <GenericTextInput 
+              <GenericTextInput
+                plain={true} 
                 label='Telegram bot token'
                 name='telegram-bot-token'
                 placeholder="Your Telegram's bot ID"
@@ -297,7 +298,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
 
           {showTwitterConfigForm && (
             <FormGroup>
-              <GenericTextInput 
+              <GenericTextInput
+                plain={true} 
                 label='X account handler (without @)'
                 name=''
                 placeholder="Your X handler here"
@@ -305,7 +307,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
                 value={character.settings?.secrets?.TWITTER_USERNAME}
                 required={true}
               />
-              <GenericTextInput 
+              <GenericTextInput
+                plain={true} 
                 label='X account password'
                 name=''
                 type="password"
@@ -313,7 +316,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
                 value={character.settings?.secrets?.TWITTER_PASSWORD}
                 required={true}
               />
-              <GenericTextInput 
+              <GenericTextInput
+                plain={true} 
                 label='X account email'
                 name=''
                 placeholder="Your X mail here"
@@ -337,7 +341,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData
               }}
               models={openRouterAvailableModels}
             />
-            <GenericTextInput 
+            <GenericTextInput
+              plain={true} 
               label='Voice Model'
               name='voice-model'
               placeholder="Voice synthesis model identifier for text-to-speech"

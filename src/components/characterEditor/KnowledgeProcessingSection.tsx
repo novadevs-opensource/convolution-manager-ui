@@ -1,5 +1,7 @@
 // src/components/characterEditor/KnowledgeProcessingSection.tsx
 import React, { useState, useRef } from 'react';
+import CharacterEditorSection from './CharacterEditorSection';
+import Button from '../common/Button';
 
 interface KnowledgeProcessingSectionProps {
   knowledge: string[];
@@ -111,21 +113,21 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
   };
 
   return (
-    <section className="section">
-      <div className="section-header">
-        <span>Knowledge Processing</span>
+    <CharacterEditorSection
+      title={'Knowledge Processing'}
+      headerIcon={
         <button className="icon-button help-button" title="Add knowledge to the character by uploading files or entering it manually">
           <i className="fa-solid fa-brain"></i>
         </button>
-      </div>
-      <div className="section-content">
+      }
+    >
         {/* Zona de drop */}
         <div
-          className="drop-zone knowledge-drop-zone"
+          className="drop-zone knowledge-drop-zone rounded-lg p-8"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          <div className="drop-zone-content">
+          <div className="flex flex-row items-left items-center gap-2">
             <i className="fa-solid fa-cloud-arrow-up upload-icon"></i>
             <p>
               Drag and drop PDF or text files here to add to the character's knowledge base
@@ -162,30 +164,23 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
         </div>
         {/* Botón para procesar archivos */}
         <div className="process-controls">
-          <button
-            className="action-button generate-button"
-            title="Process Knowledge Files"
-            onClick={handleProcessKnowledge}
-            disabled={processing}
-          >
-            <i className="fa-solid fa-gears"></i>
-          </button>
+          <Button disabled={processing} className='w-[120px]' onClick={handleProcessKnowledge} label={'Generate'} icon='fa-gears'/>
         </div>
         {/* Visualización y edición del conocimiento */}
         <div className="knowledge-display">
           <div className="knowledge-header">
-            <h3>Knowledge Base</h3>
+            <h3 className='text-lg font-bold'>Knowledge Base</h3>
             <button
-              className="action-button add-button"
+              className="action-button add-button border border-gray-300"
               title="Add Knowledge Entry"
               onClick={handleAddKnowledgeEntry}
             >
               <i className="fa-solid fa-plus"></i>
             </button>
           </div>
-          <div id="knowledge-entries" className="knowledge-entries">
+          <div id="knowledge-entries" className="knowledge-entries rounded-md">
             {knowledge?.map((entry, index) => (
-              <div key={index} className="knowledge-entry">
+              <div key={index} className="knowledge-entry items-center">
                 <span className="entry-number">{index + 1}.</span>
                 <input
                   type="text"
@@ -196,7 +191,7 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
                   onBlur={(e) => handleKnowledgeEntryBlur(index, e.target.value)}
                 />
                 <button
-                  className="action-button delete-button"
+                  className="action-button delete-button !border border-gray-300"
                   title="Remove Knowledge"
                   onClick={() => handleRemoveKnowledgeEntry(index)}
                 >
@@ -206,8 +201,7 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
             ))}
           </div>
         </div>
-      </div>
-    </section>
+    </CharacterEditorSection>
   );
 };
 

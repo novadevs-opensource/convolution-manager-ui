@@ -2,6 +2,9 @@
 import React from 'react';
 import { MessageExample } from '../../types';
 import SplitTextArea from '../inputs/SplitTextArea';
+import CharacterEditorSection from './CharacterEditorSection';
+import FormGroup from '../common/FormGroup';
+import GenericTextArea from '../inputs/GenericTextArea';
 
 interface ExamplesSectionProps {
   messageExamples: MessageExample[][];
@@ -60,19 +63,19 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
   };
 
   return (
-    <section className="section collapsed">
-      <div className="section-header">
-        <span>Examples</span>
+    <CharacterEditorSection
+      title={'Examples'}
+      headerIcon={
         <button
           className="icon-button help-button"
           title="Add example conversations and posts to demonstrate the character's style"
         >
           <i className="fa-solid fa-comments"></i>
         </button>
-      </div>
-      <div className="section-content">
+      }
+    >
         {/* Message Examples */}
-        <div className="form-group">
+        <FormGroup>
           <div className="message-examples-header">
             <label>Message Examples</label>
             <button
@@ -98,14 +101,14 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                   ></textarea>
                 </div>
                 <div className="message-pair">
-                  <textarea
+                  <GenericTextArea
                     placeholder="Write the character's response..."
                     className="character-message"
                     value={example[1].content.text}
                     onChange={(e) =>
                       handleCharacterMessageChange(index, e.target.value)
                     }
-                  ></textarea>
+                  ></GenericTextArea>
                 </div>
                 <button
                   className="action-button delete-button"
@@ -117,19 +120,20 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
               </div>
             ))}
           </div>
-        </div>
+        </FormGroup>
 
         {/* Post Examples */}
-        <div className="form-group">
-          <label htmlFor="post-examples">Post Examples</label>
+        <FormGroup>
           <SplitTextArea
+            label='Post Examples'
+            id='post-examples'
+            name='post-examples'
             placeholder="Write example posts that demonstrate the character's writing style. Include different types of content they might create. Write one complete post per line."
             value={postExamples} 
             onChange={(val) => onPostExamplesChange(val)}
           />
-        </div>
-      </div>
-    </section>
+        </FormGroup>
+    </CharacterEditorSection>
   );
 };
 
