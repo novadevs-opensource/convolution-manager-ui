@@ -1,10 +1,10 @@
 // src/services/messageHandler.ts
-import { AgentRuntimeAction, BootAgentEvent, StopAgentEvent } from "../types/commEvents";
+import { AgentRuntimeAction, BootAgentEvent, StopAgentEvent, UpdateAgentEvent } from "../types/commEvents";
 import { deleteMessageFromQueue, receiveMessagesFromQueue, sendMessageToQueue } from "./aws/sqsService";
 
 // Send an event to the queue
 export const enqueueEvent = async (
-  eventMessage: BootAgentEvent | StopAgentEvent, 
+  eventMessage: BootAgentEvent | StopAgentEvent | UpdateAgentEvent, 
   action: AgentRuntimeAction,
   userId: string, 
   agentId: string, 

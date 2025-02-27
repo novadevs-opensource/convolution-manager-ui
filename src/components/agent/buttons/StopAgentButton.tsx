@@ -1,27 +1,40 @@
-// src/components/agent/buttons/SaveAgentButton.tsx
+// src/components/agent/buttons/StopAgentButton.tsx
 import React from 'react';
 import Button from '../../common/Button';
 
-interface StopButtonProps {
+interface StopAgentButtonProps {
   onClick: () => void;
   className?: string;
   disabled?: boolean;
+  loading?: boolean;
+  isRunning?: boolean;
+  showAlways?: boolean;
 }
 
 /**
- * Button to save an agent - UI only
+ * Button to stop an agent - UI only
  */
-const StopAgentButton: React.FC<StopButtonProps> = ({ 
+const StopAgentButton: React.FC<StopAgentButtonProps> = ({ 
   onClick, 
   className = '',
-  disabled = false
+  disabled = false,
+  loading = false,
+  isRunning = false,
+  showAlways = false
 }) => {
+  // Visibility logic - show if criteria met or showAlways is true
+  const shouldShow = showAlways || isRunning;
+  
+  if (!shouldShow) {
+    return null;
+  }
+
   return (
     <Button
       onClick={onClick}
-      label="Stop"
-      icon="fa-stop"
-      disabled={disabled}
+      label={loading ? "Deteniendo..." : "Pausar"}
+      icon={loading ? "fa-spinner fa-spin" : "fa-stop"}
+      disabled={disabled || loading}
       className={className}
     />
   );

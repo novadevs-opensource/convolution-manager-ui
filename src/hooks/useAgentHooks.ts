@@ -1,11 +1,10 @@
-// src/hooks/useAgentHooks.ts
+// src/hooks/useAgentHooks.ts - Actualizado para nuevas firmas de función
+import { useCallback } from 'react';
 import { useAgentContext } from '../context/AgentContext';
-import { useAuth } from './useAuth';
+import { useAuth } from '../hooks/useAuth';
 
 /**
- * Custom hook that provides simplified agent actions and status information
- * for a specific agent. This hook helps determine which buttons should
- * be displayed in the UI based on the current state.
+ * Custom hook that provides simplified agent actions with navigation options
  */
 export const useAgentHooks = (agentId?: string) => {
   const { userProfile } = useAuth();
@@ -15,44 +14,60 @@ export const useAgentHooks = (agentId?: string) => {
     stopAgent: contextStopAgent,
     saveAgent: contextSaveAgent,
     updateAgent: contextUpdateAgent,
-    currentAgent
+    currentAgent,
+    hasAgentId,
+    hasCharacterData,
+    hasProviderData
   } = useAgentContext();
   
   // Check if this specific agent is running
   const isRunning = agentId ? !!agentStatus[agentId] : false;
   
-  // Get character data from context if available
-  const hasCharacterData = !!currentAgent.characterData;
-  const hasProviderData = !!(currentAgent.providerName && currentAgent.providerModel);
+  // Simplified action functions with redirect options
+  const startAgent = useCallback(() => {
+    if (userProfile?.id && agentId && currentAgent.providerName && currentAgent.providerModel) {
+      contextStartAgent(userProfile.id, agentId, currentAgent.providerName, currentAgent.providerModel);
+    }
+  }, [userProfile?.id, agentId, currentAgent.providerName, currentAgent.providerModel, contextStartAgent]);
   
-  // Simplified action functions that don't need parameters
-  const startAgent = () => {
+  const stopAgent = useCallback(() => {
     if (userProfile?.id && agentId) {
-      contextStartAgent();
+      contextStopAgent(userProfile.id, agentId);
     }
-  };
+  }, [userProfile?.id, agentId, contextStopAgent]);
   
-  const stopAgent = () => {
-    if (userProfile?.id && agentId) {
-      contextStopAgent();
+  const saveAgent = useCallback((options?: {
+    onSuccess?: (data: any) => void,
+    redirectTo?: string
+  }) => {
+    if (userProfile?.id && currentAgent.characterData && currentAgent.providerModel) {
+      contextSaveAgent(
+        userProfile.id, 
+        currentAgent.characterData, 
+        currentAgent.providerModel,
+        options
+      );
     }
-  };
+  }, [userProfile?.id, currentAgent.characterData, currentAgent.providerModel, contextSaveAgent]);
   
-  const saveAgent = () => {
-    if (userProfile?.id) {
-      contextSaveAgent();
+  const updateAgent = useCallback((options?: {
+    onSuccess?: (data: any) => void,
+    redirectTo?: string
+  }) => {
+    if (userProfile?.id && agentId && currentAgent.characterData && currentAgent.providerModel) {
+      contextUpdateAgent(
+        userProfile.id, 
+        agentId, 
+        currentAgent.characterData, 
+        currentAgent.providerModel,
+        options
+      );
     }
-  };
-  
-  const updateAgent = () => {
-    if (userProfile?.id && agentId) {
-      contextUpdateAgent();
-    }
-  };
+  }, [userProfile?.id, agentId, currentAgent.characterData, currentAgent.providerModel, contextUpdateAgent]);
   
   return {
     isRunning,
-    hasAgentId: !!agentId,
+    hasAgentId,
     hasCharacterData,
     hasProviderData,
     startAgent,

@@ -14,7 +14,6 @@ export function useCharacter(id: string) {
     try {
       const { data } = await api.get(`/character/${id}`);
       setCharacter(data.character);
-      console.log(data);
     } catch (err) {
       setError('Failed to fetch character details');
     } finally {

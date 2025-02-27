@@ -61,7 +61,8 @@ export const receiveMessagesFromQueue = async (loggedInUserId: string): Promise<
       return (
         userId === loggedInUserId && // Only returns messages whose 'userId' matches
         runtimeAction !== 'boot' &&   // Exclude 'boot' actions
-        runtimeAction !== 'stop'     // Exclude 'stop' actions
+        runtimeAction !== 'stop' &&    // Exclude 'stop' actions
+        runtimeAction !== 'update' // Exclude 'update' actions
       );
     });
 

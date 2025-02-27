@@ -345,12 +345,8 @@ const CharacterDetailPage: React.FC = () => {
       <div className='p-4 border rounded-lg fixed bg-white shadow-xl right-6 top-[30%]'>
         <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
         <div className='flex flex-col gap-4 mt-4'>
-            {!isRunning && hasProviderData && (
-              <StartAgentButton onClick={startAgent} />
-            )}
-            {isRunning && hasProviderData && (
-              <StopAgentButton onClick={stopAgent} />
-            )}
+            <StartAgentButton onClick={startAgent} isRunning={isRunning} hasProviderData={hasProviderData} />
+            <StopAgentButton onClick={stopAgent} isRunning={isRunning} />
             <Button onClick={() => navigate(`/agent/character/${character?.id}`)} icon='fa-pencil' label={'Edit'}></Button>
         </div>
       </div>

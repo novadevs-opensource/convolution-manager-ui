@@ -7,7 +7,6 @@ import { useToasts } from '../hooks/useToasts';
 import { ApiKeyService } from '../services/apiKeyService';
 import { useAgent } from '../hooks/useAgent';
 import { CharacterData } from '../types';
-import { useAuth } from '../hooks/useAuth';
 
 // Context interface with all agent-related state and functions
 interface AgentContextType {
@@ -24,10 +23,27 @@ interface AgentContextType {
     providerName?: string;
     providerModel?: string;
   }) => void;
-  startAgent: () => void;
-  stopAgent: () => void;
-  saveAgent: () => void;
-  updateAgent: () => void;
+  startAgent: (userId?: string, agentId?: string, llmProvider?: string, llmModel?: string) => void;
+  stopAgent: (userId?: string, agentId?: string) => void;
+  saveAgent: (
+    userId: string, 
+    characterData: CharacterData, 
+    llmModel?: string, 
+    options?: {
+      onSuccess?: (data: any) => void,
+      redirectTo?: string
+    }
+  ) => void;
+  updateAgent: (
+    userId: string, 
+    agentId: string, 
+    characterData: CharacterData, 
+    llmModel?: string, 
+    options?: {
+      onSuccess?: (data: any) => void,
+      redirectTo?: string
+    }
+  ) => void;
   hasAgentId: boolean;
   hasCharacterData: boolean;
   hasProviderData: boolean;
@@ -50,7 +66,6 @@ export const AgentProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const { addNotification } = useToasts();
   const { loading: isLoading, saveHandler, updateHandler } = useAgent();
   const [apiKey] = useState<string|null>(ApiKeyService.getInstance().getApiKey());
-  const { userProfile } = useAuth();
   
   // Derived states for conditional rendering
   const hasAgentId = !!currentAgent.id;
@@ -67,22 +82,21 @@ export const AgentProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // Start agent function
-  const startAgent = () => {
-    if (!checkApiKey() || !userProfile?.id) return;
-    
-    const { id: agentId, providerName, providerModel } = currentAgent;
-    
-    if (agentId && providerName && providerModel) {
+  const startAgent = (userId?: string, agentId?: string, llmProvider?: string, llmModel?: string) => {
+    if (!checkApiKey()) return;
+
+    if (userId && agentId && llmProvider && llmModel) {
       const eventBody: BootAgentEvent = {
         action: "boot",
         agentId,
+        userId,
       };
       
       try {
-        enqueueEvent(eventBody, eventBody.action, userProfile.id, agentId);
+        enqueueEvent(eventBody, eventBody.action, eventBody.userId, eventBody.agentId);
         console.log('Agent start event enqueued:', eventBody);
         
-        // Update status for this specific agent
+        // Actualizamos el estado para este agente específico
         setAgentStatus(prev => ({
           ...prev,
           [agentId]: true
@@ -100,22 +114,19 @@ export const AgentProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // Stop agent function
-  const stopAgent = () => {
-    if (!userProfile?.id) return;
-    
-    const { id: agentId } = currentAgent;
-    
-    if (agentId) {
+  const stopAgent = (userId?: string, agentId?: string) => {
+    if (userId && agentId) {
       const eventBody: StopAgentEvent = {
         action: "stop",
         agentId,
+        userId,
       };
       
       try {
-        enqueueEvent(eventBody, eventBody.action, userProfile.id, agentId);
+        enqueueEvent(eventBody, eventBody.action, eventBody.userId, eventBody.agentId);
         console.log('Agent stop event enqueued:', eventBody);
         
-        // Update status for this specific agent
+        // Actualizamos el estado para este agente específico
         setAgentStatus(prev => ({
           ...prev,
           [agentId]: false
@@ -133,35 +144,82 @@ export const AgentProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   // Save agent function (for new agents)
-  const saveAgent = () => {
-    if (!checkApiKey() || !userProfile?.id) return;
+  const saveAgent = (
+    userId: string, 
+    characterData: CharacterData, 
+    llmModel?: string, 
+    options?: {
+      onSuccess?: (data: any) => void,
+      redirectTo?: string
+    }
+  ) => {
+    if (!checkApiKey()) return;
     
-    const { characterData, providerModel } = currentAgent;
-    
-    if (userProfile.id && providerModel && characterData) {
-      saveHandler(userProfile.id, providerModel, apiKey!, characterData);
-      addNotification('Agent saved successfully', 'success');
+    if (userId && llmModel && characterData) {
+      saveHandler(userId, llmModel, apiKey!, characterData, {
+        ...options,
+        onSuccess: (data) => {
+          addNotification('Agent saved successfully', 'success');
+          if (options?.onSuccess) options.onSuccess(data);
+        },
+        onError: (error) => {
+          if ('errors' in error) {
+            // Format validation errors for better user experience
+            const messages = Object.entries(error.errors)
+              .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+              .join('; ');
+            addNotification(`Failed to save agent: ${messages}`, 'error');
+          } else {
+            addNotification(`Failed to save agent: ${error.message}`, 'error');
+          }
+        }
+      });
     } else {
       addNotification('Missing data for saving the agent', 'error');
     }
   };
 
   // Update agent function (for existing agents)
-  const updateAgent = () => {
-    if (!checkApiKey() || !userProfile?.id) return;
+  const updateAgent = (
+    userId: string, 
+    agentId: string, 
+    characterData: CharacterData, 
+    llmModel?: string, 
+    options?: {
+      onSuccess?: (data: any) => void,
+      redirectTo?: string
+    }
+  ) => {
+    if (!checkApiKey()) return;
     
-    const { id: agentId, characterData, providerModel } = currentAgent;
-    
-    if (agentId && providerModel && characterData) {
-      updateHandler(agentId, providerModel, apiKey!, characterData);
-      
-      const eventBody: UpdateAgentEvent = {
-        action: "update",
-        agentId,
-      };
-      
-      enqueueEvent(eventBody, eventBody.action, userProfile.id, agentId);
-      addNotification('Agent updated successfully', 'success');
+    if (agentId && llmModel && characterData) {
+      updateHandler(agentId, llmModel, apiKey!, characterData, {
+        ...options,
+        onSuccess: (data) => {
+          // Enqueue the update event
+          const eventBody: UpdateAgentEvent = {
+            action: "update",
+            agentId,
+            userId,
+          };
+          enqueueEvent(eventBody, eventBody.action, eventBody.userId, eventBody.agentId);
+          console.log('Agent update event enqueued:', eventBody);
+          
+          addNotification('Agent updated successfully', 'success');
+          if (options?.onSuccess) options.onSuccess(data);
+        },
+        onError: (error) => {
+          if ('errors' in error) {
+            // Format validation errors
+            const messages = Object.entries(error.errors)
+              .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+              .join('; ');
+            addNotification(`Failed to update agent: ${messages}`, 'error');
+          } else {
+            addNotification(`Failed to update agent: ${error.message}`, 'error');
+          }
+        }
+      });
     } else {
       addNotification('Missing data for updating the agent', 'error');
     }

@@ -1,23 +1,27 @@
 // src/components/agent/buttons/SaveAgentButton.tsx
 import React from 'react';
 import Button from '../../common/Button';
-import { useAgentControls } from '../../../hooks/useAgentControls';
 
-interface SaveButtonProps {
+interface SaveAgentButtonProps {
+  onClick: () => void;
   className?: string;
+  disabled?: boolean;
+  loading?: boolean;
+  hasCharacterData?: boolean;
   showAlways?: boolean;
 }
 
 /**
- * Button component to save an agent
- * Can be placed anywhere in the UI
+ * Button to save an agent - UI only
  */
-const SaveAgentButton: React.FC<SaveButtonProps> = ({ 
-  className = '', 
-  showAlways = false 
+const SaveAgentButton: React.FC<SaveAgentButtonProps> = ({ 
+  onClick, 
+  className = '',
+  disabled = false,
+  loading = false,
+  hasCharacterData = false,
+  showAlways = false
 }) => {
-  const { saveAgent, hasCharacterData } = useAgentControls();
-  
   // Visibility logic - show if criteria met or showAlways is true
   const shouldShow = showAlways || hasCharacterData;
   
@@ -26,13 +30,13 @@ const SaveAgentButton: React.FC<SaveButtonProps> = ({
   }
 
   return (
-    <div className={className}>
-      <Button
-        onClick={saveAgent}
-        label="Save"
-        icon="fa-save"
-      />
-    </div>
+    <Button
+      onClick={onClick}
+      label={loading ? "Guardando..." : "Guardar"}
+      icon={loading ? "fa-spinner fa-spin" : "fa-save"}
+      disabled={disabled || loading}
+      className={className}
+    />
   );
 };
 

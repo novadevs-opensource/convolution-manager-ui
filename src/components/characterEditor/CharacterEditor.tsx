@@ -11,6 +11,8 @@ import { CharacterData, MessageExample, BackupListItem, OpenRouterModel, Client 
 import ClientToggles from './ClientToggles';
 import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import { ApiKeyService } from '../../services/apiKeyService';
+import useAgentHooks from '../../hooks/useAgentHooks';
+import useAgentControls from '../../hooks/useAgentControls';
 
 
 const initialCharacter: CharacterData = {
@@ -41,10 +43,19 @@ interface CharacterEditorProps {
   selectedModel?: string,
 }
 
-const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData }) => {
+const CharacterEditor: React.FC<CharacterEditorProps> = ({ userId, characterData, agentId, selectedModel }) => {
   const apiKeyService = ApiKeyService.getInstance();
-
   const [character, setCharacter] = useState<CharacterData>(characterData || initialCharacter);
+  useAgentControls(
+    agentId,
+    character,
+    character?.modelProvider,
+    character?.settings.secrets.LARGE_OPENROUTER_MODEL
+  );
+  
+  // Get hooks for individual buttons
+  useAgentHooks(agentId);
+
   const [backups, setBackups] = useState<BackupListItem[]>([]);
   const [openRouterAvailableModels, setOpenRouterAvailableModels] = useState<OpenRouterModel[]>([]);
 
