@@ -5,9 +5,9 @@ import api from '../services/apiClient';
 // Response interface for the runtime status
 export interface RuntimeStatusResponse {
   status: 'running' | 'stopped' | 'unknown' | null;
-  last_execution: string | null;
+  last_boot_execution: string | null;
+  last_stop_execution: string | null;
   uptime_total_seconds: number;
-  uptime_current_seconds: number;
 }
 
 /**

@@ -69,9 +69,9 @@ export interface Agent {
   created_at: string;
   updated_at: string;
   status: RuntimeStatus;
-  last_execution: string | null;
+  last_boot_execution: string | null;
+  last_stop_execution: string | null;
   uptime_total_seconds: number;
-  uptime_current_seconds: number;
 }
 
 export type RuntimeStatus = 'running' | 'stopped' | 'unknown' | null;

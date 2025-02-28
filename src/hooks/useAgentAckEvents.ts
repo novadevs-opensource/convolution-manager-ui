@@ -10,11 +10,16 @@ import {
 } from '../types/commEvents';
 import { useAuth } from './useAuth';
 import { useRuntimeStatus } from './useRuntimeStatus';
+import api from '../services/apiClient';
 
 interface UseAgentAckEventsProps {
   agentId?: string;
   pollingInterval?: number;
   autoRefreshStatus?: boolean;
+}
+
+interface TransitionResponse {
+  message: string;
 }
 
 /**
@@ -41,6 +46,22 @@ export function useAgentAckEvents({
 
   // Create a ref to track processed event IDs to avoid processing the same event twice
   const processedEventIds = useRef<Set<string>>(new Set());
+  
+  /**
+   * Update agent status in the database
+   */
+  const updateAgentStatus = useCallback(async (id: string, status: 'running' | 'stopped'): Promise<boolean> => {
+    try {
+      const response = await api.post<TransitionResponse>(
+        `/runtime/${id}/update`, 
+        { status }
+      );
+      return response.status === 200;
+    } catch (err: any) {
+      console.error(`Error setting status to ${status}:`, err);
+      return false;
+    }
+  }, []);
   
   // Process a single event
   const processEvent = useCallback((event: AgentEvent) => {
@@ -83,42 +104,96 @@ export function useAgentAckEvents({
       const ackEvent = event as (BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent);
       const success = ackEvent.success === 'true';
       
-      // Generate appropriate notification based on event type
+      // Process the ACK event based on its type
       switch (ackEvent.action) {
-        case 'bootACK':
-          addNotification(
-            success 
-              ? `Agent started successfully` 
-              : `Failed to start agent`,
-            success ? 'success' : 'error'
-          );
+        case 'bootACK': {
+          if (success) {
+            // Update status to running in the database if successful
+            updateAgentStatus(ackEvent.agentId, 'running').then(updateSuccess => {
+              addNotification(
+                updateSuccess 
+                  ? `Agent started successfully` 
+                  : `Something went wrong booting your agent`,
+                updateSuccess ? 'success' : 'error'
+              );
+              
+              // Refresh status if auto-refresh is enabled
+              if (autoRefreshStatus) {
+                runtimeStatusRef.current();
+              }
+            });
+          } else {
+            addNotification(`Failed to start agent`, 'error');
+            
+            // Even if failed, we should refresh to get current status
+            if (autoRefreshStatus) {
+              runtimeStatusRef.current();
+            }
+          }
           break;
+        }
           
-        case 'stopACK':
-          addNotification(
-            success 
-              ? `Agent stopped successfully` 
-              : `Failed to stop agent`,
-            success ? 'success' : 'error'
-          );
+        case 'stopACK': {
+          if (success) {
+            // Update status to stopped in the database if successful
+            updateAgentStatus(ackEvent.agentId, 'stopped').then(updateSuccess => {
+              addNotification(
+                updateSuccess 
+                  ? `Agent stopped successfully` 
+                  : `Something went wrong stopping your agent`,
+                updateSuccess ? 'success' : 'error'
+              );
+              
+              // Refresh status if auto-refresh is enabled
+              if (autoRefreshStatus) {
+                runtimeStatusRef.current();
+              }
+            });
+          } else {
+            addNotification(`Failed to stop agent`, 'error');
+            
+            // Even if failed, we should refresh to get current status
+            if (autoRefreshStatus) {
+              runtimeStatusRef.current();
+            }
+          }
           break;
+        }
           
-        case 'updateACK':
-          addNotification(
-            success 
-              ? `Agent updated successfully` 
-              : `Failed to update agent`,
-            success ? 'success' : 'error'
-          );
+        case 'updateACK': {
+          if (success) {
+            // Update status to running in the database if successful
+            updateAgentStatus(ackEvent.agentId, 'running').then(updateSuccess => {
+              addNotification(
+                updateSuccess 
+                  ? `Agent updated successfully` 
+                  : `Something went wrong updating your agent`,
+                updateSuccess ? 'success' : 'error'
+              );
+              
+              // Refresh status if auto-refresh is enabled
+              if (autoRefreshStatus) {
+                runtimeStatusRef.current();
+              }
+            });
+            
+            // Refresh status if auto-refresh is enabled
+            if (autoRefreshStatus) {
+              runtimeStatusRef.current();
+            }
+          } else {
+            addNotification(`Failed to update agent`, 'error');
+            
+            // Even if failed, we should refresh to get current status
+            if (autoRefreshStatus) {
+              runtimeStatusRef.current();
+            }
+          }
           break;
-      }
-      
-      // If we should auto-refresh status, do so (use the ref to avoid dependency)
-      if (autoRefreshStatus && agentId) {
-        runtimeStatusRef.current();
+        }
       }
     }
-  }, [agentId, addNotification, autoRefreshStatus]);
+  }, [addNotification, autoRefreshStatus, updateAgentStatus]);
 
   // Poll for events
   const pollForEvents = useCallback(async () => {
@@ -162,7 +237,7 @@ export function useAgentAckEvents({
       clearInterval(intervalId);
       setIsPolling(false);
     };
-  }, [userProfile?.id, pollingInterval]); // Reduced dependencies
+  }, [userProfile?.id, pollingInterval, pollForEvents]); // Added pollForEvents as dependency
 
   return {
     events,

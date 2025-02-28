@@ -125,12 +125,12 @@ const CharacterDetailPage: React.FC = () => {
                 {/* total uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Total uptime</span>
-                  <span className='font-semibold'>{statusData?.uptime_total_seconds || 0}</span>
+                  <span className='font-semibold'>{statusData?.last_boot_execution || 0}</span>
                 </div>
                 {/* current uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Current uptime</span>
-                  <span className='font-semibold'>{statusData?.uptime_current_seconds || 0}</span>
+                  <span className='font-semibold'>{statusData?.last_stop_execution || 0}</span>
                 </div>
                 {/* publications */}
                 <div className='flex flex-col'>
