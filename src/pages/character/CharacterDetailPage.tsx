@@ -379,7 +379,7 @@ const CharacterDetailPage: React.FC = () => {
             <StartAgentButton 
               onClick={handleStartAgent} 
               isRunning={isRunning} 
-              loading={isTransitioning || transitionLoading} 
+              loading={isTransitioning || transitionLoading || statusData?.status === "unknown"} 
             />
             <StopAgentButton 
               onClick={handleStopAgent} 
