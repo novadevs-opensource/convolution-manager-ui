@@ -1,10 +1,12 @@
 // src/services/aws/sqsService.ts
 import { SendMessageCommand, ReceiveMessageCommand, DeleteMessageCommand } from "@aws-sdk/client-sqs";
-import { createSQSClient } from "./sqsClient";
+import { createSQSAckClient, createSQSClient } from "./sqsClient";
 import { AgentRuntimeAction, AgentEvent } from "../../types/commEvents";
 
 const sqsClient = createSQSClient();
+const sqsAckClient = createSQSAckClient();
 const queueUrl = `${import.meta.env.VITE_EVENTS_QUEUE_ENDPOINT}${import.meta.env.VITE_EVENTS_QUEUE_PATH}`;
+const queueAckUrl = `${import.meta.env.VITE_ACK_EVENTS_QUEUE_ENDPOINT}${import.meta.env.VITE_ACK_EVENTS_QUEUE_PATH}`;
 
 /**
  * Send a message to the SQS queue
@@ -49,9 +51,9 @@ export const sendMessageToQueue = async (
  */
 export const receiveMessagesFromQueue = async (loggedInUserId: string): Promise<any[] | null> => {
   try {
-    const { Messages } = await sqsClient.send(
+    const { Messages } = await sqsAckClient.send(
       new ReceiveMessageCommand({
-        QueueUrl: queueUrl,
+        QueueUrl: queueAckUrl,
         MaxNumberOfMessages: 10,
         WaitTimeSeconds: 5, // Shorter wait time to be more responsive
         MessageAttributeNames: ['All'], // Get all message attributes
@@ -99,7 +101,7 @@ export const deleteMessageFromQueue = async (receiptHandle: string): Promise<voi
   try {
     await sqsClient.send(
       new DeleteMessageCommand({
-        QueueUrl: queueUrl,
+        QueueUrl: queueAckUrl,
         ReceiptHandle: receiptHandle,
       })
     );

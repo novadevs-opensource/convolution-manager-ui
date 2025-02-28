@@ -12,3 +12,15 @@ export const createSQSClient = () => {
     },
   });
 };
+
+
+export const createSQSAckClient = () => {
+  return new SQSClient({
+    region: import.meta.env.VITE_ACK_EVENTS_QUEUE_REGION,
+    endpoint: import.meta.env.VITE_ACK_EVENTS_QUEUE_ENDPOINT,
+    credentials: {
+      accessKeyId: import.meta.env.VITE_ACK_EVENTS_QUEUE_CREDENTIALS_KEY_ID,
+      secretAccessKey: import.meta.env.VITE_ACK_EVENTS_QUEUE_CREDENTIALS_ACCESS_KEY,
+    },
+  });
+};
