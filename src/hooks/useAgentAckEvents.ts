@@ -1,5 +1,5 @@
 // src/hooks/useAgentAckEvents.ts
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useToasts } from './useToasts';
 import { listenForEvents } from '../services/messageHandler';
 import { 
@@ -29,12 +29,44 @@ export function useAgentAckEvents({
   const [isPolling, setIsPolling] = useState<boolean>(false);
   const { addNotification } = useToasts();
   const { userProfile } = useAuth();
-  const { refetch: refreshStatus } = useRuntimeStatus(agentId || '');
+  
+  // Use ref for runtime status refetch to avoid dependencies changing
+  const runtimeStatusRef = useRef<() => void>(() => {});
+  
+  // Only get the refetch function once on mount
+  const { refetch } = useRuntimeStatus(agentId || '');
+  useEffect(() => {
+    runtimeStatusRef.current = refetch;
+  }, [refetch]);
 
+  // Create a ref to track processed event IDs to avoid processing the same event twice
+  const processedEventIds = useRef<Set<string>>(new Set());
+  
   // Process a single event
   const processEvent = useCallback((event: AgentEvent) => {
-    // Add to events list
-    setEvents(prevEvents => [...prevEvents, event]);
+    // Generate a unique ID for this event to avoid processing duplicates
+    const eventId = `${event.action}-${event.agentId}-${event.userId}`;
+    
+    // Skip if we've already processed this event
+    if (processedEventIds.current.has(eventId)) {
+      return;
+    }
+    
+    // Mark this event as processed
+    processedEventIds.current.add(eventId);
+    
+    // Add to events list (use functional update to avoid dependencies)
+    setEvents(prevEvents => {
+      // Check if we already have this event to avoid duplicates
+      if (prevEvents.some(e => 
+        e.action === event.action && 
+        e.agentId === event.agentId && 
+        e.userId === event.userId
+      )) {
+        return prevEvents;
+      }
+      return [...prevEvents, event];
+    });
 
     // If there is an agentId filter and this event doesn't match, ignore it
     if (agentId && event.agentId !== agentId) {
@@ -81,12 +113,12 @@ export function useAgentAckEvents({
           break;
       }
       
-      // If we should auto-refresh status, do so
+      // If we should auto-refresh status, do so (use the ref to avoid dependency)
       if (autoRefreshStatus && agentId) {
-        refreshStatus();
+        runtimeStatusRef.current();
       }
     }
-  }, [agentId, addNotification, autoRefreshStatus, refreshStatus]);
+  }, [agentId, addNotification, autoRefreshStatus]);
 
   // Poll for events
   const pollForEvents = useCallback(async () => {
@@ -112,7 +144,7 @@ export function useAgentAckEvents({
     }
   }, [userProfile?.id, processEvent]);
 
-  // Setup polling
+  // Setup polling - use refs for dependencies to prevent effect from running too often
   useEffect(() => {
     if (!userProfile?.id || isPolling) return;
     
@@ -130,7 +162,7 @@ export function useAgentAckEvents({
       clearInterval(intervalId);
       setIsPolling(false);
     };
-  }, [userProfile?.id, pollForEvents, pollingInterval, isPolling]);
+  }, [userProfile?.id, pollingInterval]); // Reduced dependencies
 
   return {
     events,

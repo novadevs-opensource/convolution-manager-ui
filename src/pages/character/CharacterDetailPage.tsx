@@ -1,5 +1,5 @@
 // src/pages/character/CharacterDetailPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CiImageOn } from "react-icons/ci";
 import { FaRegHeart, FaRegUser } from "react-icons/fa6";
@@ -25,13 +25,17 @@ const CharacterDetailPage: React.FC = () => {
   const { character, loading: characterLoading, error: characterError } = useCharacter(id!);
   const { userProfile } = useAuth();
   
-  // Use hooks for status, transitions, and ACK events
-  const { statusData, isRunning, refetch: refreshStatus } = useRuntimeStatus(id!, 5000);
+  // Use hooks for status and transitions
+  const { statusData, isRunning, refetch: _refreshStatus } = useRuntimeStatus(id!, 5000);
   const { startAgent, stopAgent, loading: transitionLoading } = useAgentTransition();
-  const { getLatestEvent } = useAgentAckEvents({ 
+  
+  // Use agent ACK events hook with autoRefreshStatus=true so it will
+  // automatically refresh the status when an ACK event is received
+  // No need for a separate effect to do this
+  useAgentAckEvents({ 
     agentId: id,
-    pollingInterval: 3000, // Check for ACK events every 3 seconds
-    autoRefreshStatus: true // Automatically refresh status when ACK events are received
+    pollingInterval: 3000,
+    autoRefreshStatus: true
   });
   
   // Local loading state during transitions
@@ -60,16 +64,6 @@ const CharacterDetailPage: React.FC = () => {
       setIsTransitioning(false);
     }
   };
-
-  // Effects to handle changes in ACK events
-  useEffect(() => {
-    const latestEvent = getLatestEvent();
-    
-    if (latestEvent) {
-      // Refresh status data when we receive an ACK event
-      refreshStatus();
-    }
-  }, [getLatestEvent, refreshStatus]);
 
   if (characterLoading) return <p>Loading character...</p>;
   if (characterError) return <p>Error: {characterError}</p>;
