@@ -70,7 +70,6 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
 
   useEffect(() => {
     handleGetAvailableModels();
-    handleInputChange('settings.secrets.OPENROUTER_API_KEY', apiKeyService.getApiKey());
   }, []);
 
   useEffect(() => {
@@ -338,6 +337,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                 handleInputChange('settings.secrets.SMALL_OPENROUTER_MODEL', value);
                 handleInputChange('settings.secrets.MEDIUM_OPENROUTER_MODEL', value);
                 handleInputChange('settings.secrets.LARGE_OPENROUTER_MODEL', value);
+                handleInputChange('settings.secrets.OPENROUTER_API_KEY', apiKeyService.getApiKey());
                 handleInputChange('modelProvider', 'openrouter');
                 setSelectedModelValue(value);
               }}
