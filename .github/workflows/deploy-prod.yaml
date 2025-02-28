@@ -69,7 +69,7 @@ jobs:
         run: npm run build
 
       - name: Upload to S3
-        working-directory: ${{ env.DIR_TO_UPDATE }}
+        working-directory: ${{ env.DIR_TO_UPLOAD }}
         run: |
           aws s3 sync ./ s3://${{ secrets.AWS_BUCKET }} --delete
 
