@@ -1,0 +1,46 @@
+## This workflow is executed automatically in every branch push.
+##
+## Project: convolution-manager-ui
+## Repository: https://github.com/novadevs-opensource/convolution-manager-ui.git
+## Version: 0.0.1
+## Aim: Build the project.
+
+name: Check Build
+
+# This workflow is triggered manually
+on:
+  push:
+
+env:
+  NODE_VERSION: 23
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+
+    name: Check build process
+    runs-on: ubuntu-latest
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      # https://github.com/actions/setup-node
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Generate env file
+        run: |
+          cp .env.example .env
+
+      - name: Install the project dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build

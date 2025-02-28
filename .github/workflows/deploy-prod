@@ -1,0 +1,86 @@
+## This workflow is executed manually by a developer.
+##
+## Project: convolution-manager-ui
+## Repository: https://github.com/novadevs-opensource/convolution-manager-ui.git
+## Version: 0.0.1
+## Aim: Deploy the project in AWS S3 static website for production environment.
+
+name: Release to Production
+
+# This workflow is triggered manually
+on:
+  workflow_dispatch:
+
+# Permission can be added at job level or workflow level
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+
+env:
+  PROJECT_NAME: Convolution-Manager-UI
+  NODE_VERSION: 23
+  DIR_TO_UPLOAD: dist
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch'
+
+    name: Deploy to Prod
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      # https://github.com/aws-actions/configure-aws-credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com.cn
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_OIDC }}
+
+      # https://github.com/actions/setup-node
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Download env file from AWS SSM Parameter Store
+        run: |
+          aws ssm \
+            get-parameter \
+            --with-decryption \
+            --name ${{ secrets.AWS_SSM_PS }} \
+            --output text \
+            --query 'Parameter.Value' \
+            > .env
+
+      - name: Install the project dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Upload to S3
+        working-directory: ${{ env.DIR_TO_UPDATE }}
+        run: |
+          aws s3 sync ./ s3://${{ secrets.AWS_BUCKET }} --delete
+
+      - name: Send success notification if success
+        if: ${{ success() }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: '{\"channel\":\"${{ secrets.SLACK_CHANNEL }}\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Project:* ${{ env.PROJECT_NAME }}\n\n *Workflow:* ${{ github.workflow }}\"}},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*Repository:*\n${{ github.repository }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Env:*\n\"Prod\"\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*User:*\n${{ github.triggering_actor }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Action:*\nGitHub Actions\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*BuildID:*\n${{ github.run_number }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Status:*\n:white_check_mark:\"}]},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Commit URL:* ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}\"}}]}'
+
+      - name: Send error notification if failure
+        if: ${{ failure() }}
+        uses: pullreminders/slack-action@master
+        with:
+          args: '{\"channel\":\"${{ env.SLACK_CHANNEL }}\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Server:* ${{ env.PROJECT_NAME }}\n\n *Workflow:* ${{ github.workflow }}\"}},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*Repository:*\n${{ github.repository }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Env:*\n\"Prod\"\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*User:*\n${{ github.triggering_actor }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Action:*\nGitHub Actions\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*BuildID:*\n${{ github.run_number }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Status:*\n:x:\"}]},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Commit URL:* ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}\"}}]}'
