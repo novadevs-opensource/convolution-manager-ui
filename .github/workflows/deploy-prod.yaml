@@ -20,6 +20,7 @@ env:
   PROJECT_NAME: Convolution-Manager-UI
   NODE_VERSION: 23
   DIR_TO_UPLOAD: dist
+  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 defaults:
   run:
