@@ -68,7 +68,13 @@ export interface Agent {
   user_id: string;
   created_at: string;
   updated_at: string;
+  status: RuntimeStatus;
+  last_execution: string | null;
+  uptime_total_seconds: number;
+  uptime_current_seconds: number;
 }
+
+export type RuntimeStatus = 'running' | 'stopped' | 'unknown' | null;
 
 // Represents the LLM provider settings
 export interface LlmProviderSettings {

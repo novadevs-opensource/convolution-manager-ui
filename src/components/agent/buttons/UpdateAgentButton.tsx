@@ -7,9 +7,6 @@ interface UpdateAgentButtonProps {
   className?: string;
   disabled?: boolean;
   loading?: boolean;
-  hasCharacterData?: boolean;
-  hasProviderData?: boolean;
-  hasAgentId?: boolean;
   showAlways?: boolean;
 }
 
@@ -21,23 +18,12 @@ const UpdateAgentButton: React.FC<UpdateAgentButtonProps> = ({
   className = '',
   disabled = false,
   loading = false,
-  hasCharacterData = false,
-  hasProviderData = false,
-  hasAgentId = false,
-  showAlways = false
 }) => {
-  // Visibility logic - show if criteria met or showAlways is true
-  const shouldShow = showAlways || (hasCharacterData && hasProviderData && hasAgentId);
-  
-  if (!shouldShow) {
-    return null;
-  }
-
   return (
     <Button
       onClick={onClick}
-      label={loading ? "Actualizando..." : "Actualizar"}
-      icon={loading ? "fa-spinner fa-spin" : "fa-save"}
+      label={loading ? "Updating..." : "Update"}
+      icon={loading ? "fa-spinner fa-spin" : "fa-sync"}
       disabled={disabled || loading}
       className={className}
     />

@@ -8,7 +8,6 @@ interface StartAgentButtonProps {
   disabled?: boolean;
   loading?: boolean;
   isRunning?: boolean;
-  hasProviderData?: boolean;
   showAlways?: boolean;
 }
 
@@ -21,20 +20,17 @@ const StartAgentButton: React.FC<StartAgentButtonProps> = ({
   disabled = false,
   loading = false,
   isRunning = false,
-  hasProviderData = false,
   showAlways = false
 }) => {
-  // Visibility logic - show if criteria met or showAlways is true
-  const shouldShow = showAlways || (!isRunning && hasProviderData);
-  
-  if (!shouldShow) {
+  // Don't show the button if the agent is already running (unless showAlways is true)
+  if (isRunning && !showAlways) {
     return null;
   }
 
   return (
     <Button
       onClick={onClick}
-      label={loading ? "Iniciando..." : "Activar"}
+      label={loading ? "Starting..." : "Start"}
       icon={loading ? "fa-spinner fa-spin" : "fa-play"}
       disabled={disabled || loading}
       className={className}

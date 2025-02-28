@@ -22,17 +22,15 @@ const StopAgentButton: React.FC<StopAgentButtonProps> = ({
   isRunning = false,
   showAlways = false
 }) => {
-  // Visibility logic - show if criteria met or showAlways is true
-  const shouldShow = showAlways || isRunning;
-  
-  if (!shouldShow) {
+  // Don't show the button if the agent is not running (unless showAlways is true)
+  if (!isRunning && !showAlways) {
     return null;
   }
 
   return (
     <Button
       onClick={onClick}
-      label={loading ? "Deteniendo..." : "Pausar"}
+      label={loading ? "Stopping..." : "Stop"}
       icon={loading ? "fa-spinner fa-spin" : "fa-stop"}
       disabled={disabled || loading}
       className={className}

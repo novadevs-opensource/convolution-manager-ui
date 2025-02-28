@@ -1,20 +1,23 @@
 // src/pages/EditCharacterPage.tsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import CharacterEditor from '../../components/characterEditor/CharacterEditor';
 import { useAuth } from '../../hooks/useAuth';
 import UpdateAgentButton from '../../components/agent/buttons/UpdateAgentButton';
-import { useAgentHooks } from '../../hooks/useAgentHooks';
 import { useCharacter } from '../../hooks/useCharacter';
+import { useAgentTransition } from '../../hooks/useAgentTransition';
+import { useAgent } from '../../hooks/useAgent';
 
 const EditCharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { userProfile, loadUserProfile, isAuthenticated } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const { character, loading, error } = useCharacter(id!);
-
-  // Use the hooks with the agentId from the URL
-  const { updateAgent, hasAgentId, hasCharacterData, hasProviderData } = useAgentHooks(id!);
+  
+  // Use our new hooks
+  const { updateHandler } = useAgent();
+  const { updateAgent } = useAgentTransition();
 
   useEffect(() => {
     if (isAuthenticated && !userProfile) {
@@ -23,15 +26,26 @@ const EditCharacterPage: React.FC = () => {
   }, [isAuthenticated, userProfile, loadUserProfile]);
   
   const handleUpdate = async () => {
+    if (!userProfile?.id || !id || !character) return;
+    
     setIsUpdating(true);
     try {
-      // Update and redirect to detail page on success
-      await updateAgent({
-        redirectTo: '/agent/:id',
-        onSuccess: (data) => {
-          console.log('Agent updated successfully:', data);
+      // First update the character data
+      await updateHandler(
+        id, 
+        character.llm_provider_settings.llm_provider_model,
+        character.llm_provider_settings.llm_provider_api_key,
+        character.definition, 
+        {
+          onSuccess: async () => {
+            // Then trigger agent update in the runtime
+            await updateAgent(userProfile.id, id);
+            
+            // Navigate back to detail page
+            navigate(`/agent/${id}`);
+          }
         }
-      });
+      );
     } catch (error) {
       console.error('Error updating agent:', error);
     } finally {
@@ -40,15 +54,15 @@ const EditCharacterPage: React.FC = () => {
   };
   
   if (!isAuthenticated) {
-    return <div>No estás autenticado.</div>;
+    return <div>Not authenticated</div>;
   }
   
   if (!userProfile) {
-    return <div>Cargando perfil...</div>;
+    return <div>Loading profile...</div>;
   }
   
   if (loading) {
-    return <div>Cargando agente...</div>;
+    return <div>Loading agent...</div>;
   }
   
   if (error) {
@@ -65,16 +79,12 @@ const EditCharacterPage: React.FC = () => {
             onClick={handleUpdate}
             loading={isUpdating}
             disabled={isUpdating}
-            hasAgentId={hasAgentId}
-            hasCharacterData={hasCharacterData}
-            hasProviderData={hasProviderData}
           />
         </div>
       </div>
 
       <CharacterEditor 
         userId={userProfile.id} 
-        agentId={id}
         characterData={character?.definition}
         selectedModel={character?.llm_provider_settings.llm_provider_model}
       />

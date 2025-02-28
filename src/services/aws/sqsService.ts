@@ -1,14 +1,16 @@
 // src/services/aws/sqsService.ts
 import { SendMessageCommand, ReceiveMessageCommand, DeleteMessageCommand } from "@aws-sdk/client-sqs";
 import { createSQSClient } from "./sqsClient";
-import { AgentRuntimeAction, BootAgentEvent, StopAgentEvent } from "../../types/commEvents";
+import { AgentRuntimeAction, AgentEvent } from "../../types/commEvents";
 
 const sqsClient = createSQSClient();
-const queueUrl = `${import.meta.env.VITE_EVENTS_QUEUE_ENDPOINT}${import.meta.env.VITE_EVENTS_QUEUE_PATH}`
+const queueUrl = `${import.meta.env.VITE_EVENTS_QUEUE_ENDPOINT}${import.meta.env.VITE_EVENTS_QUEUE_PATH}`;
 
-// Function to send a message to the queue
+/**
+ * Send a message to the SQS queue
+ */
 export const sendMessageToQueue = async (
-  message: BootAgentEvent | StopAgentEvent, 
+  message: AgentEvent, 
   action: AgentRuntimeAction,
   userId: string, 
   agentId: string, 
@@ -42,27 +44,44 @@ export const sendMessageToQueue = async (
   }
 };
 
-// Function to receive messages from the queue
+/**
+ * Receive messages from the SQS queue, focusing on ACK messages
+ */
 export const receiveMessagesFromQueue = async (loggedInUserId: string): Promise<any[] | null> => {
   try {
     const { Messages } = await sqsClient.send(
       new ReceiveMessageCommand({
         QueueUrl: queueUrl,
         MaxNumberOfMessages: 10,
-        WaitTimeSeconds: 20,
-        MessageAttributeNames: ['userId', 'agentId', 'runtimeAction'],
+        WaitTimeSeconds: 5, // Shorter wait time to be more responsive
+        MessageAttributeNames: ['All'], // Get all message attributes
       })
     );
 
-    // Filter the messages by 'userId' and exclude messages with 'runtimeAction' as 'boot' or 'stop'
+    // Filter the messages to only include ACK messages for this user
     const filteredMessages = (Messages || []).filter((message) => {
+      // Check message attributes
       const userId = message.MessageAttributes?.userId?.StringValue;
       const runtimeAction = message.MessageAttributes?.runtimeAction?.StringValue;
+      
+      // If attributes don't exist but the message body is valid, try to parse it
+      if (!userId || !runtimeAction) {
+        try {
+          const body = JSON.parse(message.Body || '{}');
+          // Check if it's an ACK message for this user
+          return (
+            (body.userId === loggedInUserId || body.userID === loggedInUserId) && // Support both userId and userID
+            (body.action === 'bootACK' || body.action === 'stopACK' || body.action === 'updateACK')
+          );
+        } catch (e) {
+          return false;
+        }
+      }
+      
+      // Check if it's an ACK message for this user based on attributes
       return (
         userId === loggedInUserId && // Only returns messages whose 'userId' matches
-        runtimeAction !== 'boot' &&   // Exclude 'boot' actions
-        runtimeAction !== 'stop' &&    // Exclude 'stop' actions
-        runtimeAction !== 'update' // Exclude 'update' actions
+        (runtimeAction === 'bootACK' || runtimeAction === 'stopACK' || runtimeAction === 'updateACK')
       );
     });
 
@@ -73,8 +92,9 @@ export const receiveMessagesFromQueue = async (loggedInUserId: string): Promise<
   }
 };
 
-
-// Function to delete a message from the queue after processing it
+/**
+ * Delete a processed message from the queue
+ */
 export const deleteMessageFromQueue = async (receiptHandle: string): Promise<void> => {
   try {
     await sqsClient.send(

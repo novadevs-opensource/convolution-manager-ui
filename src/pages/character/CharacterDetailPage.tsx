@@ -1,15 +1,15 @@
-//src/pages/character/CharacterDetailPage.tsx
-import React from 'react';
+// src/pages/character/CharacterDetailPage.tsx
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CiImageOn } from "react-icons/ci";
-import { FaRegHeart } from "react-icons/fa6";
-import { FaRegUser } from "react-icons/fa";
+import { FaRegHeart, FaRegUser } from "react-icons/fa6";
 
 import { formatDateFromString } from '../../utils/character';
-
 import { useCharacter } from '../../hooks/useCharacter';
-import { useAgentControls } from '../../hooks/useAgentControls';
-import useAgentHooks from '../../hooks/useAgentHooks';
+import { useRuntimeStatus } from '../../hooks/useRuntimeStatus';
+import { useAgentTransition } from '../../hooks/useAgentTransition';
+import { useAgentAckEvents } from '../../hooks/useAgentAckEvents';
+import { useAuth } from '../../hooks/useAuth';
 
 import ClientStatus from '../../components/agent/ClientStatus';
 import AgentStatus from '../../components/agent/AgentStatus';
@@ -22,21 +22,57 @@ import { MessageExample } from '../../types';
 const CharacterDetailPage: React.FC = () => {
   let navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { character, loading, error } = useCharacter(id!);
+  const { character, loading: characterLoading, error: characterError } = useCharacter(id!);
+  const { userProfile } = useAuth();
   
-  // Initialize context with character data when available
-  const { agentStatus } = useAgentControls(
-    id,
-    character?.definition,
-    character?.llm_provider_settings.llm_provider_name,
-    character?.llm_provider_settings.llm_provider_model
-  );
+  // Use hooks for status, transitions, and ACK events
+  const { statusData, isRunning, refetch: refreshStatus } = useRuntimeStatus(id!, 5000);
+  const { startAgent, stopAgent, loading: transitionLoading } = useAgentTransition();
+  const { getLatestEvent } = useAgentAckEvents({ 
+    agentId: id,
+    pollingInterval: 3000, // Check for ACK events every 3 seconds
+    autoRefreshStatus: true // Automatically refresh status when ACK events are received
+  });
   
-  // Get hooks for individual buttons
-  const { isRunning, hasProviderData, startAgent, stopAgent } = useAgentHooks(id);
+  // Local loading state during transitions
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Handle agent start
+  const handleStartAgent = async () => {
+    if (!userProfile?.id || !id) return;
+    
+    setIsTransitioning(true);
+    try {
+      await startAgent(userProfile.id, id);
+    } finally {
+      setIsTransitioning(false);
+    }
+  };
+  
+  // Handle agent stop
+  const handleStopAgent = async () => {
+    if (!userProfile?.id || !id) return;
+    
+    setIsTransitioning(true);
+    try {
+      await stopAgent(userProfile.id, id);
+    } finally {
+      setIsTransitioning(false);
+    }
+  };
 
-  if (loading) return <p>Loading character...</p>;
-  if (error) return <p>Error: {error}</p>;
+  // Effects to handle changes in ACK events
+  useEffect(() => {
+    const latestEvent = getLatestEvent();
+    
+    if (latestEvent) {
+      // Refresh status data when we receive an ACK event
+      refreshStatus();
+    }
+  }, [getLatestEvent, refreshStatus]);
+
+  if (characterLoading) return <p>Loading character...</p>;
+  if (characterError) return <p>Error: {characterError}</p>;
 
   return (
     <>
@@ -64,7 +100,7 @@ const CharacterDetailPage: React.FC = () => {
                   </div>
                   {/* status */}
                   <div className='flex flex-col flex-grow justify-end'>
-                    <AgentStatus status={agentStatus} />
+                    <AgentStatus id={character?.id!} />
                   </div>
                 </div>
                 {/* socials */}
@@ -95,12 +131,12 @@ const CharacterDetailPage: React.FC = () => {
                 {/* total uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Total uptime</span>
-                  <span className='font-semibold'>--</span>
+                  <span className='font-semibold'>{statusData?.uptime_total_seconds || 0}</span>
                 </div>
                 {/* current uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Current uptime</span>
-                  <span className='font-semibold'>--</span>
+                  <span className='font-semibold'>{statusData?.uptime_current_seconds || 0}</span>
                 </div>
                 {/* publications */}
                 <div className='flex flex-col'>
@@ -111,6 +147,7 @@ const CharacterDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+
         {/* clients */}
         <div className='flex flex-col gap-4 sm:w-4/12'>
           <div className='px-4 py-2 bg-gray-50 border-gray-200 border rounded-lg'>
@@ -345,9 +382,21 @@ const CharacterDetailPage: React.FC = () => {
       <div className='p-4 border rounded-lg fixed bg-white shadow-xl right-6 top-[30%]'>
         <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
         <div className='flex flex-col gap-4 mt-4'>
-            <StartAgentButton onClick={startAgent} isRunning={isRunning} hasProviderData={hasProviderData} />
-            <StopAgentButton onClick={stopAgent} isRunning={isRunning} />
-            <Button onClick={() => navigate(`/agent/character/${character?.id}`)} icon='fa-pencil' label={'Edit'}></Button>
+            <StartAgentButton 
+              onClick={handleStartAgent} 
+              isRunning={isRunning} 
+              loading={isTransitioning || transitionLoading} 
+            />
+            <StopAgentButton 
+              onClick={handleStopAgent} 
+              isRunning={isRunning} 
+              loading={isTransitioning || transitionLoading} 
+            />
+            <Button 
+              onClick={() => navigate(`/agent/character/${character?.id}`)} 
+              icon='fa-pencil' 
+              label={'Edit'}
+            />
         </div>
       </div>
     </>

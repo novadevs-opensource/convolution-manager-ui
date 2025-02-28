@@ -11,12 +11,9 @@ import { CharacterData, MessageExample, BackupListItem, OpenRouterModel, Client 
 import ClientToggles from './ClientToggles';
 import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import { ApiKeyService } from '../../services/apiKeyService';
-import useAgentHooks from '../../hooks/useAgentHooks';
-import useAgentControls from '../../hooks/useAgentControls';
 import GenericTextInput from '../inputs/GenericTextInput';
 import FormGroup from '../common/FormGroup';
 import CharacterEditorSection from './CharacterEditorSection';
-
 
 const initialCharacter: CharacterData = {
   name: '',
@@ -40,25 +37,21 @@ const initialCharacter: CharacterData = {
 };
 
 interface CharacterEditorProps {
-  userId: string,
-  characterData?: CharacterData,
-  agentId?: string,
-  selectedModel?: string,
+  userId: string;
+  characterData?: CharacterData;
+  selectedModel?: string;
+  onDataChange?: (characterData: CharacterData, model: string) => void;
 }
 
-const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentId }) => {
+const CharacterEditor: React.FC<CharacterEditorProps> = ({ 
+  characterData, 
+  selectedModel,
+  onDataChange 
+}) => {
   const apiKeyService = ApiKeyService.getInstance();
   const [character, setCharacter] = useState<CharacterData>(characterData || initialCharacter);
-  useAgentControls(
-    agentId,
-    character,
-    character?.modelProvider,
-    character?.settings.secrets.LARGE_OPENROUTER_MODEL
-  );
+  const [selectedModelValue, setSelectedModelValue] = useState<string>(selectedModel || '');
   
-  // Get hooks for individual buttons
-  useAgentHooks(agentId);
-
   const [backups, setBackups] = useState<BackupListItem[]>([]);
   const [openRouterAvailableModels, setOpenRouterAvailableModels] = useState<OpenRouterModel[]>([]);
 
@@ -68,14 +61,21 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
   const [showTelegramConfigForm, setShowTelegramConfigForm] = useState<boolean>(false);
   const [showTwitterConfigForm, setShowTwitterConfigForm] = useState<boolean>(false);
 
+  // Call onDataChange when character or selected model changes
+  useEffect(() => {
+    if (onDataChange) {
+      onDataChange(character, selectedModelValue || character.settings?.secrets?.LARGE_OPENROUTER_MODEL || '');
+    }
+  }, [character, selectedModelValue, onDataChange]);
+
   useEffect(() => {
     handleGetAvailableModels();
     handleInputChange('settings.secrets.OPENROUTER_API_KEY', apiKeyService.getApiKey());
-  }, [])
+  }, []);
 
   useEffect(() => {
-      character.clients.includes('telegram') ? setShowTelegramConfigForm(true) : setShowTelegramConfigForm(false);
-      character.clients.includes('twitter') ? setShowTwitterConfigForm(true) : setShowTwitterConfigForm(false);
+    character.clients.includes('telegram') ? setShowTelegramConfigForm(true) : setShowTelegramConfigForm(false);
+    character.clients.includes('twitter') ? setShowTwitterConfigForm(true) : setShowTwitterConfigForm(false);
   }, [character.clients]);
 
   // Handler para actualizar campos simples o anidados
@@ -157,7 +157,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
   // Handlers para llamadas a la API
   const handleGenerateCharacter = async (prompt: string, model: string, apiKey: string) => {
     try {
-      const response = await fetch('http://0.0.0.0:4001/api/generate-character', {
+      
+      const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/generate-character`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -331,13 +332,14 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
           <FormGroup className='flex sm:flex-row flex-col'>
             <ModelProviderSelect
               label='Model Provider'
-              selected={character.settings?.secrets?.OPENROUTER_MODEL || ''}
+              selected={character.settings?.secrets?.OPENROUTER_MODEL || selectedModelValue || ''}
               onChange={(value) => {
-                handleInputChange('settings.secrets.OPENROUTER_MODEL', value)
-                handleInputChange('settings.secrets.SMALL_OPENROUTER_MODEL', value)
-                handleInputChange('settings.secrets.MEDIUM_OPENROUTER_MODEL', value)
-                handleInputChange('settings.secrets.LARGE_OPENROUTER_MODEL', value)
-                handleInputChange('modelProvider', 'openrouter')
+                handleInputChange('settings.secrets.OPENROUTER_MODEL', value);
+                handleInputChange('settings.secrets.SMALL_OPENROUTER_MODEL', value);
+                handleInputChange('settings.secrets.MEDIUM_OPENROUTER_MODEL', value);
+                handleInputChange('settings.secrets.LARGE_OPENROUTER_MODEL', value);
+                handleInputChange('modelProvider', 'openrouter');
+                setSelectedModelValue(value);
               }}
               models={openRouterAvailableModels}
             />
