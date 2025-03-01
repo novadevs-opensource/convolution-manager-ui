@@ -7,6 +7,9 @@ import UpdateAgentButton from '../../components/agent/buttons/UpdateAgentButton'
 import { useCharacter } from '../../hooks/useCharacter';
 import { useAgentTransition } from '../../hooks/useAgentTransition';
 import { useAgent } from '../../hooks/useAgent';
+import { CharacterData } from '../../types';
+import { useToasts } from '../../hooks/useToasts';
+import { ApiKeyService } from '../../services/apiKeyService';
 
 const EditCharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,35 +17,77 @@ const EditCharacterPage: React.FC = () => {
   const { userProfile, loadUserProfile, isAuthenticated } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const { character, loading, error } = useCharacter(id!);
+  const { addNotification } = useToasts();
   
-  // Use our new hooks
+  // State for edited character data and model
+  const [editedData, setEditedData] = useState<CharacterData | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string>('');
+  
+  // Use our hooks
   const { updateHandler } = useAgent();
   const { updateAgent } = useAgentTransition();
 
+  // Load user profile if needed
   useEffect(() => {
     if (isAuthenticated && !userProfile) {
       loadUserProfile();
     }
   }, [isAuthenticated, userProfile, loadUserProfile]);
   
+  // Set initial data when character is loaded
+  useEffect(() => {
+    if (character) {
+      setEditedData(character.definition);
+      setSelectedModel(character.llm_provider_settings.llm_provider_model);
+    }
+  }, [character]);
+  
+  // Handle editor data changes
+  const handleEditorChange = (data: CharacterData, model: string) => {
+    setEditedData(data);
+    setSelectedModel(model);
+  };
+  
   const handleUpdate = async () => {
-    if (!userProfile?.id || !id || !character) return;
+    if (!userProfile?.id || !id || !editedData || !selectedModel) {
+      addNotification('Missing data for updating the agent', 'error');
+      return;
+    }
+    
+    // Get API key from service
+    const apiKey = ApiKeyService.getInstance().getApiKey();
+    if (!apiKey) {
+      addNotification('Please, introduce your Open Router API key', 'error');
+      return;
+    }
     
     setIsUpdating(true);
     try {
-      // First update the character data
+      // First update the character data with the edited data
       await updateHandler(
         id, 
-        character.llm_provider_settings.llm_provider_model,
-        character.llm_provider_settings.llm_provider_api_key,
-        character.definition, 
+        selectedModel,
+        apiKey,
+        editedData, 
         {
-          onSuccess: async () => {
+          onSuccess: async (_data) => {
             // Then trigger agent update in the runtime
             await updateAgent(userProfile.id, id);
             
+            addNotification('Agent updated successfully', 'success');
             // Navigate back to detail page
             navigate(`/agent/${id}`);
+          },
+          onError: (error) => {
+            if ('errors' in error) {
+              // Format validation errors
+              const messages = Object.entries(error.errors)
+                .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+                .join('; ');
+              addNotification(`Failed to update agent: ${messages}`, 'error');
+            } else {
+              addNotification(`Failed to update agent: ${error.message}`, 'error');
+            }
           }
         }
       );
@@ -78,7 +123,7 @@ const EditCharacterPage: React.FC = () => {
           <UpdateAgentButton 
             onClick={handleUpdate}
             loading={isUpdating}
-            disabled={isUpdating}
+            disabled={isUpdating || !editedData}
           />
         </div>
       </div>
@@ -87,6 +132,7 @@ const EditCharacterPage: React.FC = () => {
         userId={userProfile.id} 
         characterData={character?.definition}
         selectedModel={character?.llm_provider_settings.llm_provider_model}
+        onDataChange={handleEditorChange}
       />
     </div>
   );

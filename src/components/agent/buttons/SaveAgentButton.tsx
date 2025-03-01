@@ -32,7 +32,7 @@ const SaveAgentButton: React.FC<SaveAgentButtonProps> = ({
   return (
     <Button
       onClick={onClick}
-      label={loading ? "Guardando..." : "Guardar"}
+      label={loading ? "Saving..." : "Save"}
       icon={loading ? "fa-spinner fa-spin" : "fa-save"}
       disabled={disabled || loading}
       className={className}
