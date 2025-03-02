@@ -133,7 +133,7 @@ const EditCharacterPage: React.FC = () => {
             disabled={shouldLoadUpdate}
           />
           <Button 
-            onClick={() => navigate(`/agent/character/${character?.id}`)} 
+            onClick={() => navigate(`/agent/${character?.id}`)} 
             icon='fa-angle-left' 
             label={'Back'}
             disabled={shouldLoadUpdate}
