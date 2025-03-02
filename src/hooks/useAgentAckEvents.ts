@@ -63,7 +63,7 @@ export function useAgentAckEvents({
     }
   }, []);
   
-  // Process a single event
+  // Process a single event, TODO: Refactor
   const processEvent = useCallback((event: AgentEvent) => {
     // Generate a unique ID for this event to avoid processing duplicates
     const eventId = `${event.action}-${event.agentId}-${event.userId}`;
@@ -104,31 +104,16 @@ export function useAgentAckEvents({
       const ackEvent = event as (BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent);
       const success = ackEvent.success === 'true';
       
-      // Process the ACK event based on its type
+      // Process the ACK event based on its type, TODO: Move this "update logic" to the runtime
       switch (ackEvent.action) {
         case 'bootACK': {
           if (success) {
             // Update status to running in the database if successful
-            updateAgentStatus(ackEvent.agentId, 'running').then(updateSuccess => {
-              addNotification(
-                updateSuccess 
-                  ? `Agent started successfully` 
-                  : `Something went wrong booting your agent`,
-                updateSuccess ? 'success' : 'error'
-              );
-              
-              // Refresh status if auto-refresh is enabled
-              if (autoRefreshStatus) {
-                runtimeStatusRef.current();
-              }
+            updateAgentStatus(ackEvent.agentId, "running").then(_updateSuccess => {
+              addNotification(`Agent started successfully`, "success");
             });
           } else {
             addNotification(`Failed to start agent`, 'error');
-            
-            // Even if failed, we should refresh to get current status
-            if (autoRefreshStatus) {
-              runtimeStatusRef.current();
-            }
           }
           break;
         }
@@ -136,26 +121,11 @@ export function useAgentAckEvents({
         case 'stopACK': {
           if (success) {
             // Update status to stopped in the database if successful
-            updateAgentStatus(ackEvent.agentId, 'stopped').then(updateSuccess => {
-              addNotification(
-                updateSuccess 
-                  ? `Agent stopped successfully` 
-                  : `Something went wrong stopping your agent`,
-                updateSuccess ? 'success' : 'error'
-              );
-              
-              // Refresh status if auto-refresh is enabled
-              if (autoRefreshStatus) {
-                runtimeStatusRef.current();
-              }
+            updateAgentStatus(ackEvent.agentId, "stopped").then(_updateSuccess => {
+              addNotification(`Agent stopped successfully`, "success");
             });
           } else {
             addNotification(`Failed to stop agent`, 'error');
-            
-            // Even if failed, we should refresh to get current status
-            if (autoRefreshStatus) {
-              runtimeStatusRef.current();
-            }
           }
           break;
         }
@@ -163,34 +133,18 @@ export function useAgentAckEvents({
         case 'updateACK': {
           if (success) {
             // Update status to running in the database if successful
-            updateAgentStatus(ackEvent.agentId, 'running').then(updateSuccess => {
-              addNotification(
-                updateSuccess 
-                  ? `Agent updated successfully` 
-                  : `Something went wrong updating your agent`,
-                updateSuccess ? 'success' : 'error'
-              );
-              
-              // Refresh status if auto-refresh is enabled
-              if (autoRefreshStatus) {
-                runtimeStatusRef.current();
-              }
+            updateAgentStatus(ackEvent.agentId, 'running').then(_updateSuccess => {
+              addNotification(`Agent updated successfully`, "success");
             });
-            
-            // Refresh status if auto-refresh is enabled
-            if (autoRefreshStatus) {
-              runtimeStatusRef.current();
-            }
           } else {
             addNotification(`Failed to update agent`, 'error');
-            
-            // Even if failed, we should refresh to get current status
-            if (autoRefreshStatus) {
-              runtimeStatusRef.current();
-            }
           }
           break;
         }
+      }
+      // Refresh status if auto-refresh is enabled
+      if (autoRefreshStatus) {
+        runtimeStatusRef.current();
       }
     }
   }, [addNotification, autoRefreshStatus, updateAgentStatus]);
