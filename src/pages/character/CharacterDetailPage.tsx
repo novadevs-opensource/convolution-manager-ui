@@ -1,5 +1,5 @@
 // src/pages/character/CharacterDetailPage.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CiImageOn } from "react-icons/ci";
 import { FaRegHeart, FaRegUser } from "react-icons/fa6";
@@ -28,6 +28,9 @@ const CharacterDetailPage: React.FC = () => {
   // Use hooks for status and transitions
   const { statusData, isRunning, refetch: _refreshStatus } = useRuntimeStatus(id!, 5000);
   const { startAgent, stopAgent, loading: transitionLoading } = useAgentTransition();
+
+  const [shouldLoadBoot, setShouldLoadBoot] = useState<boolean>(false);
+  const [shouldLoadStop, setShouldLoadStop] = useState<boolean>(false);
   
   // Use agent ACK events hook with autoRefreshStatus=true so it will
   // automatically refresh the status when an ACK event is received
@@ -38,31 +41,38 @@ const CharacterDetailPage: React.FC = () => {
     autoRefreshStatus: true
   });
   
-  // Local loading state during transitions
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  
   // Handle agent start
   const handleStartAgent = async () => {
     if (!userProfile?.id || !id) return;
     
-    setIsTransitioning(true);
-    try {
-      await startAgent(userProfile.id, id);
-    } finally {
-      setIsTransitioning(false);
-    }
+    await startAgent(userProfile.id, id);
   };
+
+  useEffect(() => {
+    if (shouldLoadBoot) {
+      handleStartAgent();
+    }
+    if (shouldLoadStop) {
+      handleStopAgent();
+    }
+  }, [shouldLoadBoot, shouldLoadStop])
+
+  useEffect(() => {
+    if (statusData?.status === "running") {
+      setShouldLoadBoot(false);
+      setShouldLoadStop(false);
+    }
+    if (statusData?.status === "stopped") {
+      setShouldLoadBoot(false);
+      setShouldLoadStop(false);
+    }
+  }, [statusData])
   
   // Handle agent stop
   const handleStopAgent = async () => {
     if (!userProfile?.id || !id) return;
     
-    setIsTransitioning(true);
-    try {
-      await stopAgent(userProfile.id, id);
-    } finally {
-      setIsTransitioning(false);
-    }
+    await stopAgent(userProfile.id, id);
   };
 
   if (characterLoading) return <p>Loading character...</p>;
@@ -376,21 +386,22 @@ const CharacterDetailPage: React.FC = () => {
       <div className='p-4 border rounded-lg fixed bg-white shadow-xl right-6 top-[30%]'>
         <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
         <div className='flex flex-col gap-4 mt-4'>
-            <StartAgentButton 
-              onClick={handleStartAgent} 
-              isRunning={isRunning} 
-              loading={isTransitioning || transitionLoading || statusData?.status === "unknown"} 
-            />
-            <StopAgentButton 
-              onClick={handleStopAgent} 
-              isRunning={isRunning} 
-              loading={isTransitioning || transitionLoading} 
-            />
-            <Button 
-              onClick={() => navigate(`/agent/character/${character?.id}`)} 
-              icon='fa-pencil' 
-              label={'Edit'}
-            />
+          <StartAgentButton 
+            onClick={() => setShouldLoadBoot(true)} 
+            isRunning={isRunning} 
+            loading={shouldLoadBoot || transitionLoading || statusData?.status === "unknown"} 
+          />
+          <StopAgentButton 
+            onClick={() => setShouldLoadStop(true)} 
+            isRunning={isRunning} 
+            loading={shouldLoadStop || transitionLoading || statusData?.status === "unknown"} 
+          />
+          <Button 
+            onClick={() => navigate(`/agent/character/${character?.id}`)} 
+            icon='fa-pencil' 
+            label={'Edit'}
+            disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
+          />
         </div>
       </div>
     </>

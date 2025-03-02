@@ -60,7 +60,6 @@ export function useAgentTransition() {
       };
       
       enqueueEvent(eventPayload, eventPayload.action, eventPayload.userId, eventPayload.agentId);
-      console.log('Agent boot event enqueued:', eventPayload);
       
       addNotification('Agent start command queued successfully', 'success');
       return true;
@@ -99,7 +98,6 @@ export function useAgentTransition() {
       };
       
       enqueueEvent(eventPayload, eventPayload.action, eventPayload.userId, eventPayload.agentId);
-      console.log('Agent stop event enqueued:', eventPayload);
       
       addNotification('Agent stop command queued successfully', 'success');
       return true;
@@ -138,7 +136,6 @@ export function useAgentTransition() {
       };
       
       enqueueEvent(eventPayload, eventPayload.action, eventPayload.userId, eventPayload.agentId);
-      console.log('Agent update event enqueued:', eventPayload);
       
       addNotification('Agent update command queued successfully', 'success');
       return true;

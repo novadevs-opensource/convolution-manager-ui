@@ -10,18 +10,20 @@ import { useAgent } from '../../hooks/useAgent';
 import { CharacterData } from '../../types';
 import { useToasts } from '../../hooks/useToasts';
 import { ApiKeyService } from '../../services/apiKeyService';
+import Button from '../../components/common/Button';
 
 const EditCharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { userProfile, loadUserProfile, isAuthenticated } = useAuth();
-  const [isUpdating, setIsUpdating] = useState(false);
   const { character, loading, error } = useCharacter(id!);
   const { addNotification } = useToasts();
   
   // State for edited character data and model
   const [editedData, setEditedData] = useState<CharacterData | null>(null);
   const [selectedModel, setSelectedModel] = useState<string>('');
+
+  const [shouldLoadUpdate, setShouldLoadUpdate] = useState<boolean>(false)
   
   // Use our hooks
   const { updateHandler } = useAgent();
@@ -47,9 +49,16 @@ const EditCharacterPage: React.FC = () => {
     setEditedData(data);
     setSelectedModel(model);
   };
+
+  useEffect(() => {
+    if (shouldLoadUpdate) {
+      handleUpdate();
+    }
+  }, [shouldLoadUpdate])
   
   const handleUpdate = async () => {
     if (!userProfile?.id || !id || !editedData || !selectedModel) {
+      setShouldLoadUpdate(false);
       addNotification('Missing data for updating the agent', 'error');
       return;
     }
@@ -57,11 +66,11 @@ const EditCharacterPage: React.FC = () => {
     // Get API key from service
     const apiKey = ApiKeyService.getInstance().getApiKey();
     if (!apiKey) {
+      setShouldLoadUpdate(false);
       addNotification('Please, introduce your Open Router API key', 'error');
       return;
     }
     
-    setIsUpdating(true);
     try {
       // First update the character data with the edited data
       await updateHandler(
@@ -73,8 +82,6 @@ const EditCharacterPage: React.FC = () => {
           onSuccess: async (_data) => {
             // Then trigger agent update in the runtime
             await updateAgent(userProfile.id, id);
-            
-            addNotification('Agent updated successfully', 'success');
             // Navigate back to detail page
             navigate(`/agent/${id}`);
           },
@@ -94,7 +101,7 @@ const EditCharacterPage: React.FC = () => {
     } catch (error) {
       console.error('Error updating agent:', error);
     } finally {
-      setIsUpdating(false);
+      setShouldLoadUpdate(false);
     }
   };
   
@@ -121,9 +128,15 @@ const EditCharacterPage: React.FC = () => {
         <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span> 
         <div className='flex flex-col gap-4 mt-4'>
           <UpdateAgentButton 
-            onClick={handleUpdate}
-            loading={isUpdating}
-            disabled={isUpdating || !editedData}
+            onClick={() => setShouldLoadUpdate(true)}
+            loading={shouldLoadUpdate}
+            disabled={shouldLoadUpdate}
+          />
+          <Button 
+            onClick={() => navigate(`/agent/character/${character?.id}`)} 
+            icon='fa-angle-left' 
+            label={'Back'}
+            disabled={shouldLoadUpdate}
           />
         </div>
       </div>

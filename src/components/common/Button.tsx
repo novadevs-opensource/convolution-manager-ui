@@ -20,15 +20,15 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = ''
 }) => {
-  const buttonClass = 'inline-flex py-2 lg:px-14 px-9 shadow-md font-normal font-afacad uppercase justify-center rounded-full border-2 border-black transition-colors bg-black-dark text-white hover:bg-white hover:text-black items-center gap-2';
+  const buttonClass = 'inline-flex py-2 lg:px-14 px-9 shadow-md font-normal font-afacad uppercase justify-center rounded-full border-2 border-black transition-colors bg-black-dark items-center gap-2';
   
   return (
     <button 
-      className={`${buttonClass} ${disabled ? 'bg-gray-300 border-gray-500 !text-gray-500 hover:border-gray-500 hover:bg-gray-300 cursor-not-allowed' : ''} ${className} text-sm`}
+      className={`${buttonClass} ${disabled ? 'bg-gray-300 border-gray-500 text-gray-500 cursor-not-allowed text-black' : 'hover:bg-white hover:text-black hover:border-black text-white'} ${className} text-sm`}
       onClick={onClick}
       disabled={disabled}
     >
-      {label} {icon && <i className={`fa-solid ${icon}`}></i>}
+      <span>{label}</span> {icon && <i className={`fa-solid ${icon}`}></i>}
     </button>
   );
 };
