@@ -1,10 +1,10 @@
 // src/components/agent/buttons/Button.tsx
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 interface ButtonProps {
   onClick: () => void;
   label: string;
-  icon?: string;
+  icon?: string | ReactNode;
   disabled?: boolean;
   className?: string;
 }
@@ -28,7 +28,9 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
     >
-      <span>{label}</span> {icon && <i className={`fa-solid ${icon}`}></i>}
+      <span>{label}</span> 
+      {icon && typeof icon === 'string' && <i className={`fa-solid ${icon}`}></i>}
+      {icon && typeof icon === 'object' && icon}
     </button>
   );
 };

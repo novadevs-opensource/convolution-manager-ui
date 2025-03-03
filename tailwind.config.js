@@ -11,6 +11,11 @@ export default {
           light: '#71717A',
           dark: '#1a1a1a',
         },
+        phantom: {
+          DEFAULT: '#ab9ff2',
+          light: '#cec8f0',
+          dark: '#8673f3',
+        },
         purple: {
           50: '#f3eafc',
           100: '#e7d5f9',

@@ -1,4 +1,5 @@
 // src/main.tsx
+import './polyfill'; // Importar primero para asegurar que Buffer esté disponible
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/App';

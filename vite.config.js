@@ -6,8 +6,30 @@ import react from '@vitejs/plugin-react'
 config();
 
 export default defineConfig({
-  define: {
-    'process.env': process.env
-  },
   plugins: [react()],
+  resolve: {
+    alias: {
+      // Provide browser implementations for Node.js modules
+      stream: 'stream-browserify',
+      crypto: 'crypto-browserify',
+      assert: 'assert',
+      http: 'stream-http',
+      https: 'https-browserify',
+      os: 'os-browserify/browser',
+      url: 'url',
+    },
+  },
+  define: {
+    // Required for Solana to work
+    'process.env': process.env,
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      // Solana requires Node.js to be available as a global
+      define: {
+        global: 'globalThis',
+      },
+    },
+  },
 });
