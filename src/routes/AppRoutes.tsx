@@ -11,6 +11,7 @@ import CreateCharacterPage from '../pages/character/CreateCharacterPage';
 
 import RegisterPage from '../pages/RegisterPage';
 import PublicLayout from '../components/common/layouts/public/PublicLayout';
+import ProfilePage from '../pages/ProfilePage';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -33,6 +34,14 @@ const AppRoutes: React.FC = () => {
       } />
 
       {/* Private routes */}
+      <Route
+        path="/profile"
+        element={
+          <PrivateRoute pageTitle='Profile'>
+            <ProfilePage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/dashboard"
         element={

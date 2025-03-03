@@ -12,6 +12,7 @@ const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: bool
   }, []);
 
   const options = [
+    { label: 'Profile', href: '/profile', isExternal: false },
     { label: 'Logout', href: '#', isExternal: false, handler: logout },
   ];
 
