@@ -1,5 +1,5 @@
 // src/pages/DashboardPage.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCharacters } from '../hooks/useCharacters';
 import { Link } from 'react-router-dom';
 import Pagination from '../components/common/Pagination';
@@ -12,16 +12,35 @@ import { LuBadgeCheck } from "react-icons/lu";
 import { MdOutlineTimer } from "react-icons/md";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { IoIosPlay } from "react-icons/io";
+import { getTokenBalance } from '../utils/web3/getTokenBalance';
+import { useAuth } from '../hooks/useAuth';
 
 
 const DashboardPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { agents, loading, error, pagination } = useCharacters(currentPage);
   const {totalCredits: remainingCredits, totalUsage: totalCreditsUsage, loading: loadingCredits} = useCredits();
+  const { userProfile } = useAuth();
+  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  // Fetch token balance when wallet address changes.
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (userProfile?.wallet_address) {
+        // Ensure the mint address is a string from your environment variables.
+        const balance = await getTokenBalance(
+          userProfile.wallet_address,
+          import.meta.env.VITE_TOKEN_MINT as string
+        );
+        setTokenBalance(balance.uiBalance);
+      }
+    };
+    fetchBalance();
+  }, [userProfile?.wallet_address]);
 
   return (
     <div>
@@ -40,7 +59,7 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">$CNVLTN balance</p>
-            <h4 className="text-xl font-bold text-navy-700 dark:text-white">TODO</h4>
+            <h4 className="text-xl font-bold text-navy-700 dark:text-white">{tokenBalance}</h4>
           </div>
         </div>
         {/* remaining credits */}
