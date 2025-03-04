@@ -72,16 +72,16 @@ const EditCharacterPage: React.FC = () => {
     }
     
     try {
-      // First update the character data with the edited data
+      // First update the character data in the backend with the edited data
       await updateHandler(
         id, 
         selectedModel,
         apiKey,
         editedData, 
         {
-          onSuccess: async (_data) => {
+          onSuccess: async (data) => {
             // Then trigger agent update in the runtime
-            await updateAgent(userProfile.id, id);
+            await updateAgent(userProfile.id, id, data.character.status);
             // Navigate back to detail page
             navigate(`/agent/${id}`);
           },

@@ -4,7 +4,7 @@ import api from '../services/apiClient';
 import { enqueueEvent } from '../services/messageHandler';
 import { BootAgentEvent, StopAgentEvent, UpdateAgentEvent } from '../types/commEvents';
 import { useToasts } from './useToasts';
-import { Agent } from '../types';
+import { Agent, RuntimeStatus } from '../types';
 
 // Response interface for transition responses
 export interface TransitionResponse {
@@ -124,12 +124,15 @@ export function useAgentTransition() {
    * @param userId User ID
    * @param agentId Agent ID
    */
-  const updateAgent = async (userId: string, agentId: string): Promise<boolean> => {
+  const updateAgent = async (userId: string, agentId: string, runtimeStatus: RuntimeStatus): Promise<boolean> => {
     setLoading(true);
     setError(null);
     
     try {
-      // 1. Set status to unknown in the database
+      // 1. Set status to unknown in the database (just if agent is not stopped)
+      if (runtimeStatus === "stopped") {
+        return true;
+      }
       const statusUpdated = await setStatusToUnknown(agentId);
       if (!statusUpdated) {
         addNotification('Failed to update agent status', 'error');
