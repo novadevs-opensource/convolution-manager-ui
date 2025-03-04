@@ -1,11 +1,11 @@
 // src/components/layouts/private/Sidebar.tsx
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Link } from "react-router-dom";
 import { useAuth } from '../../../../hooks/useAuth';
 import UserBlock from './userBlock/UserBlock';
 
 type SidebarProps = {
-  menuItems: { name: string; path: string }[];
+  menuItems: { name: string; path: string; icon?: ReactNode }[];
   show: boolean;
   onClose: () => void;
 }
@@ -55,7 +55,10 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
                   }
                 }}
               >
-                {item.name}
+                <div className='flex flex-row gap-2 items-center uppercase font-anek-latin text-lg'>
+                  {item.icon}
+                  {item.name}
+                </div>
               </Link>
             </li>
           ))}

@@ -58,7 +58,7 @@ export default {
         'secondary': 'linear-gradient(90deg, #82EAFF 0%, #9BFFD4 100%)',
       },
       fontFamily: {
-        "afacad": ['Afacad', 'sans-serif'],
+        "sans": ['Afacad', 'sans-serif'],
         "anek-latin": ['Anek Latin', 'sans-serif'],
       }
     },
@@ -79,7 +79,7 @@ export default {
     },
     function({ addBase }) {
       addBase({
-         'html': { fontSize: "12px" },// If you change this, you'll need to adjust the "Chatbot" mockup
+         'html': { fontSize: "14px" },// If you change this, you'll need to adjust the "Chatbot" mockup
        })
      },
   ],

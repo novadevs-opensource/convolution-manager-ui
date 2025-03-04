@@ -6,7 +6,6 @@ import FormGroup from '../common/FormGroup';
 import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import { OpenRouterModel } from '../../types';
 import Button from '../common/Button';
-import GenericTextInput from '../inputs/GenericTextInput';
 import GenericTextArea from '../inputs/GenericTextArea';
 
 interface GenerateCharacterSectionProps {
@@ -19,7 +18,6 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   onRefineCharacter,
 }) => {
   const [model, setModel] = useState<string>('');
-  const [apiKey, setApiKey] = useState<string>('');
   const [savedApiKey, setSavedApiKey] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
   const [status, setStatus] = useState<string>('');
@@ -49,32 +47,12 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       }
     }
 
-  // Al montar, comprobamos si hay API key guardada
   useEffect(() => {
     const storedKey = apiKeyService.getApiKey();
     if (storedKey) {
       setSavedApiKey(storedKey);
-      setApiKey(storedKey); // opcional, para prellenar el input
     }
   }, [apiKeyService]);
-
-  const handleSaveApiKey = () => {
-    const trimmedKey = apiKey.trim();
-    if (!trimmedKey) {
-      setStatus('Please enter a valid API key');
-      return;
-    }
-    apiKeyService.saveApiKey(trimmedKey);
-    setSavedApiKey(trimmedKey);
-    setStatus('API key saved successfully');
-  };
-
-  const handleRemoveApiKey = () => {
-    apiKeyService.removeApiKey();
-    setSavedApiKey(null);
-    setApiKey('');
-    setStatus('API key removed');
-  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -85,14 +63,15 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       setStatus('Please select a model');
       return;
     }
-    if (!savedApiKey && !apiKey) {
+    if (!savedApiKey) {
       setStatus('Please set your OpenRouter API key');
       return;
     }
-    const keyToUse = savedApiKey || apiKey;
+
     setStatus('Generating character...');
+
     try {
-      await onGenerateCharacter(prompt, model, keyToUse);
+      await onGenerateCharacter(prompt, model, savedApiKey);
       setStatus('Character generated successfully');
     } catch (err: any) {
       setStatus(`Error: ${err.message}`);
@@ -108,14 +87,14 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       setStatus('Please select a model');
       return;
     }
-    if (!savedApiKey && !apiKey) {
+    if (!savedApiKey) {
       setStatus('Please set your OpenRouter API key');
       return;
     }
-    const keyToUse = savedApiKey || apiKey;
+
     setStatus('Refining character...');
     try {
-      await onRefineCharacter(prompt, model, keyToUse);
+      await onRefineCharacter(prompt, model, savedApiKey);
       setStatus('Character refined successfully');
     } catch (err: any) {
       setStatus(`Error: ${err.message}`);
@@ -124,11 +103,11 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
 
   return (
     <CharacterEditorSection
-      title={'Generate Character'}
+      title={'Autogenerate settings with AI'}
       headerIcon={
         <button
           className="icon-button help-button"
-          title="Generate a new character using AI by providing a description"
+          title="Generate a new agent using AI by providing a description"
         >
           <i className="fa-solid fa-wand-sparkles"></i>
         </button>
@@ -142,46 +121,6 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
           onChange={(val) => setModel(val)}
           models={openRouterAvailableModels}
         />
-      </FormGroup>
-
-      {/* Gestión de la API Key */}
-      <FormGroup>
-        {savedApiKey ? (
-          <div className='flex flex-row gap-2 items-end'>
-            <GenericTextInput
-              plain={true}
-              label='OpenRouter API Key'
-              value={apiKey?.substring(0,20)+'...'}
-              disabled={true}
-            />
-            <button
-                id="remove-key"
-                className="border-2 border-black bg-black hover:bg-white text-white hover:text-black rounded-md h-fit py-3 px-4 mb-4"
-                title="Remove API Key"
-                onClick={handleRemoveApiKey}
-              >
-                <i className="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        ) : (
-          <div id="api-key-input" className="input-group" style={{ display: 'flex' }}>
-            <input
-              type="text"
-              id="api-key"
-              placeholder="Enter your OpenRouter API key starting with 'sk-' from openrouter.ai"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-            <button
-              id="save-key"
-              className="action-button save-button"
-              title="Save API Key"
-              onClick={handleSaveApiKey}
-            >
-              <i className="fa-solid fa-floppy-disk"></i>
-            </button>
-          </div>
-        )}
       </FormGroup>
 
       {/* Descripción (prompt) y botones de generación/refinamiento */}

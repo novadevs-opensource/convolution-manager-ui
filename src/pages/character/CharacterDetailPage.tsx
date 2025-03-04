@@ -384,7 +384,7 @@ const CharacterDetailPage: React.FC = () => {
       </div>
 
       {/* navigation */}
-      <div className='p-4 border rounded-lg fixed bg-white shadow-xl right-6 top-[30%]'>
+      <div className='p-4 border rounded-lg fixed bg-white shadow-xl right-6 top-[30%] z-[10]'>
         <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
         <div className='flex flex-col gap-4 mt-4'>
           <StartAgentButton 

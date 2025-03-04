@@ -3,6 +3,11 @@ import React, { useState } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import UserBlock from './userBlock/UserBlock'
+import { GrHomeRounded } from "react-icons/gr";
+import { GrUserAdd } from "react-icons/gr";
+import { GrSettingsOption } from "react-icons/gr";
+
+
 
 type LayoutProps = {
   pageTitle: string,
@@ -13,8 +18,9 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
   const [sidebarIsVisible, setSidebarIsVisible] = useState<boolean>(false)
   
   const menuItems = [
-    { name: 'Home', path: '/dashboard' },
-    { name: 'Create Character', path: '/agent/character' },
+    { name: 'Home', path: '/dashboard', icon: <GrHomeRounded />},
+    { name: 'Profile', path: '/profile', icon: <GrSettingsOption />},
+    { name: 'Create Agent', path: '/agent/character', icon: <GrUserAdd/>},
   ]
 
   // Toggle sidebar visibility

@@ -157,7 +157,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
   const handleGenerateCharacter = async (prompt: string, model: string, apiKey: string) => {
     try {
       
-      const response = await fetch(`http://${process.env.HOST}:${process.env.PORT}/api/generate-character`, {
+      const response = await fetch(`${process.env.HOST}:${process.env.PORT}/api/generate-character`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

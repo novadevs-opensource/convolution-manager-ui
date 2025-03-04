@@ -61,7 +61,7 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/agent/character/:id"
         element={
-          <PrivateRoute pageTitle='Edit character'>
+          <PrivateRoute pageTitle='Edit agent'>
             <EditCharacterPage />
           </PrivateRoute>
         }
@@ -69,7 +69,7 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/agent/character"
         element={
-          <PrivateRoute pageTitle='Create character'>
+          <PrivateRoute pageTitle='Create Agent'>
             <CreateCharacterPage />
           </PrivateRoute>
         }

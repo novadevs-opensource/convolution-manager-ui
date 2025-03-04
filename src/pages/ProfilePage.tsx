@@ -10,6 +10,7 @@ import { useLLMProviderApiKey } from '../hooks/useLLMProviderApiKey';
 import { useToasts } from '../hooks/useToasts';
 import { getTokenBalance } from '../utils/web3/getTokenBalance';
 import convolutionLogoBlack from '../assets/images/convolution-square-black.svg';
+import openRouterLogoBlack from '../assets/images/openrouter-logo.svg';
 
 const ProfilePage: React.FC = () => {
   const { addNotification } = useToasts();
@@ -46,20 +47,20 @@ const ProfilePage: React.FC = () => {
   }, [updateResponse])
 
 
-    // Fetch token balance when wallet address changes.
-    useEffect(() => {
-      const fetchBalance = async () => {
-        if (userProfile?.wallet_address) {
-          // Ensure the mint address is a string from your environment variables.
-          const balance = await getTokenBalance(
-            userProfile.wallet_address,
-            import.meta.env.VITE_TOKEN_MINT as string
-          );
-          setTokenBalance(balance.uiBalance);
-        }
-      };
-      fetchBalance();
-    }, [userProfile?.wallet_address]);
+  // Fetch token balance when wallet address changes.
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (userProfile?.wallet_address) {
+        // Ensure the mint address is a string from your environment variables.
+        const balance = await getTokenBalance(
+          userProfile.wallet_address,
+          import.meta.env.VITE_TOKEN_MINT as string
+        );
+        setTokenBalance(balance.uiBalance);
+      }
+    };
+    fetchBalance();
+  }, [userProfile?.wallet_address]);
 
   const handleRemoveApiKey = () => {
     // Implement removal functionality as needed.
@@ -72,13 +73,13 @@ const ProfilePage: React.FC = () => {
       <CharacterEditorSection title={'Wallet data'} headerIcon={<i className="fa fa-user"></i>}>
         <FormGroup>
           <GenericTextInput 
-            className='w-full'
+            className='w-full bg-gray-50 !border-gray-200'
             label="Wallet"
             iconSource={<i className="fa fa-wallet"></i>}
             value={userProfile?.wallet_address || ''}
             disabled={true}
           />
-          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
               <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
                 <span className="flex items-center text-brand-500 dark:text-white">
@@ -126,9 +127,22 @@ const ProfilePage: React.FC = () => {
           </div>
         </FormGroup>
         {creditsData && (
-          <div>
-            <p>Credits: {creditsData?.data.total_credits}</p>
-            <p>Used credits: {creditsData?.data.total_usage}</p>
+          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+            <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
+              <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
+                <span className="flex items-center text-brand-500 dark:text-white">
+                  <img src={openRouterLogoBlack} className="h-[24px]" alt="convolution logo"/>
+                </span>
+              </div>
+            </div>
+            <div className="h-50 ml-4 flex w-auto flex-col justify-center">
+              <p className="font-dm text-sm font-medium text-gray-600">OpenRouter credits balance</p>
+              <h4 className="text-xl font-bold text-navy-700 dark:text-white">{creditsData?.data.total_credits}</h4>
+            </div>
+            <div className="h-50 ml-4 flex w-auto flex-col justify-center">
+              <p className="font-dm text-sm font-medium text-gray-600">OpenRouter used credits</p>
+              <h4 className="text-xl font-bold text-navy-700 dark:text-white">{creditsData?.data.total_usage}</h4>
+            </div>
           </div>
         )}
       </CharacterEditorSection>

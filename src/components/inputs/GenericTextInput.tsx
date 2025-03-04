@@ -85,7 +85,7 @@ const GenericTextInput = forwardRef<HTMLInputElement, GenericTextInputProps>(({
     const isInvalid = hasError || (required && !value);
 
     return (
-        <div className="w-full max-w-md mb-4">
+        <div className="w-full mb-4">
             {(label || customLabel) && (
                 <div className="flex justify-between items-center">
                     {renderLabel()}
