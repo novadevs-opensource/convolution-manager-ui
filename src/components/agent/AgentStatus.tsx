@@ -31,7 +31,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   // Loading state
   if (loading && !statusData) {
     return (
-      <div className={`border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
+      <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
         <span className='text-black-light text-xs uppercase'>
           Loading
         </span>
@@ -46,7 +46,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   switch (statusData?.status) {
     case 'running':
       return (
-        <div className={`border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
+        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
           <span className='text-black-light text-xs uppercase'>
             Running
           </span>

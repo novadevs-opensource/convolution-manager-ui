@@ -49,87 +49,87 @@ const DashboardPage: React.FC = () => {
 
       <div className="md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         {/* $CNVLTN balance */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-            <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-              <span className="flex items-center text-brand-500 dark:text-white">
+            <div className="rounded-full bg-lightPrimary p-3">
+              <span className="flex items-center text-brand-500">
                 <img src={convolutionLogoBlack} className="h-[24px]" alt="convolution logo"/>
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">$CNVLTN balance</p>
-            <h4 className="text-xl font-bold text-navy-700 dark:text-white">{tokenBalance}</h4>
+            <h4 className="text-xl font-bold text-navy-700">{tokenBalance}</h4>
           </div>
         </div>
         {/* remaining credits */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-            <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-              <span className="flex items-center text-brand-500 dark:text-white">
+            <div className="rounded-full bg-lightPrimary p-3 ">
+              <span className="flex items-center text-brand-500 ">
                 <LuBadgeCheck size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Open Router credit balance</p>
-            <h4 className="text-xl font-bold text-navy-700 dark:text-white">{loadingCredits ? '--' : remainingCredits}</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? '--' : remainingCredits}</h4>
           </div>
         </div>
         {/* used credits */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-            <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-              <span className="flex items-center text-brand-500 dark:text-white">
+            <div className="rounded-full bg-lightPrimary p-3 ">
+              <span className="flex items-center text-brand-500 ">
                 <LuBadgeAlert size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Open Router used credits</p>
-            <h4 className="text-xl font-bold text-navy-700 dark:text-white">{loadingCredits ? '--' : totalCreditsUsage}</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? '--' : totalCreditsUsage}</h4>
           </div>
         </div>
         {/* total uptime */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-            <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-              <span className="flex items-center text-brand-500 dark:text-white">
+            <div className="rounded-full bg-lightPrimary p-3 ">
+              <span className="flex items-center text-brand-500 ">
                 <MdOutlineTimer size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Total uptime</p>
-            <h4 className="text-xl font-bold text-navy-700 dark:text-white">TODO</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">TODO</h4>
           </div>
         </div>
         {/* Total agents */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-            <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-              <span className="flex items-center text-brand-500 dark:text-white">
+            <div className="rounded-full bg-lightPrimary p-3 ">
+              <span className="flex items-center text-brand-500 ">
                 <MdOutlineSupportAgent size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Created agents</p>
-            <h4 className="text-xl font-bold text-navy-700 dark:text-white">{pagination?.total}</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">{pagination?.total}</h4>
           </div>
         </div>
         {/* running agents */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-            <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-              <span className="flex items-center text-brand-500 dark:text-white">
+            <div className="rounded-full bg-lightPrimary p-3 ">
+              <span className="flex items-center text-brand-500 ">
                 <IoIosPlay size={24}/>
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Running agents</p>
-            <h4 className="text-xl font-bold text-navy-700 dark:text-white">TODO</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">TODO</h4>
           </div>
         </div>
       </div>

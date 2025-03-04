@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className='grid grid-cols-2 gap-4'>
+    <div className='sm:grid sm:grid-cols-2 flex flex-col gap-4'>
       <CharacterEditorSection title={'Wallet data'} headerIcon={<i className="fa fa-user"></i>}>
         <FormGroup>
           <GenericTextInput 
@@ -79,17 +79,17 @@ const ProfilePage: React.FC = () => {
             value={userProfile?.wallet_address || ''}
             disabled={true}
           />
-          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-              <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-                <span className="flex items-center text-brand-500 dark:text-white">
+              <div className="rounded-full bg-lightPrimary p-3 ">
+                <span className="flex items-center text-brand-500 ">
                   <img src={convolutionLogoBlack} className="h-[24px]" alt="convolution logo"/>
                 </span>
               </div>
             </div>
             <div className="h-50 ml-4 flex w-auto flex-col justify-center">
               <p className="font-dm text-sm font-medium text-gray-600">$CNVLTN balance</p>
-              <h4 className="text-xl font-bold text-navy-700 dark:text-white">{tokenBalance}</h4>
+              <h4 className="text-xl font-bold text-navy-700 ">{tokenBalance}</h4>
             </div>
           </div>
         </FormGroup>
@@ -127,21 +127,21 @@ const ProfilePage: React.FC = () => {
           </div>
         </FormGroup>
         {creditsData && (
-          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border dark:border-[#ffffff33] dark:!bg-navy-800 dark:text-white dark:shadow-none">
+          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-              <div className="rounded-full bg-lightPrimary p-3 dark:bg-navy-700">
-                <span className="flex items-center text-brand-500 dark:text-white">
+              <div className="rounded-full bg-lightPrimary p-3 ">
+                <span className="flex items-center text-brand-500 ">
                   <img src={openRouterLogoBlack} className="h-[24px]" alt="convolution logo"/>
                 </span>
               </div>
             </div>
             <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-              <p className="font-dm text-sm font-medium text-gray-600">OpenRouter credits balance</p>
-              <h4 className="text-xl font-bold text-navy-700 dark:text-white">{creditsData?.data.total_credits}</h4>
+              <p className="font-dm text-sm font-medium text-gray-600">Credits balance</p>
+              <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_credits}</h4>
             </div>
             <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-              <p className="font-dm text-sm font-medium text-gray-600">OpenRouter used credits</p>
-              <h4 className="text-xl font-bold text-navy-700 dark:text-white">{creditsData?.data.total_usage}</h4>
+              <p className="font-dm text-sm font-medium text-gray-600">Used credits</p>
+              <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_usage}</h4>
             </div>
           </div>
         )}

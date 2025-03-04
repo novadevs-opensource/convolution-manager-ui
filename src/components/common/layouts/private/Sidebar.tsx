@@ -47,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
             <li key={item.path}>
               <Link
                 to={item.path}
-                className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300 font-bold"
+                className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300 font-bold mb-2"
                 onClick={() => {
                   // Cierra el sidebar en móvil al hacer clic en un enlace
                   if (window.innerWidth < 640) {

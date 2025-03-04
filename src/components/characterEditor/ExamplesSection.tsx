@@ -80,7 +80,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             <label>Message Examples</label>
             <button
               id="add-example"
-              className="action-button add-button"
+              className="action-button add-button border border-gray-200"
               title="Add Example"
               onClick={handleAddExample}
             >
@@ -91,14 +91,14 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             {messageExamples?.map((example, index) => (
               <div key={index} className="message-example">
                 <div className="message-pair">
-                  <textarea
+                  <GenericTextArea
                     placeholder="Write an example user message..."
                     className="user-message"
                     value={example[0].content.text}
                     onChange={(e) =>
                       handleUserMessageChange(index, e.target.value)
                     }
-                  ></textarea>
+                  ></GenericTextArea>
                 </div>
                 <div className="message-pair">
                   <GenericTextArea
@@ -111,11 +111,11 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                   ></GenericTextArea>
                 </div>
                 <button
-                  className="action-button delete-button"
+                  className="action-button delete-button border border-gray-200"
                   title="Remove Example"
                   onClick={() => handleRemoveExample(index)}
                 >
-                  ×
+                  <i className='fa fa-x'></i>
                 </button>
               </div>
             ))}

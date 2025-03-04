@@ -1,8 +1,9 @@
 // src/pages/character/CharacterDetailPage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CiImageOn } from "react-icons/ci";
 import { FaRegHeart, FaRegUser } from "react-icons/fa6";
+
+import { MessageExample } from '../../types';
 
 import { formatDateFromString } from '../../utils/character';
 import { useCharacter } from '../../hooks/useCharacter';
@@ -17,7 +18,8 @@ import Button from '../../components/common/Button';
 import StartAgentButton from '../../components/agent/buttons/StartAgentButton';
 import StopAgentButton from '../../components/agent/buttons/StopAgentButton';
 import MasonryPostsLayout from '../../components/agent/MasonryPosts';
-import { MessageExample } from '../../types';
+
+import convolutionLogoBlack from '../../assets/images/convolution-square-black.svg';
 
 const CharacterDetailPage: React.FC = () => {
   let navigate = useNavigate();
@@ -92,20 +94,22 @@ const CharacterDetailPage: React.FC = () => {
           </div>
 
           <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow'>
-            <CiImageOn size={160} /> {/* TODO: Change by agent image */}
+            <div className='p-4 -mr-4'>
+              <img src={convolutionLogoBlack} className="h-[100px] opacity-60" alt="convolution logo"/>
+            </div>
 
             <div className='flex flex-col gap-4 p-4 flex-grow w-full'>
               {/* name, socials */}
               <div className='flex sm:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between'>
-                <div className='flex flex-row gap-6'>
+                <div className='flex sm:flex-row flex-col gap-6'>
                   {/* name */}
                   <div className='flex flex-col'>
                     <span className='text-sm text-black-light'>Name</span>
                     <span className='font-semibold'>{character?.definition.name}</span>
                   </div>
-                  {/* status */}
-                  <div className='flex flex-col flex-grow justify-end'>
-                    <AgentStatus id={character?.id!} />
+                  <div className='flex flex-col'>
+                    <span className='text-sm text-black-light'>LLM Model</span>
+                    <span className='font-semibold'>{character?.llm_provider_settings.llm_provider_model}</span>
                   </div>
                 </div>
                 {/* socials */}
@@ -128,25 +132,19 @@ const CharacterDetailPage: React.FC = () => {
                   <span className='text-sm text-black-light'>Created at</span>
                   <span className='font-semibold'>{formatDateFromString(character?.created_at!)}</span>
                 </div>
-                {/* model */}
-                <div className='flex flex-col'>
-                  <span className='text-sm text-black-light'>LLM Model</span>
-                  <span className='font-semibold'>{character?.llm_provider_settings.llm_provider_model}</span>
-                </div>
                 {/* total uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Total uptime</span>
-                  <span className='font-semibold'>{statusData?.last_boot_execution || 0}</span>
+                  <span className='font-semibold'>{formatDateFromString(statusData?.last_boot_execution!) || 0}</span>
                 </div>
                 {/* current uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Current uptime</span>
-                  <span className='font-semibold'>{statusData?.last_stop_execution || 0}</span>
+                  <span className='font-semibold'>{formatDateFromString(statusData?.last_stop_execution!) || 0}</span>
                 </div>
-                {/* publications */}
-                <div className='flex flex-col'>
-                  <span className='text-sm text-black-light'>Publications</span>
-                  <span className='font-semibold'>--</span>
+                {/* status */}
+                <div className='flex flex-col justify-end'>
+                  <AgentStatus id={character?.id!} />
                 </div>
               </div>
             </div>

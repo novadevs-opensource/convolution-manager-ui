@@ -195,7 +195,7 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
                   title="Remove Knowledge"
                   onClick={() => handleRemoveKnowledgeEntry(index)}
                 >
-                  ×
+                  <i className='fa fa-x'></i>
                 </button>
               </div>
             ))}
