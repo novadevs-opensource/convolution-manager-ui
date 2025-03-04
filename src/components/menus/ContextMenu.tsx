@@ -64,7 +64,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ button, options }) => {
               href={option.href}
               target={option.isExternal ? '_blank' : '_self'}
               rel={option.isExternal ? 'noopener noreferrer' : ''}
-              className="block px-4 py-2 text-sm text-gray-700"
+              className="block px-4 py-2 text-gray-700"
               role="menuitem"
               tabIndex={-1}
               onClick={option.handler}

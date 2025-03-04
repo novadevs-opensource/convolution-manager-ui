@@ -112,7 +112,7 @@ const GenericTextInput = forwardRef<HTMLInputElement, GenericTextInputProps>(({
                     disabled={disabled}
                     required={required}
                     className={`
-                        w-full px-4 py-3 rounded-md
+                        w-full px-4 py-2 rounded-md
                         ${isInvalid ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}
                         ${iconSource ? 'pl-10' : ''}
                         ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}

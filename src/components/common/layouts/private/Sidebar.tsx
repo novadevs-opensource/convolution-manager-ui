@@ -3,6 +3,8 @@ import React, { ReactNode } from 'react'
 import { Link } from "react-router-dom";
 import { useAuth } from '../../../../hooks/useAuth';
 import UserBlock from './userBlock/UserBlock';
+import { GrLogout } from "react-icons/gr";
+
 
 type SidebarProps = {
   menuItems: { name: string; path: string; icon?: ReactNode }[];
@@ -71,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
 
               <UserBlock className={'block sm:hidden'} hasBorder={true} hasMenu={false}/>
               <a
-                className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300 font-bold"
+                className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300"
                 href="#"
                 title="Logout"
                 rel="noopener"
@@ -80,7 +82,10 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
                   logout();
                 }}
               >
-                Logout
+                <div className='flex flex-row gap-2 items-center uppercase  font-anek-latin text-lg'>
+                  <GrLogout />
+                  Logout
+                </div>
               </a>
         </div>
 
