@@ -131,6 +131,7 @@ export function useAgentTransition() {
     try {
       // 1. Set status to unknown in the database (just if agent is not stopped)
       if (runtimeStatus === "stopped") {
+        addNotification('Agent update successfully', 'success');
         return true;
       }
       const statusUpdated = await setStatusToUnknown(agentId);
