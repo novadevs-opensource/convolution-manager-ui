@@ -81,7 +81,7 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                     title="Remove Adjective"
                     onClick={() => handleRemoveAdjective(index)}
                   >
-                    <i className='fa fa-x'></i>
+                    <i className='fa fa-trash'></i>
                   </button>
                 </div>
               ))}
@@ -124,7 +124,7 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                     title="Remove Person"
                     onClick={() => handleRemovePerson(index)}
                   >
-                    <i className='fa fa-x'></i>
+                    <i className='fa fa-trash'></i>
                   </button>
                 </div>
               ))}

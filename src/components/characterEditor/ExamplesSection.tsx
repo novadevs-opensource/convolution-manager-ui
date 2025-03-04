@@ -115,7 +115,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                   title="Remove Example"
                   onClick={() => handleRemoveExample(index)}
                 >
-                  <i className='fa fa-x'></i>
+                  <i className='fa fa-trash'></i>
                 </button>
               </div>
             ))}
