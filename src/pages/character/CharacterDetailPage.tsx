@@ -35,7 +35,7 @@ const CharacterDetailPage: React.FC = () => {
   // Use agent ACK events hook with autoRefreshStatus=true so it will
   // automatically refresh the status when an ACK event is received
   // No need for a separate effect to do this
-  useAgentAckEvents({ 
+  const {checkForEvents} = useAgentAckEvents({ 
     agentId: id,
     pollingInterval: 3000,
     autoRefreshStatus: true
@@ -55,6 +55,7 @@ const CharacterDetailPage: React.FC = () => {
     if (shouldLoadStop) {
       handleStopAgent();
     }
+    checkForEvents();
   }, [shouldLoadBoot, shouldLoadStop])
 
   useEffect(() => {

@@ -4,10 +4,16 @@ import api from '../services/apiClient';
 import { enqueueEvent } from '../services/messageHandler';
 import { BootAgentEvent, StopAgentEvent, UpdateAgentEvent } from '../types/commEvents';
 import { useToasts } from './useToasts';
+import { Agent } from '../types';
 
 // Response interface for transition responses
 export interface TransitionResponse {
   message: string;
+  data: TransitionResponseData;
+}
+
+export interface TransitionResponseData {
+  agent: Agent;
 }
 
 /**
@@ -22,13 +28,13 @@ export function useAgentTransition() {
    * Set agent status to 'unknown' in the database
    * @param agentId The ID of the agent
    */
-  const setStatusToUnknown = async (agentId: string): Promise<boolean> => {
+  const setStatusToUnknown = async (agentId: string): Promise<TransitionResponse | false> => {
     try {
       const response = await api.post<TransitionResponse>(
         `/runtime/${agentId}/update`, 
         { status: 'unknown' }
       );
-      return response.status === 200;
+      return response.data;
     } catch (err: any) {
       console.error('Error setting status to unknown:', err);
       return false;
@@ -56,7 +62,8 @@ export function useAgentTransition() {
       const eventPayload: BootAgentEvent = {
         action: 'boot',
         agentId,
-        userId
+        userId,
+        executionId: statusUpdated.data.agent.execution_id!
       };
       
       enqueueEvent(eventPayload, eventPayload.action, eventPayload.userId, eventPayload.agentId);
@@ -94,7 +101,8 @@ export function useAgentTransition() {
       const eventPayload: StopAgentEvent = {
         action: 'stop',
         agentId,
-        userId
+        userId,
+        executionId: statusUpdated.data.agent.execution_id!
       };
       
       enqueueEvent(eventPayload, eventPayload.action, eventPayload.userId, eventPayload.agentId);
@@ -132,7 +140,8 @@ export function useAgentTransition() {
       const eventPayload: UpdateAgentEvent = {
         action: 'update',
         agentId,
-        userId
+        userId,
+        executionId: statusUpdated.data.agent.execution_id!
       };
       
       enqueueEvent(eventPayload, eventPayload.action, eventPayload.userId, eventPayload.agentId);

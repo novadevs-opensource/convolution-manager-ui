@@ -3,18 +3,21 @@ export interface BootAgentEvent {
     action: AgentRuntimeAction,
     agentId: string,
     userId: string,
+    executionId: string,
 }
 
 export interface StopAgentEvent {
     action: AgentRuntimeAction,
     agentId: string,
     userId: string,
+    executionId: string,
 }
 
 export interface UpdateAgentEvent {
     action: AgentRuntimeAction,
     agentId: string,
     userId: string,
+    executionId: string,
 }
 
 // New interfaces for ACK events
