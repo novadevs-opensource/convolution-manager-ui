@@ -18,7 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
   return (
     <aside 
       className={`
-        fixed sm:static bg-white sm:max-w-[300px] sm:w-2/12 w-[80%] z-40 
+        fixed sm:static bg-white sm:max-w-[260px] w-[80%] z-40 
         h-screen p-4 flex flex-col border border-black-50
         transition-transform duration-300 ease-in-out transform
         ${show ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'}
@@ -69,26 +69,25 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
         <div>
           <hr className='my-8'/>
             {isAuthenticated && (
-          <div>
+              <div>
 
-              <UserBlock className={'block sm:hidden'} hasBorder={true} hasMenu={false}/>
-              <a
-                className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300"
-                href="#"
-                title="Logout"
-                rel="noopener"
-                onClick={(e) => {
-                  e.preventDefault();
-                  logout();
-                }}
-              >
-                <div className='flex flex-row gap-2 items-center uppercase  font-anek-latin text-lg'>
-                  <GrLogout />
-                  Logout
-                </div>
-              </a>
-        </div>
-
+                <UserBlock className={'block sm:hidden'} hasBorder={true} hasMenu={false}/>
+                <a
+                  className="block px-4 py-2 hover:bg-black hover:text-white rounded-full ease-in-out duration-300"
+                  href="#"
+                  title="Logout"
+                  rel="noopener"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                  }}
+                >
+                  <div className='flex flex-row gap-2 items-center uppercase  font-anek-latin text-lg'>
+                    <GrLogout />
+                    Logout
+                  </div>
+                </a>
+              </div>
             )}
           </div>
       </div>

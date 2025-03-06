@@ -138,8 +138,8 @@ const DashboardPage: React.FC = () => {
 
       <div className="w-full flex justify-between items-center mb-3 mt-1">
         <div>
-          <h3 className="text-lg font-semibold text-slate-800">Your agents</h3>
-          <p className="text-slate-500">Overview of your created agents.</p>
+          <h3 className="text-lg font-semibold text-slate-800">Your vInfluencers</h3>
+          <p className="text-slate-500">Overview of your created vInfluencers.</p>
         </div>
         <div className="ml-3">
           {/* TODO: search */}

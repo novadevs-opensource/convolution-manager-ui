@@ -22,7 +22,7 @@ const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: bool
         <ContextMenu
           button={
             <div className='flex flex-row items-center gap-2 justify-end'>
-              <p>{`${userProfile?.wallet_address?.substr(0, 15)}...` || userProfile?.email || userProfile?.name}</p>
+              <p>{`${userProfile?.wallet_address?.substr(0, 15)}...${userProfile?.wallet_address?.substr(30, userProfile?.wallet_address?.length)}` || userProfile?.substr(0, 15) || userProfile?.name}</p>
               <span 
                 className='inline-block border p-2 rounded-full border-black-light' 
                 aria-expanded="false" 
@@ -43,7 +43,7 @@ const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: bool
           >
             <SlUser color='black' />
           </span>
-          <p>{userProfile?.email || userProfile?.name}</p>
+          <p>{`${userProfile?.wallet_address?.substr(0, 15)}...${userProfile?.wallet_address?.substr(30, userProfile?.wallet_address?.length)}` || userProfile?.substr(0, 15) || userProfile?.name}</p>
         </div>
       )}
 
