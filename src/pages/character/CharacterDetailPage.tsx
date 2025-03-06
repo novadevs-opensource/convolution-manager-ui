@@ -1,7 +1,6 @@
 // src/pages/character/CharacterDetailPage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaRegHeart, FaRegUser } from "react-icons/fa6";
 
 import { MessageExample } from '../../types';
 
@@ -84,8 +83,8 @@ const CharacterDetailPage: React.FC = () => {
 
     // The code below is to increase uptimes second by second isntead to wait for every backend refresh
     const intervalId = setInterval(() => {
-      setTotalUptime((prevCounter: number) => prevCounter + 1);
-      setCurrentUptime((prevCounter: number) => prevCounter + 1);
+      setTotalUptime((prevCounter: number) => prevCounter + (statusData?.status === "running" ? 1 : 0));
+      setCurrentUptime((prevCounter: number) => prevCounter + (statusData?.status === "running" ? 1 : 0));
     }, 1000);
 
     // Clear interval when component is unmounted
@@ -113,29 +112,24 @@ const CharacterDetailPage: React.FC = () => {
             </div>
 
             <div className='flex flex-col gap-4 p-4 flex-grow w-full'>
-              {/* name, socials */}
-              <div className='flex sm:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between'>
+              {/* name, status */}
+              <div className='flex sm:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between relative'>
                 <div className='flex sm:flex-row flex-col gap-6'>
                   {/* name */}
-                  <div className='flex flex-col'>
-                    <span className='text-sm text-black-light'>Name</span>
-                    <span className='font-semibold'>{character?.definition.name}</span>
+                  <div className='flex flex-row gap-4'>
+                    <div className='flex flex-col'>
+                      <span className='text-sm text-black-light'>Name</span>
+                      <span className='font-semibold'>{character?.definition.name}</span>
+                    </div>
                   </div>
                   <div className='flex flex-col'>
                     <span className='text-sm text-black-light'>LLM Model</span>
                     <span className='font-semibold'>{character?.llm_provider_settings.llm_provider_model}</span>
                   </div>
                 </div>
-                {/* socials */}
-                <div className='flex flex-row gap-4'>
-                  <div className='flex flex-row items-center gap-2'>
-                    <FaRegHeart size={18}/>
-                    <span>--</span> {/* TODO */}
-                  </div>
-                  <div className='flex flex-row items-center gap-2'>
-                    <FaRegUser size={18}/>
-                    <span>--</span> {/* TODO */}
-                  </div>
+                {/* status */}
+                <div className='flex flex-col self-end sm:relative absolute top-0'>
+                  <AgentStatus id={character?.id!} />
                 </div>
               </div>
 
@@ -155,10 +149,6 @@ const CharacterDetailPage: React.FC = () => {
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Current uptime</span>
                   <span className='font-semibold'>{formatSeconds(currentUptime)}</span>
-                </div>
-                {/* status */}
-                <div className='flex flex-col justify-end'>
-                  <AgentStatus id={character?.id!} />
                 </div>
               </div>
             </div>
@@ -396,7 +386,7 @@ const CharacterDetailPage: React.FC = () => {
       </div>
 
       {/* navigation */}
-      <div className='p-4 border rounded-lg fixed bg-white shadow-xl right-6 top-[30%] z-[10]'>
+      <div className='p-4 border rounded-lg fixed bg-white shadow-xl sm:right-6 sm:top-[30%] top-[75%] right-2 z-[10]'>
         <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
         <div className='flex flex-col gap-4 mt-4'>
           <StartAgentButton 

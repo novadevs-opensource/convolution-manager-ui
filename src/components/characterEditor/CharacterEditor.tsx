@@ -255,7 +255,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
         <CharacterEditorSection
           title={'Basic Information'}
           headerIcon={
-            <button className="h-[2.5em] w-[2.5em] border border-gray-200 bg-white rounded-full" title="Set the character's name, model provider, and voice settings">
+            <button className="h-[24px] w-[24px] border border-gray-200 bg-white rounded-full" title="Set the character's name, model provider, and voice settings">
               <i className="fa-solid fa-id-card"></i>
             </button>
           }
