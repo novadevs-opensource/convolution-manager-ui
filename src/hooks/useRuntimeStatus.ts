@@ -8,6 +8,8 @@ export interface RuntimeStatusResponse {
   last_boot_execution: string | null;
   last_stop_execution: string | null;
   uptime_total_seconds: number;
+  current_uptime: number;
+  execution_id: number | null;
 }
 
 /**

@@ -5,7 +5,7 @@ import { FaRegHeart, FaRegUser } from "react-icons/fa6";
 
 import { MessageExample } from '../../types';
 
-import { formatDateFromString } from '../../utils/character';
+import { formatDateFromString, formatSeconds } from '../../utils/character';
 import { useCharacter } from '../../hooks/useCharacter';
 import { useRuntimeStatus } from '../../hooks/useRuntimeStatus';
 import { useAgentTransition } from '../../hooks/useAgentTransition';
@@ -27,10 +27,12 @@ const CharacterDetailPage: React.FC = () => {
   const { character, loading: characterLoading, error: characterError } = useCharacter(id!);
   const { userProfile } = useAuth();
   
-  // Use hooks for status and transitions
+  // Use hooks for status
   const { statusData, isRunning, refetch: _refreshStatus } = useRuntimeStatus(id!, 5000);
+  const [totalUptime, setTotalUptime] = useState<number>(0);
+  const [currentUptime, setCurrentUptime] = useState<number>(0);
+  // Use hooks for transitions
   const { startAgent, stopAgent, loading: transitionLoading } = useAgentTransition();
-
   const [shouldLoadBoot, setShouldLoadBoot] = useState<boolean>(false);
   const [shouldLoadStop, setShouldLoadStop] = useState<boolean>(false);
   
@@ -48,6 +50,13 @@ const CharacterDetailPage: React.FC = () => {
     if (!userProfile?.id || !id) return;
     
     await startAgent(userProfile.id, id);
+  };
+
+  // Handle agent stop
+  const handleStopAgent = async () => {
+    if (!userProfile?.id || !id) return;
+    
+    await stopAgent(userProfile.id, id);
   };
 
   useEffect(() => {
@@ -69,14 +78,19 @@ const CharacterDetailPage: React.FC = () => {
       setShouldLoadBoot(false);
       setShouldLoadStop(false);
     }
+
+    setCurrentUptime(Math.round(statusData?.current_uptime || 0));
+    setTotalUptime(Math.round((statusData?.uptime_total_seconds || 0) + (currentUptime || 0)));
+
+    // The code below is to increase uptimes second by second isntead to wait for every backend refresh
+    const intervalId = setInterval(() => {
+      setTotalUptime((prevCounter: number) => prevCounter + 1);
+      setCurrentUptime((prevCounter: number) => prevCounter + 1);
+    }, 1000);
+
+    // Clear interval when component is unmounted
+    return () => clearInterval(intervalId);
   }, [statusData])
-  
-  // Handle agent stop
-  const handleStopAgent = async () => {
-    if (!userProfile?.id || !id) return;
-    
-    await stopAgent(userProfile.id, id);
-  };
 
   if (characterLoading) return <p>Loading character...</p>;
   if (characterError) return <p>Error: {characterError}</p>;
@@ -135,12 +149,12 @@ const CharacterDetailPage: React.FC = () => {
                 {/* total uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Total uptime</span>
-                  <span className='font-semibold'>{formatDateFromString(statusData?.last_boot_execution!) || 0}</span>
+                  <span className='font-semibold'>{formatSeconds(totalUptime)}</span>
                 </div>
                 {/* current uptime */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Current uptime</span>
-                  <span className='font-semibold'>{formatDateFromString(statusData?.last_stop_execution!) || 0}</span>
+                  <span className='font-semibold'>{formatSeconds(currentUptime)}</span>
                 </div>
                 {/* status */}
                 <div className='flex flex-col justify-end'>

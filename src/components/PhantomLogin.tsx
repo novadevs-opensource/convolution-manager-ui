@@ -58,7 +58,7 @@ const PhantomLogin: React.FC = () => {
         }
       }
 
-      if (balance.balance > import.meta.env.VITE_MINIMUM_TOKEN_BALANCE) {
+      if (balance.balance >= import.meta.env.VITE_MINIMUM_TOKEN_BALANCE) {
         return balance.balance
       }      
     } catch (error: any) {

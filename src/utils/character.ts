@@ -59,3 +59,16 @@ export function getRandomInt(min: number, max: number): number {
   // The maximum is inclusive and the minimum is inclusive
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function formatSeconds(totalSeconds: number): string {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  // Si quieres mostrar siempre 2 dígitos para horas, minutos y segundos:
+  const h = hours.toString().padStart(2, '0');
+  const m = minutes.toString().padStart(2, '0');
+  const s = seconds.toString().padStart(2, '0');
+
+  return `${h}:${m}:${s}`;
+}
