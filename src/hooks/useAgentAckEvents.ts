@@ -62,6 +62,17 @@ export function useAgentAckEvents({
       return false;
     }
   }, []);
+
+  const revertAgentStatus = (action: string, ackEvent: BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent) => {
+    addNotification(`Failed to ${action} agent`, 'error');
+    updateAgentStatus(ackEvent.agentId, "stopped")
+    .then(_updateSuccess => {
+      addNotification(`Agent status successfully reverted`, "success");
+    })
+    .catch(() => {
+      addNotification(`Something went wrong reverting the agent state`, "error");
+    });
+  }
   
   // Process a single event, TODO: Refactor
   const processEvent = useCallback((event: AgentEvent) => {
@@ -113,7 +124,8 @@ export function useAgentAckEvents({
               addNotification(`Agent started successfully`, "success");
             });
           } else {
-            addNotification(`Failed to start agent`, 'error');
+            // TODO: Add AWS error code
+            revertAgentStatus("start", ackEvent);
           }
           break;
         }
@@ -125,7 +137,8 @@ export function useAgentAckEvents({
               addNotification(`Agent stopped successfully`, "success");
             });
           } else {
-            addNotification(`Failed to stop agent`, 'error');
+            // TODO: Add AWS error code
+            revertAgentStatus("stop", ackEvent);
           }
           break;
         }
@@ -137,7 +150,8 @@ export function useAgentAckEvents({
               addNotification(`Agent updated successfully`, "success");
             });
           } else {
-            addNotification(`Failed to update agent`, 'error');
+            // TODO: Add AWS error code
+            revertAgentStatus("update", ackEvent);
           }
           break;
         }
