@@ -2,7 +2,7 @@
 ##
 ## Project: convolution-manager-ui
 ## Repository: https://github.com/novadevs-opensource/convolution-manager-ui.git
-## Version: 0.0.1
+## Version: 0.0.2
 ## Aim: Deploy the project in AWS S3 static website for production environment.
 
 name: Release to Production
@@ -17,10 +17,8 @@ permissions:
       contents: read    # This is required for actions/checkout
 
 env:
-  PROJECT_NAME: Convolution-Manager-UI
   NODE_VERSION: 23
   DIR_TO_UPLOAD: dist
-  SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 defaults:
   run:
@@ -74,14 +72,86 @@ jobs:
         run: |
           aws s3 sync ./ s3://${{ secrets.AWS_BUCKET }} --delete
 
-      - name: Send success notification if success
-        if: ${{ success() }}
-        uses: pullreminders/slack-action@master
+      # https://github.com/slackapi/slack-github-action
+      - name: Send success notification
+        if: success()
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          args: '{\"channel\":\"${{ secrets.SLACK_CHANNEL }}\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Project:* ${{ env.PROJECT_NAME }}\n\n *Workflow:* ${{ github.workflow }}\"}},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*Repository:*\n${{ github.repository }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Env:*\n\"Prod\"\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*User:*\n${{ github.triggering_actor }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Action:*\nGitHub Actions\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*BuildID:*\n${{ github.run_number }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Status:*\n:white_check_mark:\"}]},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Commit URL:* ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}\"}}]}'
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: "Deployment to Production."
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: ":rocket: :rocket: *Successfully deployed!* :rocket: :rocket:"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Repository:* ${{ github.repository }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Branch:* ${{ github.ref }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Commit:* ${{ github.sha }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Workflow:* ${{ github.workflow }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Run ID:* ${{ github.run_id }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*User:* ${{ github.actor }}"
 
-      - name: Send error notification if failure
-        if: ${{ failure() }}
-        uses: pullreminders/slack-action@master
+      # https://github.com/slackapi/slack-github-action
+      - name: Send failure notification
+        if: failure()
+        uses: slackapi/slack-github-action@v2.0.0
         with:
-          args: '{\"channel\":\"${{ env.SLACK_CHANNEL }}\",\"blocks\":[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Server:* ${{ env.PROJECT_NAME }}\n\n *Workflow:* ${{ github.workflow }}\"}},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*Repository:*\n${{ github.repository }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Env:*\n\"Prod\"\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*User:*\n${{ github.triggering_actor }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Action:*\nGitHub Actions\"}]},{\"type\":\"section\",\"fields\":[{\"type\":\"mrkdwn\",\"text\":\"*BuildID:*\n${{ github.run_number }}\"},{\"type\":\"mrkdwn\",\"text\":\"*Status:*\n:x:\"}]},{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"*Commit URL:* ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}\"}}]}'
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: "Deployment to Production."
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: ":rotating_light: :rotating_light: *Deployment failed!* :rotating_light: :rotating_light:"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Repository:* ${{ github.repository }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Branch:* ${{ github.ref }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Commit:* ${{ github.sha }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Workflow:* ${{ github.workflow }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Run ID:* ${{ github.run_id }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*User:* ${{ github.actor }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Run ID URL:* https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"

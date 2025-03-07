@@ -2,7 +2,7 @@
 ##
 ## Project: convolution-manager-ui
 ## Repository: https://github.com/novadevs-opensource/convolution-manager-ui.git
-## Version: 0.0.1
+## Version: 0.0.2
 ## Aim: Build the project.
 
 name: Check Build
@@ -44,3 +44,47 @@ jobs:
 
       - name: Build the project
         run: npm run build
+
+      # https://github.com/slackapi/slack-github-action
+      - name: Send failure notification
+        if: failure()
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: "Build a Docker image."
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: ":rotating_light: :rotating_light: *Testing Docker image failed!* :rotating_light: :rotating_light:"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Repository:* ${{ github.repository }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Branch:* ${{ github.ref }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Commit:* ${{ github.sha }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Workflow:* ${{ github.workflow }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Run ID:* ${{ github.run_id }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*User:* ${{ github.actor }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Run ID URL:* https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
