@@ -27,7 +27,7 @@ const CharacterDetailPage: React.FC = () => {
   const { userProfile } = useAuth();
   
   // Use hooks for status
-  const { statusData, isRunning, refetch: _refreshStatus } = useRuntimeStatus(id!, 5000);
+  const { statusData, isRunning } = useRuntimeStatus(id!, 5000);
   const [totalUptime, setTotalUptime] = useState<number>(0);
   const [currentUptime, setCurrentUptime] = useState<number>(0);
   // Use hooks for transitions
@@ -38,9 +38,9 @@ const CharacterDetailPage: React.FC = () => {
   // Use agent ACK events hook with autoRefreshStatus=true so it will
   // automatically refresh the status when an ACK event is received
   // No need for a separate effect to do this
-  const {checkForEvents} = useAgentAckEvents({ 
+  useAgentAckEvents({ 
     agentId: id,
-    pollingInterval: 3000,
+    pollingInterval: 5000,
     autoRefreshStatus: true
   });
   
@@ -65,7 +65,6 @@ const CharacterDetailPage: React.FC = () => {
     if (shouldLoadStop) {
       handleStopAgent();
     }
-    checkForEvents();
   }, [shouldLoadBoot, shouldLoadStop])
 
   useEffect(() => {

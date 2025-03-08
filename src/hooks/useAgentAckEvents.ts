@@ -43,9 +43,6 @@ export function useAgentAckEvents({
   useEffect(() => {
     runtimeStatusRef.current = refetch;
   }, [refetch]);
-
-  // Create a ref to track processed event IDs to avoid processing the same event twice
-  const processedEventIds = useRef<Set<string>>(new Set());
   
   /**
    * Update agent status in the database
@@ -63,7 +60,7 @@ export function useAgentAckEvents({
     }
   }, []);
 
-  const revertAgentStatus = (action: string, ackEvent: BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent) => {
+  const revertAgentStatus = useCallback((action: string, ackEvent: BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent) => {
     addNotification(`Failed to ${action} agent`, 'error');
     updateAgentStatus(ackEvent.agentId, "stopped")
     .then(_updateSuccess => {
@@ -72,21 +69,10 @@ export function useAgentAckEvents({
     .catch(() => {
       addNotification(`Something went wrong reverting the agent state`, "error");
     });
-  }
+  }, [addNotification, updateAgentStatus]);
   
-  // Process a single event, TODO: Refactor
+  // Process a single event
   const processEvent = useCallback((event: AgentEvent) => {
-    // Generate a unique ID for this event to avoid processing duplicates
-    const eventId = `${event.action}-${event.agentId}-${event.userId}`;
-    
-    // Skip if we've already processed this event
-    if (processedEventIds.current.has(eventId)) {
-      return;
-    }
-    
-    // Mark this event as processed
-    processedEventIds.current.add(eventId);
-    
     // Add to events list (use functional update to avoid dependencies)
     setEvents(prevEvents => {
       // Check if we already have this event to avoid duplicates
@@ -115,7 +101,7 @@ export function useAgentAckEvents({
       const ackEvent = event as (BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent);
       const success = ackEvent.success === 'true';
       
-      // Process the ACK event based on its type, TODO: Move this "update logic" to the runtime
+      // Process the ACK event based on its type
       switch (ackEvent.action) {
         case 'bootACK': {
           if (success) {
@@ -157,15 +143,19 @@ export function useAgentAckEvents({
         }
       }
       // Refresh status if auto-refresh is enabled
-      if (autoRefreshStatus) {
+      if (autoRefreshStatus && runtimeStatusRef.current) {
         runtimeStatusRef.current();
       }
     }
-  }, [addNotification, autoRefreshStatus, updateAgentStatus]);
+  }, [agentId, addNotification, autoRefreshStatus, revertAgentStatus, updateAgentStatus]);
 
   // Poll for events
   const pollForEvents = useCallback(async () => {
     if (!userProfile?.id) return;
+    if (isPolling) return; // Prevent multiple concurrent polling calls
+    
+    setIsPolling(true);
+    console.log(`Polling for events at ${new Date().toISOString()}`); // Safer way to log date
     
     try {
       const messages = await listenForEvents(userProfile.id);
@@ -184,28 +174,37 @@ export function useAgentAckEvents({
       }
     } catch (err) {
       console.error('Error polling for events:', err);
-    }
-  }, [userProfile?.id, processEvent]);
-
-  // Setup polling - use refs for dependencies to prevent effect from running too often
-  useEffect(() => {
-    if (!userProfile?.id || isPolling) return;
-    
-    // Set initial polling flag
-    setIsPolling(true);
-    
-    // Do initial poll
-    pollForEvents();
-    
-    // Setup interval for polling
-    const intervalId = setInterval(pollForEvents, pollingInterval);
-    
-    // Cleanup
-    return () => {
-      clearInterval(intervalId);
+    } finally {
       setIsPolling(false);
+    }
+  }, [userProfile?.id, isPolling, processEvent]);
+
+  // Setup polling
+  useEffect(() => {
+    // Don't continue if no user ID
+    if (!userProfile?.id) return;
+    
+    // Clear any existing interval if the agentId has changed
+    let intervalId: NodeJS.Timeout;
+    
+    const startPolling = () => {
+      // Do initial poll
+      pollForEvents();
+      
+      // Setup interval for polling
+      intervalId = setInterval(() => {
+        pollForEvents();
+      }, pollingInterval);
     };
-  }, [userProfile?.id, pollingInterval, pollForEvents]); // Added pollForEvents as dependency
+    
+    // Start polling immediately
+    startPolling();
+    
+    // Cleanup function
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [userProfile?.id, agentId, pollingInterval, pollForEvents]); // Include important dependencies
 
   return {
     events,

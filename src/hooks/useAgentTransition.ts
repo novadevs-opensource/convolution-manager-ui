@@ -130,7 +130,7 @@ export function useAgentTransition() {
     
     try {
       // 1. Set status to unknown in the database (just if agent is not stopped)
-      if (runtimeStatus === "stopped") {
+      if (runtimeStatus === "stopped") { // If is a cold update, nothing more to do
         addNotification('Agent update successfully', 'success');
         return true;
       }
