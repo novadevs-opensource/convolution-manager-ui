@@ -57,7 +57,7 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
         formData.append('files', file);
       });
       // Aquí se hace la llamada a la API (cambia la URL según corresponda)
-      const response = await fetch('http://0.0.0.0:4001/api/process-files', {
+      const response = await fetch(`${process.env.HOST}:${process.env.PORT}/api/process-files`, {
         method: 'POST',
         body: formData,
       });

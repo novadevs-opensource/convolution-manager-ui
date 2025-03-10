@@ -18,10 +18,26 @@ export interface CharacterData {
       TWITTER_USERNAME?: string,
       TWITTER_PASSWORD?: string,
       TWITTER_EMAIL?: string,
+      TWITTER_COOKIES_AUTH_TOKEN?: string,
+      TWITTER_COOKIES_CT0?: string,
+      TWITTER_COOKIES_GUEST_ID?: string,
     };
     voice: {
       model: string;
     };
+    // X Settings
+    TWITTER_POLL_INTERVAL?: number,
+    POST_INTERVAL_MIN?: number,
+    POST_INTERVAL_MAX?: number,
+    // --
+    ACTION_INTERVAL?: number,
+    MAX_ACTIONS_PROCESSING?: number,
+    // --
+    ACTION_TIMELINE_TYPE?: string,
+    // --
+    POST_IMMEDIATELY?: boolean
+    // --
+    TWITTER_TARGET_USERS?: string,
   };
   plugins: unknown[];
   bio: string[];
