@@ -6,7 +6,8 @@ import {
   BootAgentAckEvent, 
   StopAgentAckEvent, 
   UpdateAgentAckEvent, 
-  AgentEvent 
+  AgentEvent, 
+  ackErrorCodeMessages
 } from '../types/commEvents';
 import { useAuth } from './useAuth';
 import { useRuntimeStatus } from './useRuntimeStatus';
@@ -110,8 +111,7 @@ export function useAgentAckEvents({
               addNotification(`Agent started successfully`, "success");
             });
           } else {
-            // TODO: Add AWS error code
-            console.error(ackEvent);
+            console.error(ackEvent.errorCode ? ackErrorCodeMessages[ackEvent.errorCode] : 'Unknown error', ackEvent);
             revertAgentStatus("start", ackEvent);
           }
           break;
@@ -124,8 +124,7 @@ export function useAgentAckEvents({
               addNotification(`Agent stopped successfully`, "success");
             });
           } else {
-            // TODO: Add AWS error code
-            console.error(ackEvent);
+            console.error(ackEvent.errorCode ? ackErrorCodeMessages[ackEvent.errorCode] : 'Unknown error', ackEvent);
             revertAgentStatus("stop", ackEvent);
           }
           break;
@@ -138,8 +137,7 @@ export function useAgentAckEvents({
               addNotification(`Agent updated successfully`, "success");
             });
           } else {
-            // TODO: Add AWS error code
-            console.error(ackEvent);
+            console.error(ackEvent.errorCode ? ackErrorCodeMessages[ackEvent.errorCode] : 'Unknown error', ackEvent);
             revertAgentStatus("update", ackEvent);
           }
           break;
