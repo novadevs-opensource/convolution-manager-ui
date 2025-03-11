@@ -60,15 +60,14 @@ export function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function formatSeconds(totalSeconds: number): string {
+export function formatSeconds(totalSeconds: number, withSeconds: boolean = true): string {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  // Si quieres mostrar siempre 2 dígitos para horas, minutos y segundos:
   const h = hours.toString().padStart(2, '0');
   const m = minutes.toString().padStart(2, '0');
   const s = seconds.toString().padStart(2, '0');
 
-  return `${h}:${m}:${s}`;
+  return withSeconds ? `${h}:${m}:${s}` : `${h}:${m}`;
 }

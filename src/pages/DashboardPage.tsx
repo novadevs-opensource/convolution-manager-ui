@@ -14,14 +14,20 @@ import { MdOutlineSupportAgent } from "react-icons/md";
 import { IoIosPlay } from "react-icons/io";
 import { getTokenBalance } from '../utils/web3/getTokenBalance';
 import { useAuth } from '../hooks/useAuth';
+import { formatSeconds } from '../utils/character';
+import { PiSpinnerBallDuotone } from "react-icons/pi";
+
 
 
 const DashboardPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { agents, loading, error, pagination } = useCharacters(currentPage);
+  const {agents: allAgents, loading: loadingAllAgents} = useCharacters(1, 1000);
   const {totalCredits: remainingCredits, totalUsage: totalCreditsUsage, loading: loadingCredits} = useCredits();
   const { userProfile } = useAuth();
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+  const [totalUptime, setTotalUptime] = useState<number>();
+  const [runningAgents, setRunningAgents] = useState<number>();
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -41,6 +47,13 @@ const DashboardPage: React.FC = () => {
     };
     fetchBalance();
   }, [userProfile?.wallet_address]);
+
+  useEffect(() => {
+    if (allAgents.length > 0) {
+      setTotalUptime(allAgents.reduce((accumulator, current: Agent) => accumulator + current.uptime_total_seconds, 0))
+      setRunningAgents(allAgents.filter((agent: Agent) => agent.status === 'running').length);
+    }
+  }, [allAgents]);
 
   return (
     <div>
@@ -73,7 +86,7 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Open Router credit balance</p>
-            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? '--' : remainingCredits}</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : remainingCredits}</h4>
           </div>
         </div>
         {/* used credits */}
@@ -87,7 +100,7 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Open Router used credits</p>
-            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? '--' : totalCreditsUsage}</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : totalCreditsUsage}</h4>
           </div>
         </div>
         {/* total uptime */}
@@ -101,7 +114,7 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Total uptime</p>
-            <h4 className="text-xl font-bold text-navy-700 ">TODO</h4>
+            <h4 className="text-xl font-bold text-navy-700 w-full flex flex-row">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : formatSeconds(totalUptime ?? 0, false)}</h4>
           </div>
         </div>
         {/* Total agents */}
@@ -129,7 +142,7 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
             <p className="font-dm text-sm font-medium text-gray-600">Running agents</p>
-            <h4 className="text-xl font-bold text-navy-700 ">TODO</h4>
+            <h4 className="text-xl font-bold text-navy-700 ">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : runningAgents}</h4>
           </div>
         </div>
       </div>
@@ -138,7 +151,7 @@ const DashboardPage: React.FC = () => {
 
       <div className="w-full flex justify-between items-center mb-3 mt-1">
         <div>
-          <h3 className="text-lg font-semibold text-slate-800">Your vInfluencers</h3>
+          <h3 className="text-lg font-semibold text-slate-800 flex flex-row gap-2">Your vInfluencers {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
           <p className="text-slate-500">Overview of your created vInfluencers.</p>
         </div>
         <div className="ml-3">
