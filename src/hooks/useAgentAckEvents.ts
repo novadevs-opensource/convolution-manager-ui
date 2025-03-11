@@ -111,6 +111,7 @@ export function useAgentAckEvents({
             });
           } else {
             // TODO: Add AWS error code
+            console.error(ackEvent);
             revertAgentStatus("start", ackEvent);
           }
           break;
@@ -124,6 +125,7 @@ export function useAgentAckEvents({
             });
           } else {
             // TODO: Add AWS error code
+            console.error(ackEvent);
             revertAgentStatus("stop", ackEvent);
           }
           break;
@@ -137,6 +139,7 @@ export function useAgentAckEvents({
             });
           } else {
             // TODO: Add AWS error code
+            console.error(ackEvent);
             revertAgentStatus("update", ackEvent);
           }
           break;
