@@ -21,6 +21,7 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
     { name: 'Home', path: '/dashboard', icon: <GrHomeRounded />},
     { name: 'Profile', path: '/profile', icon: <GrSettingsOption />},
     { name: 'Create vInfluencer', path: '/agent/character', icon: <GrUserAdd/>},
+    { name: 'Test', path: '/test'},
   ]
 
   // Toggle sidebar visibility

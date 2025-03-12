@@ -12,6 +12,7 @@ import CreateCharacterPage from '../pages/character/CreateCharacterPage';
 import RegisterPage from '../pages/RegisterPage';
 import PublicLayout from '../components/common/layouts/public/PublicLayout';
 import ProfilePage from '../pages/ProfilePage';
+import Test from '../pages/Test';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -71,6 +72,14 @@ const AppRoutes: React.FC = () => {
         element={
           <PrivateRoute pageTitle='Create vInfluencer'>
             <CreateCharacterPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/test"
+        element={
+          <PrivateRoute pageTitle='Create vInfluencer avatar'>
+            <Test />
           </PrivateRoute>
         }
       />
