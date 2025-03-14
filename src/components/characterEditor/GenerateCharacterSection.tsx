@@ -15,7 +15,6 @@ interface GenerateCharacterSectionProps {
 
 const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   onGenerateCharacter,
-  onRefineCharacter,
 }) => {
   const [model, setModel] = useState<string>('');
   const [savedApiKey, setSavedApiKey] = useState<string | null>(null);
@@ -78,29 +77,6 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
     }
   };
 
-  const handleRefine = async () => {
-    if (!prompt.trim()) {
-      setStatus('Please enter refinement instructions');
-      return;
-    }
-    if (!model) {
-      setStatus('Please select a model');
-      return;
-    }
-    if (!savedApiKey) {
-      setStatus('Please set your OpenRouter API key');
-      return;
-    }
-
-    setStatus('Refining character...');
-    try {
-      await onRefineCharacter(prompt, model, savedApiKey);
-      setStatus('Character refined successfully');
-    } catch (err: any) {
-      setStatus(`Error: ${err.message}`);
-    }
-  };
-
   return (
     <CharacterEditorSection
       title={'Autogenerate settings with AI'}
@@ -127,14 +103,20 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       <FormGroup>
         <GenericTextArea
           label='Seed prompt'
-          name='character-prompt'
+          name='character-prompt-box'
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Describe your character in detail..."
           value={prompt}
+          showCharCount={true}
+          maxLength={650}
+          className='h-[250px]'
+          plain={true}
         />
         <div className="flex flex-row gap-2">
           <Button className='w-[120px]' onClick={handleGenerate} label={'Generate'} icon='fa-bolt'/>
+          {/*
           <Button className='w-[120px]' onClick={handleRefine} label={'Refine'} icon='fa-wand-sparkles'/>
+          */}
         </div>
         <div id="prompt-status" className="error">
           {status}

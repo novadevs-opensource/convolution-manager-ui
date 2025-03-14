@@ -62,7 +62,7 @@ const DashboardPage: React.FC = () => {
 
       <div className="md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         {/* $CNVLTN balance */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3">
               <span className="flex items-center text-brand-500">
@@ -76,7 +76,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* remaining credits */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
               <span className="flex items-center text-brand-500 ">
@@ -90,7 +90,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* used credits */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
               <span className="flex items-center text-brand-500 ">
@@ -104,7 +104,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* total uptime */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
               <span className="flex items-center text-brand-500 ">
@@ -118,7 +118,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* Total agents */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
+        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
               <span className="flex items-center text-brand-500 ">
@@ -132,7 +132,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         {/* running agents */}
-        <div className="relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
+        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
               <span className="flex items-center text-brand-500 ">
@@ -163,7 +163,7 @@ const DashboardPage: React.FC = () => {
         <table className="w-full text-left table-auto min-w-max">
           <thead>
             <tr>
-              <th className="p-4 border-b border-slate-200 bg-slate-50">
+              <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
                 <p className="text-sm font-normal leading-none text-slate-500">
                   ID
                 </p>
@@ -178,12 +178,12 @@ const DashboardPage: React.FC = () => {
                   Clients
                 </p>
               </th>
-              <th className="p-4 border-b border-slate-200 bg-slate-50">
+              <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
                 <p className="text-sm font-normal leading-none text-slate-500">
                   Created at
                 </p>
               </th>
-              <th className="p-4 border-b border-slate-200 bg-slate-50">
+              <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
                 <p className="text-sm font-normal leading-none text-slate-500">
                   Updated at
                 </p>
@@ -193,29 +193,29 @@ const DashboardPage: React.FC = () => {
           <tbody>
             {agents.map((agent: Agent) => (
               <tr key={agent.id} className="hover:bg-slate-50 border-b border-slate-200">
-                <td className="p-4 py-5">
+                <td className="sm:table-cell hidden p-4 py-2">
                   <p className="block font-semibold text-sm text-slate-800">
                     <Link to={`/agent/${agent.id}`}>{agent.id}</Link>
                   </p>
                 </td>
-                <td className="p-4 py-5">
+                <td className="p-4 py-2">
                   <p className="text-sm text-slate-500">
-                    {agent.definition.name}
+                    <Link to={`/agent/${agent.id}`}>{agent.definition.name}</Link>
                   </p>
                 </td>
-                <td className="p-4 py-5">
-                  <p className="text-sm text-slate-500">
+                <td className="p-4 py-2">
+                  <p className="text-sm text-slate-500 gap-2 flex flex-row">
                     {agent.definition.clients.map((client: string, index: number) => (
                       <span className='rounded-xl bg-black text-white px-3 py-1' key={index}>{client}</span>
                     ))}
                   </p>
                 </td>
-                <td className="p-4 py-5">
+                <td className="sm:table-cell hidden p-4 py-2">
                   <p className="text-sm text-slate-500">
                     {agent.created_at}
                   </p>
                 </td>
-                <td className="p-4 py-5">
+                <td className="sm:table-cell hidden p-4 py-2">
                   <p className="text-sm text-slate-500">
                     {agent.updated_at}
                   </p>

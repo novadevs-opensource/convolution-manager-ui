@@ -41,7 +41,7 @@ const CharacterDetailPage: React.FC = () => {
 
   // Use avatar events hook
   const { 
-    latestImageUrl: avatar, 
+    latestImageUrl: avatarFromGeneration, 
     isGenerating: isGeneratingAvatar,
     generateAvatar, 
     cancelGeneration ,
@@ -138,12 +138,13 @@ const CharacterDetailPage: React.FC = () => {
             </h2>
           </div>
 
-          <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow'>
-            <div className='p-4 -mr-4'>
-              <img src={avatar ?? convolutionLogoBlack} className={`h-[100px] ${isGeneratingAvatar ? 'animate-pulse' : ''} `} alt="convolution logo"/>
-            </div>
+          <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow p-4'>
+            <div 
+              className={`h-[120px] w-[120px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 ${!avatarFromGeneration && true ? 'animate-pulse' : ''}`}
+              style={{background: `url(${avatarFromGeneration ?? convolutionLogoBlack}`}} 
+            />
 
-            <div className='flex flex-col gap-4 p-4 flex-grow w-full'>
+            <div className='flex flex-col gap-4 flex-grow sm:w-auto w-full'>
               {/* name, status */}
               <div className='flex sm:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between relative'>
                 <div className='flex sm:flex-row flex-col gap-6'>
@@ -418,7 +419,7 @@ const CharacterDetailPage: React.FC = () => {
       </div>
 
       {/* navigation */}
-      <div className='p-4 border rounded-lg fixed bg-white shadow-xl sm:right-6 sm:top-[30%] top-[75%] right-2 z-[10]'>
+      <div className='p-4 border rounded-lg fixed bg-white shadow-xl sm:right-6 right-2 sm:bottom-[5%] sm:top-[auto] top-[30%] z-[10]'>
         <div className='flex flex-row gap-2'>
           <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
           <span className='text-xl'>Available controls</span>
@@ -445,6 +446,7 @@ const CharacterDetailPage: React.FC = () => {
             icon='fa-image' 
             label={isGeneratingAvatar ? 'Generating...' : 'Generate Avatar'}
             disabled={isGeneratingAvatar}
+            className='animate-pulse'
           />
           {isGeneratingAvatar && (
             <Button 

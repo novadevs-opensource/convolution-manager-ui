@@ -98,6 +98,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                     onChange={(e) =>
                       handleUserMessageChange(index, e.target.value)
                     }
+                    plain={true}
                   ></GenericTextArea>
                 </div>
                 <div className="message-pair">
@@ -108,6 +109,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                     onChange={(e) =>
                       handleCharacterMessageChange(index, e.target.value)
                     }
+                    plain={true}
                   ></GenericTextArea>
                 </div>
                 <button

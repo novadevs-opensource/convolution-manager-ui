@@ -116,7 +116,7 @@ const GenericTextInput = forwardRef<HTMLInputElement, GenericTextInputProps>(({
                         ${isInvalid ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}
                         ${iconSource ? 'pl-10' : ''}
                         ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}
-                        ${plain ? 'border' : 'border shadow-sm'}
+                        ${plain ? 'border' : 'border shadow-md'}
                         ${className || ''}
                     `}
                     {...props}

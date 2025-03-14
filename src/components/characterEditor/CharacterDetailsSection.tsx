@@ -31,6 +31,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
           value={character.bio}
           onChange={(newValue: string[]) => handleInputChange('bio', newValue)}
           splitOnBlur={true}
+          plain={true}
         />
         <SplitTextArea
           id="lore"
@@ -39,6 +40,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
           value={character.lore}
           onChange={(newValue: string[]) => handleInputChange('lore', newValue)}
           splitOnBlur={true}
+          plain={true}
         />
         <SplitTextArea
           label='Topics'
@@ -47,6 +49,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
           value={character.topics}
           onChange={(newValue: string[]) => handleInputChange('topics', newValue)}
           splitOnBlur={true}
+          plain={true}
         />
       </CharacterEditorSection>
 
@@ -66,6 +69,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
           value={character.style?.all}
           onChange={(newValue: string[]) => handleInputChange('style.all', newValue)}
           splitOnBlur={true}
+          plain={true}
         />
         <SplitTextArea
           label='Chat Style'
@@ -74,6 +78,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
           value={character.style?.chat}
           onChange={(newValue: string[]) => handleInputChange('style.chat', newValue)}
           splitOnBlur={true}
+          plain={true}
         />
         <SplitTextArea
           label='Post Style'
@@ -82,6 +87,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
           value={character.style?.post}
           onChange={(newValue: string[]) => handleInputChange('style.post', newValue)}
           splitOnBlur={true}
+          plain={true}
         />
       </CharacterEditorSection>
     </div>

@@ -78,8 +78,9 @@ const ProfilePage: React.FC = () => {
             iconSource={<i className="fa fa-wallet"></i>}
             value={userProfile?.wallet_address || ''}
             disabled={true}
+            plain={true}
           />
-          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+          <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
               <div className="rounded-full bg-lightPrimary p-3 ">
                 <span className="flex items-center text-brand-500 ">
@@ -97,37 +98,40 @@ const ProfilePage: React.FC = () => {
       </CharacterEditorSection>
       <CharacterEditorSection title={'API key'} headerIcon={<i className="fa fa-key"></i>}>
         <FormGroup>
-          <div className="flex flex-row gap-2 items-end">
+          <div className="flex flex-col sm:flex-row gap-2 items-end">
             <GenericTextInput 
               label="OpenRouter API key"
               iconSource={<i className="fa fa-key"></i>}
               value={apiKeyInput}
               onChange={(e) => setApiKeyInput(e.target.value)}
+              plain={true}
             />
-            {key && (
-              <button
-                id="remove-key"
-                className="border-2 border-black bg-black hover:bg-white text-white hover:text-black rounded-md h-fit py-3 px-4 mb-4"
-                title="Remove API Key"
-                onClick={handleRemoveApiKey}
-              >
-                <i className="fa-solid fa-trash"></i>
-              </button>
-            )}
-            {apiKeyInput && (
-              <button
-                id="save-key"
-                className="border-2 border-black bg-black hover:bg-white text-white hover:text-black rounded-md h-fit py-3 px-4 mb-4"
-                title="Save API Key"
-                onClick={handleSaveApiKey}
-              >
-                <i className="fa-solid fa-save"></i>
-              </button>
-            )}
+            <div className='flex flex-row gap-2 sm:self-end self-start'>
+              {key && (
+                <button
+                  id="remove-key"
+                  className="shadow-md border-2 border-black bg-black hover:bg-white text-white hover:text-black rounded-md h-fit py-2 px-3 mb-4"
+                  title="Remove API Key"
+                  onClick={handleRemoveApiKey}
+                >
+                  <i className="fa-solid fa-trash"></i>
+                </button>
+              )}
+              {apiKeyInput && (
+                <button
+                  id="save-key"
+                  className="shadow-md border-2 border-black bg-black hover:bg-white text-white hover:text-black rounded-md h-fit py-2 px-3 mb-4"
+                  title="Save API Key"
+                  onClick={handleSaveApiKey}
+                >
+                  <i className="fa-solid fa-save"></i>
+                </button>
+              )}
+            </div>
           </div>
         </FormGroup>
         {creditsData && (
-          <div className="relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
+          <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
               <div className="rounded-full bg-lightPrimary p-3 ">
                 <span className="flex items-center text-brand-500 ">

@@ -166,7 +166,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                   {/* post interval and timeline settings */}
                   <FormGroup className='flex sm:flex-row flex-col sm:w-8/12 w-full'>
                     <GenericNumberInput
-                      plain={true} 
+                      plain={true}
                       label='Post min Interval Settings (in minutes)'
                       name=''
                       placeholder="90"
@@ -174,7 +174,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                       value={character.settings?.POST_INTERVAL_MIN ?? 90}
                     />
                     <GenericNumberInput
-                      plain={true} 
+                      plain={true}
                       label='Post max Interval Settings (in minutes)'
                       name=''
                       placeholder="180"
@@ -184,7 +184,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                   </FormGroup>
                   <FormGroup className='flex sm:flex-row flex-col w-8/12 items-end'>
                     <GenericNumberInput
-                      plain={true} 
+                      plain={true}
                       label='How often (in seconds) the bot should check for interactions (mentions and replies)'
                       name=''
                       placeholder="120"

@@ -33,7 +33,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   return (
     <div className="flex flex-col">
       <div 
-        className={`flex cursor-pointer items-center justify-between border border-gray-300 ${getBorderRadiusClasses()} bg-gray-200 px-4 py-2`}
+        className={`flex cursor-pointer items-center justify-between border border-gray-300 ${getBorderRadiusClasses()} bg-gray-100 px-4 py-2`}
         onClick={onToggle}
       >
         <span>{title}</span>
