@@ -112,7 +112,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
           className='h-[250px]'
           plain={true}
         />
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 sm:justify-start justify-end">
           <Button className='w-[120px]' onClick={handleGenerate} label={'Generate'} icon='fa-bolt'/>
           {/*
           <Button className='w-[120px]' onClick={handleRefine} label={'Refine'} icon='fa-wand-sparkles'/>

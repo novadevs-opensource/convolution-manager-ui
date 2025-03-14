@@ -46,7 +46,7 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
   };
 
   return (
-    <div className="two-columns">
+    <div className="grid sm:grid-cols-2 grid-row-1 gap-4">
       <CharacterEditorSection
         title={'Adjectives'}
         headerIcon={

@@ -8,7 +8,7 @@ interface CharacterEditorSectionProps {
 
 const CharacterEditorSection = ({ children, containerClassNames, headerClassNames, headerIcon, title}: CharacterEditorSectionProps) => {
     return (
-        <section className={containerClassNames ?? 'border rounded-md mb-4 shadow-sm'}>
+        <section className={containerClassNames ?? 'border rounded-md mb-4 shadow-sm bg-white'}>
             {/* header */}
             <div className={headerClassNames ?? "flex flex-row items-center gap-2 p-4 bg-gray-200"}>
                 {headerIcon ? (

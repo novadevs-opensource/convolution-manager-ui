@@ -14,7 +14,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
   handleInputChange,
 }) => {
   return (
-    <div className="two-columns">
+    <div className="grid sm:grid-cols-2 grid-row-1 gap-4">
       {/* Character Details */}
       <CharacterEditorSection
         title={'Character Details'}

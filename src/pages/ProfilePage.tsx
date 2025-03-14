@@ -98,7 +98,7 @@ const ProfilePage: React.FC = () => {
       </CharacterEditorSection>
       <CharacterEditorSection title={'API key'} headerIcon={<i className="fa fa-key"></i>}>
         <FormGroup>
-          <div className="flex flex-col sm:flex-row gap-2 items-end">
+          <div className="flex flex-col md:flex-row gap-2 items-end">
             <GenericTextInput 
               label="OpenRouter API key"
               iconSource={<i className="fa fa-key"></i>}

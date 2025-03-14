@@ -9,6 +9,7 @@ import { ApiKeyService } from '../../services/apiKeyService';
 import { useToasts } from '../../hooks/useToasts';
 import { CharacterData } from '../../types';
 import Button from '../../components/common/Button';
+import ActionToolsBlock from '../../components/common/ActionToolsBlock';
 
 const CreateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -85,12 +86,7 @@ const CreateCharacterPage: React.FC = () => {
   return (
     <div>
       {/* navigation */}
-      <div className='p-4 border rounded-lg fixed bg-white shadow-xl sm:right-6 right-2 sm:bottom-[5%] sm:top-[auto] top-[30%] z-[10]'>
-        <div className='flex flex-row gap-2'>
-          <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
-          <span className='text-xl'>Available controls</span>
-        </div>
-        <div className='flex flex-col gap-4 mt-4'>
+        <ActionToolsBlock>
           <SaveAgentButton 
             onClick={handleSave}
             loading={isSaving}
@@ -103,8 +99,7 @@ const CreateCharacterPage: React.FC = () => {
             icon='fa-angle-left' 
             label={'Back'}
           />
-        </div>
-      </div>
+        </ActionToolsBlock>
 
       <CharacterEditor 
         userId={userProfile.id}

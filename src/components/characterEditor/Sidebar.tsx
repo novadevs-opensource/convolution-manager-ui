@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   onRefineCharacter,
 }) => {
   return (
-    <div className="">
+    <div className="md:w-[30%] md:max-w-[350px]">
       <GenerateCharacterSection
         onGenerateCharacter={onGenerateCharacter}
         onRefineCharacter={onRefineCharacter}

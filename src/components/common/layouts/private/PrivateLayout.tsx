@@ -61,7 +61,7 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
             Menu
           </button>
         </div>
-        <div className="p-4 bg-white rounded-lg border">
+        <div className="sm:p-4 p-1 sm:bg-white sm:rounded-lg sm:border">
           {children}
         </div>
       </main>

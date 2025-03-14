@@ -11,6 +11,7 @@ import { CharacterData } from '../../types';
 import { useToasts } from '../../hooks/useToasts';
 import { ApiKeyService } from '../../services/apiKeyService';
 import Button from '../../components/common/Button';
+import ActionToolsBlock from '../../components/common/ActionToolsBlock';
 
 const EditCharacterPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -124,12 +125,7 @@ const EditCharacterPage: React.FC = () => {
   return (
     <div>
       {/* navigation */}
-      <div className='p-4 border rounded-lg fixed bg-white shadow-xl sm:right-6 right-2 sm:bottom-[5%] sm:top-[auto] top-[30%] z-[10]'>
-        <div className='flex flex-row gap-2'>
-          <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
-          <span className='text-xl'>Available controls</span>
-        </div>
-        <div className='flex flex-col gap-4 mt-4'>
+        <ActionToolsBlock>
           <UpdateAgentButton 
             onClick={() => setShouldLoadUpdate(true)}
             loading={shouldLoadUpdate}
@@ -141,8 +137,7 @@ const EditCharacterPage: React.FC = () => {
             label={'Back'}
             disabled={shouldLoadUpdate}
           />
-        </div>
-      </div>
+        </ActionToolsBlock>
 
       <CharacterEditor 
         userId={userProfile.id} 

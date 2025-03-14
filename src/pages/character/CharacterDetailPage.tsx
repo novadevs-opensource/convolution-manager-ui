@@ -22,9 +22,13 @@ import StopAgentButton from '../../components/agent/buttons/StopAgentButton';
 import MasonryPostsLayout from '../../components/agent/MasonryPosts';
 
 import convolutionLogoBlack from '../../assets/images/convolution-square-black.svg';
+import ActionToolsBlock from '../../components/common/ActionToolsBlock';
+import GenericTextArea from '../../components/inputs/GenericTextArea';
+import { useToasts } from '../../hooks/useToasts';
 
 const CharacterDetailPage: React.FC = () => {
   let navigate = useNavigate();
+  const { addNotification } = useToasts();
   const { id } = useParams<{ id: string }>();
   const { character, loading: characterLoading, error: characterError } = useCharacter(id!);
   const { userProfile } = useAuth();
@@ -39,12 +43,14 @@ const CharacterDetailPage: React.FC = () => {
   const [shouldLoadBoot, setShouldLoadBoot] = useState<boolean>(false);
   const [shouldLoadStop, setShouldLoadStop] = useState<boolean>(false);
 
+  const [showModal, setShowModal] = useState<boolean>();
+  const [avatarPromt, setAvatarPromt] = useState<string>();
+
   // Use avatar events hook
   const { 
     latestImageUrl: avatarFromGeneration, 
     isGenerating: isGeneratingAvatar,
-    generateAvatar, 
-    cancelGeneration ,
+    generateAvatar,
   } = useAvatarEvents({
     agentId: id,
     pollingInterval: 5000,
@@ -110,11 +116,12 @@ const CharacterDetailPage: React.FC = () => {
    * Handle avatar generation request
    */
   const handleGenerateAvatar = async () => {
-    if (!userProfile?.id || !character?.id) return;
+    if (!userProfile?.id || !character?.id || !avatarPromt || avatarPromt.length < 20) {
+      addNotification('Prompt must be at least 20 characters length', 'error')
+      return;
+    };
     
-    // Example prompt - you can customize or allow user input
-    const prompt = "very similar to wednesday of the addams family";
-    await generateAvatar(prompt);
+    await generateAvatar(avatarPromt);
   };
 
   const handleSaveFinalAvatarUrl = (url: string) => {
@@ -129,7 +136,7 @@ const CharacterDetailPage: React.FC = () => {
   return (
     <>
       {/* summary */}
-      <div className='flex sm:flex-row flex-col gap-4 mb-12'>
+      <div className='flex md:flex-row flex-col gap-4 mb-12'>
         {/* general */}
         <div className='flex flex-col gap-4 sm:w-8/12 w-full flex-grow '>
           <div className='px-4 py-2 bg-gray-50 border-gray-200 border rounded-lg'>
@@ -138,9 +145,9 @@ const CharacterDetailPage: React.FC = () => {
             </h2>
           </div>
 
-          <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow p-4'>
+          <div className='flex md:flex-row flex-col items-center gap-4 border rounded-lg flex-grow p-4'>
             {!avatarFromGeneration ? (
-              <div className='p-4 -mr-4'>
+              <div className='p-4'>
                 <img src={convolutionLogoBlack} className={`h-[100px] w-[100px] animate-pulse`} alt="convolution logo"/>
               </div>
             ) : (
@@ -153,8 +160,8 @@ const CharacterDetailPage: React.FC = () => {
 
             <div className='flex flex-col gap-4 flex-grow sm:w-auto w-full'>
               {/* name, status */}
-              <div className='flex sm:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between relative'>
-                <div className='flex sm:flex-row flex-col gap-6'>
+              <div className='flex md:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between relative'>
+                <div className='flex md:flex-row flex-col gap-6'>
                   {/* name */}
                   <div className='flex flex-row gap-4'>
                     <div className='flex flex-col'>
@@ -174,7 +181,7 @@ const CharacterDetailPage: React.FC = () => {
               </div>
 
               {/* created_at, model, clients */}
-              <div className='flex sm:flex-row flex-col gap-6'>
+              <div className='flex md:flex-row flex-col gap-6'>
                 {/* created at */}
                 <div className='flex flex-col'>
                   <span className='text-sm text-black-light'>Created at</span>
@@ -216,7 +223,7 @@ const CharacterDetailPage: React.FC = () => {
           </h2>
         </div>
 
-        <div className='flex sm:flex-row flex-col gap-4'>
+        <div className='flex md:flex-row flex-col gap-4'>
           {/* biography card*/}
           <div className="flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg sm:w-1/3 w-full">
             <div className="mx-3 mb-0 border-b border-slate-200 pt-3 pb-2 px-1">
@@ -285,7 +292,7 @@ const CharacterDetailPage: React.FC = () => {
           </h2>
         </div> 
 
-        <div className='flex sm:flex-row flex-col gap-4'>
+        <div className='flex md:flex-row flex-col gap-4'>
           {/* all style */}
           <div className="flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg sm:w-1/3 w-full">
             <div className="mx-3 mb-0 border-b border-slate-200 pt-3 pb-2 px-1">
@@ -354,7 +361,7 @@ const CharacterDetailPage: React.FC = () => {
           </h2>
         </div>
       
-        <div className='flex sm:flex-row flex-col gap-4 mb-[600px]'>
+        <div className='flex md:flex-row flex-col gap-4 mb-[600px]'>
           {/* chat */}
           <div className="relative bg-white p-6 rounded-lg border border-[#e5e7eb] sm:w-[440px] w-full">
             {/* Heading */}
@@ -425,13 +432,8 @@ const CharacterDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* navigation */}
-      <div className='p-4 border rounded-lg fixed bg-white shadow-xl sm:right-6 right-2 sm:bottom-[5%] sm:top-[auto] top-[30%] z-[10]'>
-        <div className='flex flex-row gap-2'>
-          <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
-          <span className='text-xl'>Available controls</span>
-        </div>
-        <div className='flex flex-col gap-4 mt-4'>
+        {/* navigation */}
+        <ActionToolsBlock>
           <StartAgentButton 
             onClick={() => setShouldLoadBoot(true)} 
             isRunning={isRunning} 
@@ -449,21 +451,90 @@ const CharacterDetailPage: React.FC = () => {
             disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
           />
           <Button 
-            onClick={() => handleGenerateAvatar()} 
+            onClick={() => setShowModal(true)} 
             icon='fa-image' 
             label={isGeneratingAvatar ? 'Generating...' : 'Generate Avatar'}
             disabled={isGeneratingAvatar}
             className='animate-pulse'
           />
-          {isGeneratingAvatar && (
-            <Button 
-              onClick={cancelGeneration} 
-              icon='fa-stop'
-              label={'Cancel'}
-            />
-          )}
-        </div>
-      </div>
+        </ActionToolsBlock>
+
+      
+      {/* modal */}
+      {showModal && (
+        <>
+          {/* Overlay background - separate layer for the dark background */}
+          <div 
+            className="fixed inset-0 bg-gray-900 bg-opacity-75 z-40 transition-opacity"
+            onClick={() => setShowModal(false)}
+          ></div>
+          
+          {/* Modal container with flexbox centering */}
+          <div 
+            id="default-modal" 
+            tabIndex={-1} 
+            aria-hidden="true" 
+            className="overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <div className="relative w-full max-w-2xl max-h-full">
+              {/* Modal content */}
+              <div className="relative bg-white rounded-lg shadow-lg dark:bg-gray-700 animate-fadeIn">
+                {/* Modal header */}
+                <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Add face to your vInfluencer
+                  </h3>
+                  <button 
+                    onClick={() => setShowModal(false)} 
+                    type="button" 
+                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span className="sr-only">Close modal</span>
+                  </button>
+                </div>
+                
+                {/* Modal body */}
+                <div className="p-4 md:p-5 space-y-4 overflow-y-auto">
+                  {!avatarFromGeneration ? (
+                    <div className='p-4 justify-center flex flex-row'>
+                      <img src={convolutionLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="convolution logo"/>
+                    </div>
+                  ) : (
+                    <div className='p-4 justify-center flex flex-row'>
+                      <div 
+                        className={`h-[250px] w-[250px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
+                        style={{background: `url(${avatarFromGeneration}`}} 
+                      />
+                    </div>
+                  )}
+                  <GenericTextArea
+                    placeholder="Write an example user message..."
+                    className="user-message"
+                    value={avatarPromt}
+                    onChange={(e) => setAvatarPromt(e.target.value)}
+                    plain={true}
+                    maxLength={200}
+                    showCharCount={true}
+                  ></GenericTextArea>
+                </div>
+                
+                {/* Modal footer */}
+                <div className="flex items-center gap-2 justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                  <Button 
+                    onClick={() => handleGenerateAvatar()} 
+                    label={isGeneratingAvatar ? 'Generating...' : 'Generate face'}
+                    disabled={isGeneratingAvatar}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
     </>
   );
 };

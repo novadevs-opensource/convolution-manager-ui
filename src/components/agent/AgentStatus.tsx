@@ -58,11 +58,11 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       
     case 'stopped':
       return (
-        <div className={`border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
+        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
           <span className='text-black-light text-xs'>
             Stopped
           </span>
-          <span className='text-red-400 text-xs'>
+          <span className='text-red-400'>
             <FaCircle />
           </span>
         </div>
@@ -70,11 +70,11 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       
     case 'unknown':
       return (
-        <div className={`border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
+        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
           <span className='text-black-light text-xs'>
             Pending
           </span>
-          <span className='text-orange-400 text-xs animate-ping'>
+          <span className='text-orange-400 animate-ping'>
             <FaCircle />
           </span>
         </div>
@@ -82,11 +82,11 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       
     default:
       return (
-        <div className={`border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
+        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
           <span className='text-black-light text-xs'>
             Offline
           </span>
-          <span className='text-gray-400 text-xs'>
+          <span className='text-gray-400'>
             <FaCircle />
           </span>
         </div>

@@ -99,7 +99,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
       content: showTwitterConfigForm && (
                 <>
                   {/* credentials */}
-                  <FormGroup className='flex sm:flex-row flex-col'>
+                  <FormGroup className='flex md:flex-row flex-col'>
                     <GenericTextInput
                       plain={true} 
                       label='X account handler (without @)'
@@ -129,7 +129,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                     />
                   </FormGroup>
                   {/* cookies */}
-                  <FormGroup className='flex sm:flex-row flex-col'>
+                  <FormGroup className='flex md:flex-row flex-col'>
                     <GenericTextInput
                       plain={true} 
                       label='X account cookie auth_token'
@@ -156,7 +156,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                     />
                   </FormGroup>
                   {/* post immediately */}
-                  <FormGroup className='flex sm:flex-row flex-col'>
+                  <FormGroup className='flex md:flex-row flex-col'>
                     <GenericCheckboxInput
                       label='Generate a new post immediately the agent is started or every time is updated while is running'
                       checked={character.settings?.POST_IMMEDIATELY}
@@ -164,7 +164,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                     />
                   </FormGroup>
                   {/* post interval and timeline settings */}
-                  <FormGroup className='flex sm:flex-row flex-col sm:w-8/12 w-full'>
+                  <FormGroup className='flex md:flex-row flex-col sm:w-8/12 w-full'>
                     <GenericNumberInput
                       plain={true}
                       label='Post min Interval Settings (in minutes)'
@@ -182,7 +182,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                       value={character.settings?.POST_INTERVAL_MAX ?? 180}
                     />
                   </FormGroup>
-                  <FormGroup className='flex sm:flex-row flex-col w-8/12 items-end'>
+                  <FormGroup className='flex md:flex-row flex-col w-8/12 items-end'>
                     <GenericNumberInput
                       plain={true}
                       label='How often (in seconds) the bot should check for interactions (mentions and replies)'
@@ -201,7 +201,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                       label='Type of timeline to interact with.'
                     />
                   </FormGroup>
-                  <FormGroup className='flex sm:flex-row flex-col sm:w-8/12 w-full'>
+                  <FormGroup className='flex md:flex-row flex-col sm:w-8/12 w-full'>
                     <GenericNumberInput
                       plain={true} 
                       label='Interval in minutes between timeline processing runs evaluating if some of the timeline posts need to be retweeted quoted or replied'
@@ -391,7 +391,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
   };
 
   return (
-    <div className="flex flex-row gap-4">
+    <div className="flex md:flex-row flex-col gap-4">
       <Sidebar
         onLoadCharacter={handleLoadCharacter}
         backups={backups}
@@ -412,7 +412,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
             </button>
           }
         >
-          <FormGroup className='flex sm:flex-row flex-col'>
+          <FormGroup className='flex md:flex-row flex-col'>
             <GenericTextInput
                 plain={true} 
               label='Character Name'
@@ -450,7 +450,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
           </FormGroup>
 
         {/* TODO: Enable when X spaces are ready
-          <FormGroup className='flex sm:flex-row flex-col'>
+          <FormGroup className='flex md:flex-row flex-col'>
             <GenericTextInput
               plain={true} 
               label='Voice Model'

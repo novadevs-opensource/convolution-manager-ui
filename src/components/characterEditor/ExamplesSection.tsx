@@ -89,7 +89,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
           </div>
           <div id="message-examples-container">
             {messageExamples?.map((example, index) => (
-              <div key={index} className="message-example">
+              <div key={index} className="message-example bg-gray-50 p-2 border-gray-100 border rounded">
                 <div className="message-pair">
                   <GenericTextArea
                     placeholder="Write an example user message..."
