@@ -126,6 +126,7 @@ const CharacterDetailPage: React.FC = () => {
 
   const handleSaveFinalAvatarUrl = (url: string) => {
     console.log(url);
+    setShowModal(false);
     // TODO: Backend request to update avatar
   }
 
