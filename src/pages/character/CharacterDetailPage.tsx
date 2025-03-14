@@ -139,10 +139,17 @@ const CharacterDetailPage: React.FC = () => {
           </div>
 
           <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow p-4'>
-            <div 
-              className={`h-[120px] w-[120px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 ${!avatarFromGeneration && true ? 'animate-pulse' : ''}`}
-              style={{background: `url(${avatarFromGeneration ?? convolutionLogoBlack}`}} 
-            />
+            {!avatarFromGeneration ? (
+              <div className='p-4 -mr-4'>
+                <img src={convolutionLogoBlack} className={`h-[100px] w-[100px] animate-pulse`} alt="convolution logo"/>
+              </div>
+            ) : (
+              <div 
+                className={`h-[100px] w-[100px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
+                style={{background: `url(${avatarFromGeneration}`}} 
+              />
+            )}
+            
 
             <div className='flex flex-col gap-4 flex-grow sm:w-auto w-full'>
               {/* name, status */}
