@@ -8,8 +8,11 @@ import { formatDateFromString, formatSeconds } from '../../utils/character';
 import { useCharacter } from '../../hooks/useCharacter';
 import { useRuntimeStatus } from '../../hooks/useRuntimeStatus';
 import { useAgentTransition } from '../../hooks/useAgentTransition';
-import { useAgentAckEvents } from '../../hooks/useAgentAckEvents';
+import { useAgentAckEvents } from '../../hooks/useAgentAckEvents'; // Keep using the original hook name
+import { useAvatarEvents } from '../../hooks/useAvatarEvents';
 import { useAuth } from '../../hooks/useAuth';
+
+import { GenerateAvatarResponseEvent } from '../../types/commEvents';
 
 import ClientStatus from '../../components/agent/ClientStatus';
 import AgentStatus from '../../components/agent/AgentStatus';
@@ -30,14 +33,27 @@ const CharacterDetailPage: React.FC = () => {
   const { statusData, isRunning } = useRuntimeStatus(id!, 5000);
   const [totalUptime, setTotalUptime] = useState<number>(0);
   const [currentUptime, setCurrentUptime] = useState<number>(0);
+  
   // Use hooks for transitions
   const { startAgent, stopAgent, loading: transitionLoading } = useAgentTransition();
   const [shouldLoadBoot, setShouldLoadBoot] = useState<boolean>(false);
   const [shouldLoadStop, setShouldLoadStop] = useState<boolean>(false);
+
+  // Use avatar events hook
+  const { 
+    latestImageUrl: avatar, 
+    isGenerating: isGeneratingAvatar,
+    generateAvatar, 
+    cancelGeneration ,
+  } = useAvatarEvents({
+    agentId: id,
+    pollingInterval: 5000,
+    onFinalEvent: (event: GenerateAvatarResponseEvent) => handleSaveFinalAvatarUrl(event.image_url)
+  });
   
-  // Use agent ACK events hook with autoRefreshStatus=true so it will
-  // automatically refresh the status when an ACK event is received
-  // No need for a separate effect to do this
+  // Use agent ACK events hook with autoRefreshStatus=true
+  // This will automatically refresh the status when an ACK event is received
+  // Keep using useAgentAckEvents for backward compatibility
   useAgentAckEvents({ 
     agentId: id,
     pollingInterval: 5000,
@@ -65,7 +81,7 @@ const CharacterDetailPage: React.FC = () => {
     if (shouldLoadStop) {
       handleStopAgent();
     }
-  }, [shouldLoadBoot, shouldLoadStop])
+  }, [shouldLoadBoot, shouldLoadStop]);
 
   useEffect(() => {
     if (statusData?.status === "running") {
@@ -80,7 +96,7 @@ const CharacterDetailPage: React.FC = () => {
     setCurrentUptime(Math.round(statusData?.current_uptime || 0));
     setTotalUptime(Math.round((statusData?.uptime_total_seconds || 0) + (currentUptime || 0)));
 
-    // The code below is to increase uptimes second by second isntead to wait for every backend refresh
+    // The code below is to increase uptimes second by second instead of waiting for every backend refresh
     const intervalId = setInterval(() => {
       setTotalUptime((prevCounter: number) => prevCounter + (statusData?.status === "running" ? 1 : 0));
       setCurrentUptime((prevCounter: number) => prevCounter + (statusData?.status === "running" ? 1 : 0));
@@ -88,10 +104,27 @@ const CharacterDetailPage: React.FC = () => {
 
     // Clear interval when component is unmounted
     return () => clearInterval(intervalId);
-  }, [statusData])
+  }, [statusData]);
+
+  /**
+   * Handle avatar generation request
+   */
+  const handleGenerateAvatar = async () => {
+    if (!userProfile?.id || !character?.id) return;
+    
+    // Example prompt - you can customize or allow user input
+    const prompt = "very similar to wednesday of the addams family";
+    await generateAvatar(prompt);
+  };
+
+  const handleSaveFinalAvatarUrl = (url: string) => {
+    console.log(url);
+    // TODO: Backend request to update avatar
+  }
 
   if (characterLoading) return <p>Loading character...</p>;
   if (characterError) return <p>Error: {characterError}</p>;
+
 
   return (
     <>
@@ -107,7 +140,7 @@ const CharacterDetailPage: React.FC = () => {
 
           <div className='flex sm:flex-row flex-col items-center gap-4 border rounded-lg flex-grow'>
             <div className='p-4 -mr-4'>
-              <img src={convolutionLogoBlack} className="h-[100px] opacity-60" alt="convolution logo"/>
+              <img src={avatar ?? convolutionLogoBlack} className={`h-[100px] ${isGeneratingAvatar ? 'animate-pulse' : ''} `} alt="convolution logo"/>
             </div>
 
             <div className='flex flex-col gap-4 p-4 flex-grow w-full'>
@@ -386,7 +419,10 @@ const CharacterDetailPage: React.FC = () => {
 
       {/* navigation */}
       <div className='p-4 border rounded-lg fixed bg-white shadow-xl sm:right-6 sm:top-[30%] top-[75%] right-2 z-[10]'>
-        <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
+        <div className='flex flex-row gap-2'>
+          <span className='fa-solid fa-gear text-xl fa-spin inline-flex'></span>
+          <span className='text-xl'>Available controls</span>
+        </div>
         <div className='flex flex-col gap-4 mt-4'>
           <StartAgentButton 
             onClick={() => setShouldLoadBoot(true)} 
@@ -402,8 +438,21 @@ const CharacterDetailPage: React.FC = () => {
             onClick={() => navigate(`/agent/character/${character?.id}`)} 
             icon='fa-pencil' 
             label={'Edit'}
-            disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
+            disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
           />
+          <Button 
+            onClick={() => handleGenerateAvatar()} 
+            icon='fa-image' 
+            label={isGeneratingAvatar ? 'Generating...' : 'Generate Avatar'}
+            disabled={isGeneratingAvatar}
+          />
+          {isGeneratingAvatar && (
+            <Button 
+              onClick={cancelGeneration} 
+              icon='fa-stop'
+              label={'Cancel'}
+            />
+          )}
         </div>
       </div>
     </>

@@ -74,7 +74,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
           <span className='text-black-light text-xs'>
             Pending
           </span>
-          <span className='text-orange-400 text-xs animate-pulse'>
+          <span className='text-orange-400 text-xs animate-ping'>
             <FaCircle />
           </span>
         </div>

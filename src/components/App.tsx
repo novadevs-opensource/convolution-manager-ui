@@ -23,10 +23,11 @@ const App: React.FC = () => {
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
     const handleError = (e: ErrorEvent) => {
+      console.error(e);
       if (
-        e.message.includes('The message port closed') ||
-        e.message.includes('crypto.randomUUID') ||
-        e.message.includes('Failed to fetch chrome-extension')
+        e.message?.includes('The message port closed') ||
+        e.message?.includes('crypto.randomUUID') ||
+        e.message?.includes('Failed to fetch chrome-extension')
       ) {
         e.stopImmediatePropagation();
         return true;
