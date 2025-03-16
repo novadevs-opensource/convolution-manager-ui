@@ -47,6 +47,7 @@ const CharacterDetailPage: React.FC = () => {
   const [shouldLoadStop, setShouldLoadStop] = useState<boolean>(false);
 
   const [avatarPromt, setAvatarPromt] = useState<string>();
+  // Just for DEBUG const avatarFromGeneration = "http://127.0.0.1:4566/convolution-localstack-bucket/done/image.png"
 
   // Use avatar events hook
   const { 
@@ -150,13 +151,17 @@ const CharacterDetailPage: React.FC = () => {
 
           <div className='flex md:flex-row flex-col items-center gap-4 border rounded-lg flex-grow p-4'>
             {!avatarFromGeneration ? (
-              <div className='p-4'>
+              <div 
+                className='p-4 cursor-pointer'
+                onClick={() => avatarModal.open()} 
+              >
                 <img src={convolutionLogoBlack} className={`h-[100px] w-[100px] animate-pulse`} alt="convolution logo"/>
               </div>
             ) : (
               <div 
                 className={`h-[100px] w-[100px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
                 style={{background: `url(${avatarFromGeneration}`}} 
+                onClick={() => avatarModal.open()} 
               />
             )}
             
@@ -455,8 +460,8 @@ const CharacterDetailPage: React.FC = () => {
         />
         <Button 
           onClick={() => avatarModal.open()} 
-          icon='fa-image' 
-          label={isGeneratingAvatar ? 'Generating...' : 'Generate Avatar'}
+          icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
+          label={isGeneratingAvatar ? 'Generating' : 'Generate Avatar'}
           disabled={isGeneratingAvatar}
           className='animate-pulse'
         />
@@ -479,8 +484,9 @@ const CharacterDetailPage: React.FC = () => {
             />
             <Button 
               onClick={() => handleGenerateAvatar()} 
-              label={isGeneratingAvatar ? 'Generating...' : 'Create anime face'}
-              disabled={isGeneratingAvatar}
+              icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
+              label={isGeneratingAvatar ? 'Generating' : 'Create anime face'}
+              disabled={isGeneratingAvatar || !avatarPromt }
               className='!px-6'
             />
           </div>
@@ -500,9 +506,25 @@ const CharacterDetailPage: React.FC = () => {
             )}
           </div>
         ) : (
-          <div className='p-4 justify-center flex flex-row'>
+          <div className='flex items-center justify-center m-auto size-fit group'>
+            <Button 
+              className='!p-4 absolute duration-300 group-hover:opacity-100 opacity-0 transition-opacity z-10' 
+              onClick={() => {
+                const downloadImage = (url: string) => {
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = url.split('/').pop() || 'image.png';
+                  
+                  link.style.display = 'none';
+                  link.click();
+                };
+                
+                downloadImage(avatarFromGeneration);
+              }}
+              icon="fa fa-download"
+            />
             <div 
-              className={`h-[250px] w-[250px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
+              className={`h-[250px] w-[250px] flex !bg-cover cursor-pointer group-hover:opacity-60 ease-in-out duration-300`}
               style={{background: `url(${avatarFromGeneration}`}} 
             />
           </div>
@@ -515,6 +537,7 @@ const CharacterDetailPage: React.FC = () => {
           plain={true}
           maxLength={200}
           showCharCount={true}
+          disabled={isGeneratingAvatar}
         />
       </Modal>
     </>

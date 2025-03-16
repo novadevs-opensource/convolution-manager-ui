@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 
 interface ButtonProps {
   onClick: () => void;
-  label: string;
+  label?: string;
   icon?: string | ReactNode;
   disabled?: boolean;
   className?: string;
@@ -30,7 +30,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       {icon && typeof icon === 'string' && <i className={`fa-solid ${icon} min-w-[15px]`}></i>}
       {icon && typeof icon === 'object' && icon}
-      <span>{label}</span> 
+      {label && <span>{label}</span>}
 
     </button>
   );
