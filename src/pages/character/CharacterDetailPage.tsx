@@ -25,6 +25,8 @@ import convolutionLogoBlack from '../../assets/images/convolution-square-black.s
 import ActionToolsBlock from '../../components/common/ActionToolsBlock';
 import GenericTextArea from '../../components/inputs/GenericTextArea';
 import { useToasts } from '../../hooks/useToasts';
+import Modal from '../../components/common/Modal';
+import useModal from '../../hooks/useModal';
 
 const CharacterDetailPage: React.FC = () => {
   let navigate = useNavigate();
@@ -32,6 +34,7 @@ const CharacterDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { character, loading: characterLoading, error: characterError } = useCharacter(id!);
   const { userProfile } = useAuth();
+  const avatarModal = useModal();
   
   // Use hooks for status
   const { statusData, isRunning } = useRuntimeStatus(id!, 5000);
@@ -43,7 +46,6 @@ const CharacterDetailPage: React.FC = () => {
   const [shouldLoadBoot, setShouldLoadBoot] = useState<boolean>(false);
   const [shouldLoadStop, setShouldLoadStop] = useState<boolean>(false);
 
-  const [showModal, setShowModal] = useState<boolean>();
   const [avatarPromt, setAvatarPromt] = useState<string>();
 
   // Use avatar events hook
@@ -126,7 +128,7 @@ const CharacterDetailPage: React.FC = () => {
 
   const handleSaveFinalAvatarUrl = (url: string) => {
     console.log(url);
-    setShowModal(false);
+    avatarModal.close();
     // TODO: Backend request to update avatar
   }
 
@@ -452,7 +454,7 @@ const CharacterDetailPage: React.FC = () => {
           disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
         />
         <Button 
-          onClick={() => setShowModal(true)} 
+          onClick={() => avatarModal.open()} 
           icon='fa-image' 
           label={isGeneratingAvatar ? 'Generating...' : 'Generate Avatar'}
           disabled={isGeneratingAvatar}
@@ -461,79 +463,42 @@ const CharacterDetailPage: React.FC = () => {
       </ActionToolsBlock>
 
       {/* avatar modal */}
-      {showModal && (
-        <>
-          {/* Overlay background - separate layer for the dark background */}
-          <div 
-            className="fixed inset-0 bg-gray-900 bg-opacity-75 z-40 transition-opacity"
-            onClick={() => setShowModal(false)}
-          ></div>
-          
-          {/* Modal container with flexbox centering */}
-          <div 
-            id="default-modal" 
-            tabIndex={-1} 
-            aria-hidden="true" 
-            className="overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex items-center justify-center p-4"
-          >
-            <div className="relative w-full max-w-2xl max-h-full">
-              {/* Modal content */}
-              <div className="relative bg-white rounded-lg shadow-lg dark:bg-gray-700 animate-fadeIn">
-                {/* Modal header */}
-                <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Add face to your vInfluencer
-                  </h3>
-                  <button 
-                    onClick={() => setShowModal(false)} 
-                    type="button" 
-                    className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                    <span className="sr-only">Close modal</span>
-                  </button>
-                </div>
-                
-                {/* Modal body */}
-                <div className="p-4 md:p-5 space-y-4 overflow-y-auto">
-                  {!avatarFromGeneration ? (
-                    <div className='p-4 justify-center flex flex-row'>
-                      <img src={convolutionLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="convolution logo"/>
-                    </div>
-                  ) : (
-                    <div className='p-4 justify-center flex flex-row'>
-                      <div 
-                        className={`h-[250px] w-[250px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
-                        style={{background: `url(${avatarFromGeneration}`}} 
-                      />
-                    </div>
-                  )}
-                  <GenericTextArea
-                    placeholder="Write an example user message..."
-                    className="user-message"
-                    value={avatarPromt}
-                    onChange={(e) => setAvatarPromt(e.target.value)}
-                    plain={true}
-                    maxLength={200}
-                    showCharCount={true}
-                  ></GenericTextArea>
-                </div>
-                
-                {/* Modal footer */}
-                <div className="flex items-center gap-2 justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                  <Button 
-                    onClick={() => handleGenerateAvatar()} 
-                    label={isGeneratingAvatar ? 'Generating...' : 'Generate face'}
-                    disabled={isGeneratingAvatar}
-                  />
-                </div>
-              </div>
-            </div>
+      <Modal
+        ref={avatarModal.modalRef}
+        title="Add face to your vInfluencer"
+        animation='slide'
+        animationDuration={300}
+        maxWidth={'lg'}
+        footer={
+          <Button 
+            onClick={() => handleGenerateAvatar()} 
+            label={isGeneratingAvatar ? 'Generating...' : 'Generate face'}
+            disabled={isGeneratingAvatar}
+          />
+        }
+      >
+        {!avatarFromGeneration ? (
+          <div className='p-4 justify-center flex flex-row'>
+            <img src={convolutionLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="convolution logo"/>
           </div>
-        </>
-      )}
+        ) : (
+          <div className='p-4 justify-center flex flex-row'>
+            <div 
+              className={`h-[250px] w-[250px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
+              style={{background: `url(${avatarFromGeneration}`}} 
+            />
+          </div>
+        )}
+        <GenericTextArea
+          placeholder="Write an example user message..."
+          className="user-message"
+          value={avatarPromt}
+          onChange={(e) => setAvatarPromt(e.target.value)}
+          plain={true}
+          maxLength={200}
+          showCharCount={true}
+        />
+      </Modal>
     </>
   );
 };

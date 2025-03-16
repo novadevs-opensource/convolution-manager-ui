@@ -60,7 +60,31 @@ export default {
       fontFamily: {
         "sans": ['Afacad', 'sans-serif'],
         "anek-latin": ['Anek Latin', 'sans-serif'],
-      }
+      },
+      animation: {
+        'fadein': 'fadeIn 0.3s ease-in-out',
+        'slidein': 'slideIn 0.3s ease-in-out',
+        'fadeout': 'fadeOut 0.3s ease-in-out',
+        'slideout': 'slideOut 0.3s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideIn: {
+          '0%': { transform: 'translateY(-10%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        slideOut: {
+          '0%': { transform: 'translateY(0)', opacity: '1' },
+          '100%': { transform: 'translateY(-10%)', opacity: '0' },
+        },
+      },
     },
   },
   plugins: [
