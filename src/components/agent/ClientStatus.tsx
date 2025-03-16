@@ -63,7 +63,7 @@ const ClientStatus: React.FC<ClientStatusProps> = ({ character }) => {
   };
 
   // Lista de clientes para renderizar
-  const clientsToRender: Client[] = ['telegram', 'twitter', 'discord', 'direct', 'farcaster'];
+  const clientsToRender: Client[] = ['telegram', 'twitter'];
 
   return (
     <div className='grid grid-cols-2 gap-2'>
