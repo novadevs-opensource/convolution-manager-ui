@@ -470,16 +470,34 @@ const CharacterDetailPage: React.FC = () => {
         animationDuration={300}
         maxWidth={'lg'}
         footer={
-          <Button 
-            onClick={() => handleGenerateAvatar()} 
-            label={isGeneratingAvatar ? 'Generating...' : 'Generate face'}
-            disabled={isGeneratingAvatar}
-          />
+          <div className='grid grid-cols-2 gap-2'>
+            <Button 
+              onClick={() => handleGenerateAvatar()} 
+              label={'Create vision face'}
+              disabled={true}
+              className='!px-6'
+            />
+            <Button 
+              onClick={() => handleGenerateAvatar()} 
+              label={isGeneratingAvatar ? 'Generating...' : 'Create anime face'}
+              disabled={isGeneratingAvatar}
+              className='!px-6'
+            />
+          </div>
         }
       >
         {!avatarFromGeneration ? (
-          <div className='p-4 justify-center flex flex-row'>
-            <img src={convolutionLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="convolution logo"/>
+          <div className='justify-center flex flex-row'>
+            {isGeneratingAvatar ? (
+              <div className={`h-[250px] w-full flex justify-center items-center gap-2 border rounded-md`}>
+                <i className='fa fa-gear fa-spin'/>
+                <span>Your request is in queue...</span>
+              </div>
+            ) : (
+              <div className='p-4 border rounded-md w-full flex justify-center'>
+                <img src={convolutionLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="convolution logo"/>
+              </div>
+            )}
           </div>
         ) : (
           <div className='p-4 justify-center flex flex-row'>
