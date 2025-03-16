@@ -20,7 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = ''
 }) => {
-  const buttonClass = 'inline-flex py-2 lg:px-14 px-9 shadow-md font-normal font-afacad uppercase justify-center rounded-full border-2 border-black transition-colors bg-black-dark items-center gap-2';
+  const buttonClass = 'flex flex-row min-w[120px] py-2 px-6 gap-4 shadow-md font-normal font-afacad uppercase justify-start items-center rounded-full border-2 border-black transition-colors bg-black-dark';
   
   return (
     <button 
@@ -28,9 +28,10 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
     >
-      <span>{label}</span> 
-      {icon && typeof icon === 'string' && <i className={`fa-solid ${icon}`}></i>}
+      {icon && typeof icon === 'string' && <i className={`fa-solid ${icon} min-w-[15px]`}></i>}
       {icon && typeof icon === 'object' && icon}
+      <span>{label}</span> 
+
     </button>
   );
 };

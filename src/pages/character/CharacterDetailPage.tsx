@@ -450,7 +450,7 @@ const CharacterDetailPage: React.FC = () => {
         <Button 
           onClick={() => navigate(`/agent/character/${character?.id}`)} 
           icon='fa-pencil' 
-          label={'Edit'}
+          label={`Edit ICON settings`}
           disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
         />
         <Button 
@@ -465,7 +465,7 @@ const CharacterDetailPage: React.FC = () => {
       {/* avatar modal */}
       <Modal
         ref={avatarModal.modalRef}
-        title="Add face to your vInfluencer"
+        title="Add face to your ICON"
         animation='slide'
         animationDuration={300}
         maxWidth={'lg'}

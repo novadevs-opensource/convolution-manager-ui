@@ -30,7 +30,7 @@ const StartAgentButton: React.FC<StartAgentButtonProps> = ({
   return (
     <Button
       onClick={onClick}
-      label={loading ? "Pending..." : "Start"}
+      label={loading ? "Pending..." : "Run ICON"}
       icon={loading ? "fa-spinner fa-spin" : "fa-play"}
       disabled={disabled || loading}
       className={className}

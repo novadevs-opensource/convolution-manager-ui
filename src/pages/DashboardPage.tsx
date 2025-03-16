@@ -127,7 +127,7 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">Created agents</p>
+            <p className="font-dm text-sm font-medium text-gray-600">Created ICONs</p>
             <h4 className="text-xl font-bold text-navy-700 ">{pagination?.total}</h4>
           </div>
         </div>
@@ -141,7 +141,7 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">Running agents</p>
+            <p className="font-dm text-sm font-medium text-gray-600">Running ICONs</p>
             <h4 className="text-xl font-bold text-navy-700 ">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : runningAgents}</h4>
           </div>
         </div>
@@ -151,8 +151,8 @@ const DashboardPage: React.FC = () => {
 
       <div className="w-full flex justify-between items-center mb-3 mt-1">
         <div>
-          <h3 className="text-lg font-semibold text-slate-800 flex flex-row gap-2">Your vInfluencers {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
-          <p className="text-slate-500">Overview of your created vInfluencers.</p>
+          <h3 className="text-lg font-semibold text-slate-800 flex flex-row gap-2">Your ICONs {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
+          <p className="text-slate-500">Overview of your created ICONs.</p>
         </div>
         <div className="ml-3">
           {/* TODO: search */}

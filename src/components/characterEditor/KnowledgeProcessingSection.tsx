@@ -164,7 +164,7 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
         </div>
         {/* Botón para procesar archivos */}
         <div className="process-controls">
-          <Button disabled={processing} className='w-[120px]' onClick={handleProcessKnowledge} label={'Generate'} icon='fa-gears'/>
+          <Button disabled={processing} onClick={handleProcessKnowledge} label={'Generate'} icon='fa-gears'/>
         </div>
         {/* Visualización y edición del conocimiento */}
         <div className="knowledge-display">
