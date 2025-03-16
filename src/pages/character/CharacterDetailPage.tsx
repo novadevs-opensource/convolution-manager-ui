@@ -433,35 +433,34 @@ const CharacterDetailPage: React.FC = () => {
         </div>
       </div>
 
-        {/* navigation */}
-        <ActionToolsBlock>
-          <StartAgentButton 
-            onClick={() => setShouldLoadBoot(true)} 
-            isRunning={isRunning} 
-            loading={shouldLoadBoot || transitionLoading || statusData?.status === "unknown"} 
-          />
-          <StopAgentButton 
-            onClick={() => setShouldLoadStop(true)} 
-            isRunning={isRunning} 
-            loading={shouldLoadStop || transitionLoading || statusData?.status === "unknown"} 
-          />
-          <Button 
-            onClick={() => navigate(`/agent/character/${character?.id}`)} 
-            icon='fa-pencil' 
-            label={'Edit'}
-            disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
-          />
-          <Button 
-            onClick={() => setShowModal(true)} 
-            icon='fa-image' 
-            label={isGeneratingAvatar ? 'Generating...' : 'Generate Avatar'}
-            disabled={isGeneratingAvatar}
-            className='animate-pulse'
-          />
-        </ActionToolsBlock>
+      {/* navigation */}
+      <ActionToolsBlock>
+        <StartAgentButton 
+          onClick={() => setShouldLoadBoot(true)} 
+          isRunning={isRunning} 
+          loading={shouldLoadBoot || transitionLoading || statusData?.status === "unknown"} 
+        />
+        <StopAgentButton 
+          onClick={() => setShouldLoadStop(true)} 
+          isRunning={isRunning} 
+          loading={shouldLoadStop || transitionLoading || statusData?.status === "unknown"} 
+        />
+        <Button 
+          onClick={() => navigate(`/agent/character/${character?.id}`)} 
+          icon='fa-pencil' 
+          label={'Edit'}
+          disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
+        />
+        <Button 
+          onClick={() => setShowModal(true)} 
+          icon='fa-image' 
+          label={isGeneratingAvatar ? 'Generating...' : 'Generate Avatar'}
+          disabled={isGeneratingAvatar}
+          className='animate-pulse'
+        />
+      </ActionToolsBlock>
 
-      
-      {/* modal */}
+      {/* avatar modal */}
       {showModal && (
         <>
           {/* Overlay background - separate layer for the dark background */}
@@ -535,7 +534,6 @@ const CharacterDetailPage: React.FC = () => {
           </div>
         </>
       )}
-
     </>
   );
 };
