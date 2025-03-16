@@ -391,7 +391,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
   };
 
   return (
-    <div className="flex md:flex-row flex-col gap-4">
+    <div className="sm:grid sm:grid-cols-4 flex flex-col gap-4">
       <Sidebar
         onLoadCharacter={handleLoadCharacter}
         backups={backups}
@@ -402,7 +402,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
         onGenerateCharacter={handleGenerateCharacter}
         onRefineCharacter={handleRefineCharacter}
       />
-      <div className="flex-grow">
+      <div className="col-span-3">
         {/* Basic Information */}
         <CharacterEditorSection
           title={'Basic Information'}

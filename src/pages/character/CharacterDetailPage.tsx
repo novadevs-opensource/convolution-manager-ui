@@ -461,7 +461,7 @@ const CharacterDetailPage: React.FC = () => {
         <Button 
           onClick={() => avatarModal.open()} 
           icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
-          label={isGeneratingAvatar ? 'Generating' : 'Generate Avatar'}
+          label={isGeneratingAvatar ? 'Generating avatar...' : 'Generate avatar'}
           disabled={isGeneratingAvatar}
           className='animate-pulse'
         />
@@ -475,20 +475,22 @@ const CharacterDetailPage: React.FC = () => {
         animationDuration={300}
         maxWidth={'lg'}
         footer={
-          <div className='grid grid-cols-2 gap-2'>
-            <Button 
-              onClick={() => handleGenerateAvatar()} 
-              label={'Create vision face'}
-              disabled={true}
-              className='!px-6'
-            />
-            <Button 
-              onClick={() => handleGenerateAvatar()} 
-              icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
-              label={isGeneratingAvatar ? 'Generating' : 'Create anime face'}
-              disabled={isGeneratingAvatar || !avatarPromt }
-              className='!px-6'
-            />
+          <div className='w-full'>
+            <div className='flex flex-row gap-2'>
+              <Button 
+                onClick={() => handleGenerateAvatar()} 
+                label={'Create vision face'}
+                disabled={true}
+                className='!px-6'
+              />
+              <Button 
+                onClick={() => handleGenerateAvatar()} 
+                icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
+                label={isGeneratingAvatar ? 'Creating face...' : 'Create anime face'}
+                disabled={isGeneratingAvatar || !avatarPromt }
+                className='!px-6'
+              />
+            </div>
           </div>
         }
       >
