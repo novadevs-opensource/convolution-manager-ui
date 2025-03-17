@@ -89,6 +89,9 @@ export interface Agent {
   last_stop_execution: string | null;
   uptime_total_seconds: number;
   execution_id: string | null; // Always null when agent is previously as "stopped"
+  face_image_generation_prompt: string | null;
+  face_image_path: string | null;
+
 }
 
 export type RuntimeStatus = 'running' | 'stopped' | 'unknown' | null;

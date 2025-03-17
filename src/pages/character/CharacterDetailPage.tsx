@@ -27,6 +27,7 @@ import GenericTextArea from '../../components/inputs/GenericTextArea';
 import { useToasts } from '../../hooks/useToasts';
 import Modal from '../../components/common/Modal';
 import useModal from '../../hooks/useModal';
+import useAgent from '../../hooks/useAgent';
 
 const CharacterDetailPage: React.FC = () => {
   let navigate = useNavigate();
@@ -35,6 +36,8 @@ const CharacterDetailPage: React.FC = () => {
   const { character, loading: characterLoading, error: characterError } = useCharacter(id!);
   const { userProfile } = useAuth();
   const avatarModal = useModal();
+
+  const { updateAvatarHandler } = useAgent();
   
   // Use hooks for status
   const { statusData, isRunning } = useRuntimeStatus(id!, 5000);
@@ -47,7 +50,7 @@ const CharacterDetailPage: React.FC = () => {
   const [shouldLoadStop, setShouldLoadStop] = useState<boolean>(false);
 
   const [avatarPromt, setAvatarPromt] = useState<string>();
-  // Just for DEBUG const avatarFromGeneration = "http://127.0.0.1:4566/convolution-localstack-bucket/done/image.png"
+  const [agentAvatar, setAgentAvatar] = useState<string>();
 
   // Use avatar events hook
   const { 
@@ -57,7 +60,7 @@ const CharacterDetailPage: React.FC = () => {
   } = useAvatarEvents({
     agentId: id,
     pollingInterval: 5000,
-    onFinalEvent: (event: GenerateAvatarResponseEvent) => handleSaveFinalAvatarUrl(event.image_url)
+    onFinalEvent: (event: GenerateAvatarResponseEvent) => handleSaveFinalAvatarUrl(event.agentId, event.prompt, event.image_url)
   });
   
   // Use agent ACK events hook with autoRefreshStatus=true
@@ -115,6 +118,18 @@ const CharacterDetailPage: React.FC = () => {
     return () => clearInterval(intervalId);
   }, [statusData]);
 
+  useEffect(() => {
+    if (character?.face_image_path) {
+      setAgentAvatar(`${import.meta.env.VITE_AVATAR_BUCKET_BASE_URL}/${character.face_image_path}`)
+    }
+  }, [character]);
+
+  useEffect(() => {
+    if (avatarFromGeneration) {
+      setAgentAvatar(avatarFromGeneration)
+    }
+  }, [avatarFromGeneration]);
+
   /**
    * Handle avatar generation request
    */
@@ -127,10 +142,33 @@ const CharacterDetailPage: React.FC = () => {
     await generateAvatar(avatarPromt);
   };
 
-  const handleSaveFinalAvatarUrl = (url: string) => {
-    console.log(url);
+  const handleSaveFinalAvatarUrl = async (agentId: string, promt: string, url: string) => {
+    try {
+      await updateAvatarHandler(
+        agentId, 
+        url,
+        promt,
+        {
+          onSuccess: async () => {
+            addNotification('Updated', 'success');
+          },
+          onError: (error) => {
+            if ('errors' in error) {
+              // Format validation errors
+              const messages = Object.entries(error.errors)
+                .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+                .join('; ');
+              addNotification(`Error updating agent: ${messages}`, 'error');
+            } else {
+              addNotification(`Error updating agent: ${error.message}`, 'error');
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error updating avatar:', error);
+    }
     avatarModal.close();
-    // TODO: Backend request to update avatar
   }
 
   if (characterLoading) return <p>Loading character...</p>;
@@ -150,7 +188,7 @@ const CharacterDetailPage: React.FC = () => {
           </div>
 
           <div className='flex md:flex-row flex-col items-center gap-4 border rounded-lg flex-grow p-4'>
-            {!avatarFromGeneration ? (
+            {!agentAvatar ? (
               <div 
                 className='p-4 cursor-pointer'
                 onClick={() => avatarModal.open()} 
@@ -159,8 +197,8 @@ const CharacterDetailPage: React.FC = () => {
               </div>
             ) : (
               <div 
-                className={`h-[100px] w-[100px] flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
-                style={{background: `url(${avatarFromGeneration}`}} 
+                className={`h-[100px] w-[100px] rounded rounded-lg flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
+                style={{background: `url(${agentAvatar}`}} 
                 onClick={() => avatarModal.open()} 
               />
             )}
@@ -494,7 +532,7 @@ const CharacterDetailPage: React.FC = () => {
           </div>
         }
       >
-        {!avatarFromGeneration ? (
+        {!agentAvatar && isGeneratingAvatar ? (
           <div className='justify-center flex flex-row'>
             {isGeneratingAvatar ? (
               <div className={`h-[250px] w-full flex justify-center items-center gap-2 border rounded-md`}>
@@ -521,20 +559,20 @@ const CharacterDetailPage: React.FC = () => {
                   link.click();
                 };
                 
-                downloadImage(avatarFromGeneration);
+                downloadImage(agentAvatar!);
               }}
               icon="fa fa-download"
             />
             <div 
               className={`h-[250px] w-[250px] flex !bg-cover cursor-pointer group-hover:opacity-60 ease-in-out duration-300`}
-              style={{background: `url(${avatarFromGeneration}`}} 
+              style={{background: `url(${agentAvatar}`}} 
             />
           </div>
         )}
         <GenericTextArea
           placeholder="Write an example user message..."
           className="user-message"
-          value={avatarPromt}
+          value={avatarPromt ?? (character?.face_image_generation_prompt || undefined)}
           onChange={(e) => setAvatarPromt(e.target.value)}
           plain={true}
           maxLength={200}

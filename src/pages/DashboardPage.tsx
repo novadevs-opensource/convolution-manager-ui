@@ -35,6 +35,7 @@ const DashboardPage: React.FC = () => {
 
   // Fetch token balance when wallet address changes.
   useEffect(() => {
+    console.log(import.meta.env.VITE_AVATAR_BUCKET_BASE_URL)
     const fetchBalance = async () => {
       if (userProfile?.wallet_address) {
         // Ensure the mint address is a string from your environment variables.
@@ -165,7 +166,7 @@ const DashboardPage: React.FC = () => {
             <tr>
               <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
                 <p className="text-sm font-normal leading-none text-slate-500">
-                  ID
+                  Avatar
                 </p>
               </th>
               <th className="p-4 border-b border-slate-200 bg-slate-50">
@@ -194,9 +195,19 @@ const DashboardPage: React.FC = () => {
             {agents.map((agent: Agent) => (
               <tr key={agent.id} className="hover:bg-slate-50 border-b border-slate-200">
                 <td className="sm:table-cell hidden p-4 py-2">
-                  <p className="block font-semibold text-sm text-slate-800">
-                    <Link to={`/agent/${agent.id}`}>{agent.id}</Link>
-                  </p>
+                  <Link to={`/agent/${agent.id}`}>
+                    {agent.face_image_path ? (
+                      <img 
+                        className='rounded rounded-full h-10 w-10 hover:opacity-60'
+                        src={`${import.meta.env.VITE_AVATAR_BUCKET_BASE_URL}/${agent.face_image_path}`}
+                      />
+                    ) : (
+                      <div className='h-10 w-10 rounded rounded-full p-2 border hover:opacity-60 items-center justify-center flex'>
+                        <i className='fa fa-user'></i>
+                      </div>
+                    )}
+                    
+                  </Link>
                 </td>
                 <td className="p-4 py-2">
                   <p className="text-sm text-slate-500">

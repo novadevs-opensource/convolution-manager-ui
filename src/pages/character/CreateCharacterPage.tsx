@@ -28,7 +28,7 @@ const CreateCharacterPage: React.FC = () => {
   }, [isAuthenticated, userProfile, loadUserProfile]);
   
   const handleSave = async () => {
-    if (!userProfile?.id || !characterData || !selectedModel) {
+    if (!userProfile?.id || !characterData || !selectedModel || !characterData.name) {
       addNotification('Missing data saving settings', 'error');
       return;
     }

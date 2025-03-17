@@ -164,6 +164,70 @@ export function useAgent() {
     }
   }, [navigate]);
 
+
+  /**
+   * Update agent avatar
+   */
+  const updateCharacterAvatar = useCallback(async (
+    agentId: string,
+    imageUrl: string,
+    prompt: string,
+    options?: AgentOperationOptions
+  ) => {
+    setLoading(true);
+    setError(null);
+    try {
+        const payload = {
+        "agent_id": agentId,
+        "face_image_generation_prompt": prompt,
+        "face_image_path": imageUrl,
+      };
+        
+      const { data, status } = await api.put<AgentSuccessResponse>('/character/avatar', payload);
+        
+      if (status === 200) {
+        setResponse(data);
+          
+        // Handle success callback if provided
+        if (options?.onSuccess) {
+          options.onSuccess(data);
+        }
+          
+        // Handle redirect if provided
+        if (options?.redirectTo) {
+          navigate(options.redirectTo.replace(':id', agentId));
+        }
+          
+        return data;
+      } else {
+        throw new Error("Unexpected response status: " + status);
+      }
+    } catch (err: any) {
+      // Handle validation errors (422)
+      if (err.response?.status === 422) {
+        const validationError: ValidationErrorResponse = err.response.data;
+        setError(validationError);
+          
+        if (options?.onError) {
+          options.onError(validationError);
+        }
+      } 
+      // Handle other errors
+        else {
+        const errorMessage = err.response?.data?.message || 'Failed to update character';
+        const error = new Error(errorMessage);
+        setError(error);
+          
+        if (options?.onError) {
+          options.onError(error);
+        }
+      }
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
   /**
    * Helper function to format error messages for display
    */
@@ -190,7 +254,8 @@ export function useAgent() {
     error,
     errorMessage: getFormattedErrorMessage(), 
     saveHandler: saveCharacter, 
-    updateHandler: updateCharacter 
+    updateHandler: updateCharacter,
+    updateAvatarHandler: updateCharacterAvatar,
   };
 }
 

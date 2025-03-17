@@ -58,7 +58,7 @@ const EditCharacterPage: React.FC = () => {
   }, [shouldLoadUpdate])
   
   const handleUpdate = async () => {
-    if (!userProfile?.id || !id || !editedData || !selectedModel) {
+    if (!userProfile?.id || !id || !editedData || !selectedModel || !character?.definition.name) {
       setShouldLoadUpdate(false);
       addNotification('Missing data updating settings', 'error');
       return;
