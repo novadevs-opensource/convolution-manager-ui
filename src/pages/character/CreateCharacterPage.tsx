@@ -29,7 +29,7 @@ const CreateCharacterPage: React.FC = () => {
   
   const handleSave = async () => {
     if (!userProfile?.id || !characterData || !selectedModel) {
-      addNotification('Missing data for saving the agent', 'error');
+      addNotification('Missing data saving settings', 'error');
       return;
     }
     

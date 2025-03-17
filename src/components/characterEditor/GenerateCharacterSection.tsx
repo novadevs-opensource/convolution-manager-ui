@@ -7,6 +7,7 @@ import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import { OpenRouterModel } from '../../types';
 import Button from '../common/Button';
 import GenericTextArea from '../inputs/GenericTextArea';
+import { useToasts } from '../../hooks/useToasts';
 
 interface GenerateCharacterSectionProps {
   onGenerateCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
@@ -16,10 +17,14 @@ interface GenerateCharacterSectionProps {
 const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   onGenerateCharacter,
 }) => {
-  const [model, setModel] = useState<string>('');
+  const { addNotification } = useToasts();
+  const [model, setModel] = useState<string>('meta-llama/llama-3.3-70b-instruct:free');
   const [savedApiKey, setSavedApiKey] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
   const [status, setStatus] = useState<string>('');
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+
+  //TODO: Add interfaces for error and success, do backend request to persist the generation prompt.
 
   // Instancia del servicio
   const apiKeyService = ApiKeyService.getInstance();
@@ -66,14 +71,17 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       setStatus('Please set your OpenRouter API key');
       return;
     }
-
-    setStatus('Generating character...');
+    setIsGenerating(true);
 
     try {
       await onGenerateCharacter(prompt, model, savedApiKey);
-      setStatus('Character generated successfully');
+      setStatus('');
+      setIsGenerating(false);
+      addNotification('Settings generated successfully', 'success');
     } catch (err: any) {
+      addNotification('Settings generation error', 'error');
       setStatus(`Error: ${err.message}`);
+      setIsGenerating(false);
     }
   };
 
@@ -92,7 +100,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       {/* Selección de modelo */}
       <FormGroup>
         <ModelProviderSelect
-          label='LLM Model'
+          label='LLM generation handler'
           selected={model || ''}
           onChange={(val) => setModel(val)}
           models={openRouterAvailableModels}
@@ -111,15 +119,19 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
           maxLength={650}
           className='h-[250px]'
           plain={true}
+          errorMessages={[status]}
+          disabled={isGenerating}
         />
         <div className="flex flex-row gap-2 sm:justify-start justify-end">
-          <Button onClick={handleGenerate} label={'Generate'} icon='fa-bolt'/>
+          <Button 
+            onClick={handleGenerate} 
+            label={isGenerating ? 'Generating...' : 'Generate'} 
+            icon={isGenerating ? 'fa-spin fa-gear' : 'fa-bolt'}
+            disabled={isGenerating}
+          />
           {/*
           <Button onClick={handleRefine} label={'Refine'} icon='fa-wand-sparkles'/>
           */}
-        </div>
-        <div id="prompt-status" className="error">
-          {status}
         </div>
       </FormGroup>
     </CharacterEditorSection>

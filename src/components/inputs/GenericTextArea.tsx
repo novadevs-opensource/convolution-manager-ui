@@ -58,7 +58,7 @@ const GenericTextArea = forwardRef<HTMLTextAreaElement, GenericTextAreaProps>(({
   const renderErrorPills = () => {
     if (errorMessages && errorMessages.length > 0) {
       return (
-        <div className="mt-1">
+        <div className="mb-1">
           {errorMessages.map((error, index) => (
             <ErrorPill key={index}>{error}</ErrorPill>
           ))}
@@ -160,7 +160,7 @@ interface ErrorPillProps {
 
 const ErrorPill = ({ children }: ErrorPillProps) => {
   return (
-    <div className="text-sm text-red-500 mt-1">{children}</div>
+    <div className="text-sm text-red-500">{children}</div>
   );
 };
 
