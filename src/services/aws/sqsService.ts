@@ -153,7 +153,7 @@ interface MessageFilterOptions {
  * Receive messages from a specified queue with filtering
  * @param queueType The type of queue to receive from
  * @param filterOptions Options for filtering messages
- * @returns Filtered messages if successful, null otherwise
+ * @returns Filtered messages if successful, null otherwise. TODO: Review if generate_avatar_request are being self consumed.
  */
 export const receiveMessages = async (
   queueType: QueueType,
@@ -231,6 +231,12 @@ export const receiveMessages = async (
       
       if (filterOptions.agentId && agentId !== filterOptions.agentId) {
         return false;
+      }
+
+      // Filter by event type
+      if (message.Body && filterOptions.eventTypes) {
+        let parsedBody = JSON.parse(message.Body)
+        return filterOptions.eventTypes?.includes(parsedBody.event_type);
       }
       
       if (filterOptions.actions && action) {
