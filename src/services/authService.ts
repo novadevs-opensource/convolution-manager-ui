@@ -3,7 +3,7 @@ import api from './apiClient';
 import { ApiKeyService } from './apiKeyService';
 import { WalletService } from './web3/walletService';
 
-
+// loginService is not used because classic login form is temporary disabled 
 export const loginService = async (email: string, password: string) => {
   const response = await api.post('/login', { email, password });
   if (response.data.llm_provider_api_key) {
@@ -21,10 +21,6 @@ export const registerService = async (name:string, email: string, password: stri
   const response = await api.post('/register', { name, email, password, password_confirmation });
 
   return response.data.token;
-};
-
-export const logoutService = async () => {
-  await api.post('/logout');
 };
 
 export const getUserProfile = async () => {

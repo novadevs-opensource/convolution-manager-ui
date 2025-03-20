@@ -1,6 +1,8 @@
 // src/context/AuthContext.tsx
 import React, { createContext, useState, useMemo } from 'react';
 import { getUserProfile } from '../services/authService'; // Asegúrate de importar tu servicio
+import { WalletService } from '../services/web3/walletService';
+import { ApiKeyService } from '../services/apiKeyService';
 
 // 1. Definir tipo de contexto
 interface AuthContextType {
@@ -49,6 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(null);
     setUserProfile(null); // Limpiar el perfil al cerrar sesión
     localStorage.removeItem('token');
+    // Remove openrouter api key from local storage
+    const apiKeyService = ApiKeyService.getInstance();
+    apiKeyService.removeApiKey();
+    // Remove wallet key from local storage
+    const walletService = WalletService.getInstance()
+    walletService.removeWalletAddr()
   };
 
   const value = useMemo(() => ({
