@@ -15,9 +15,18 @@ import {
   GenerateAvatarRequestEvent,
   GenerateAvatarResponseEvent,
   isAvatarResponseEvent,
-  isAvatarEvent,
-  isAckEvent
+  generateEventKey,
+  normalizeEvent,
+  EVENT_TYPES
 } from "../../types/commEvents";
+
+
+// Constants for queue attributes
+const MESSAGE_ATTRIBUTES = {
+  USER_ID: 'userId',
+  AGENT_ID: 'agentId',
+  ACTION: 'action'
+};
 
 // SQS clients
 const eventClient = getEventClient();
@@ -60,7 +69,7 @@ const getQueueConfig = (queueType: QueueType) => {
  * @param queueType The type of queue to send to
  * @param userId User ID for message filtering
  * @param agentId Agent ID for message filtering
- * @param action Optional action type for runtime events
+ * @param action Optional action type for events
  * @returns Message ID if successful, null otherwise
  */
 export const sendMessage = async (
@@ -73,13 +82,18 @@ export const sendMessage = async (
   const { client, url } = getQueueConfig(queueType);
   
   try {
+    // Ensure the message has a timestamp
+    if (!message.timestamp) {
+      message.timestamp = Date.now();
+    }
+    
     // Prepare message attributes
     const messageAttributes: any = {
-      'userId': {
+      [MESSAGE_ATTRIBUTES.USER_ID]: {
         DataType: 'String',
         StringValue: userId,
       },
-      'agentId': {
+      [MESSAGE_ATTRIBUTES.AGENT_ID]: {
         DataType: 'String',
         StringValue: agentId,
       },
@@ -87,14 +101,14 @@ export const sendMessage = async (
     
     // Add action attribute if provided
     if (action) {
-      messageAttributes['runtimeAction'] = {
+      messageAttributes[MESSAGE_ATTRIBUTES.ACTION] = {
         DataType: 'String',
         StringValue: action,
       };
     }
     
     // Debug log
-    console.log(`Sending to ${queueType} queue:`, {
+    console.debug(`Sending to ${queueType} queue:`, {
       url,
       message: JSON.stringify(message).substring(0, 100) + '...',
       attributes: messageAttributes
@@ -108,7 +122,7 @@ export const sendMessage = async (
       })
     );
     
-    console.log(`Message sent to ${queueType} queue with ID: ${MessageId}`);
+    console.info(`Message sent to ${queueType} queue with ID: ${MessageId}`);
     return MessageId || null;
   } catch (error) {
     console.error(`Error sending message to ${queueType} queue:`, error);
@@ -136,7 +150,13 @@ export const sendAvatarGenerationRequest = async (
   userId: string,
   agentId: string
 ): Promise<string | null> => {
-  return sendMessage(message, QueueType.AVATAR, userId, agentId);
+  // Ensure the action is set correctly
+  const updatedMessage = {
+    ...message,
+    action: EVENT_TYPES.AVATAR_REQUEST
+  };
+  
+  return sendMessage(updatedMessage, QueueType.AVATAR, userId, agentId, EVENT_TYPES.AVATAR_REQUEST);
 };
 
 /**
@@ -146,14 +166,67 @@ interface MessageFilterOptions {
   userId: string;
   agentId?: string;
   actions?: string[];
-  eventTypes?: string[];
 }
+
+/**
+ * Helper function to extract filter criteria from a message
+ * @param message The message to extract criteria from
+ * @param filterOptions The filter options to match against
+ * @returns True if the message matches the filter criteria
+ */
+const messageMatchesFilter = (message: any, filterOptions: MessageFilterOptions): boolean => {
+  try {
+    // First try using message attributes
+    const userId = message.MessageAttributes?.[MESSAGE_ATTRIBUTES.USER_ID]?.StringValue;
+    const agentId = message.MessageAttributes?.[MESSAGE_ATTRIBUTES.AGENT_ID]?.StringValue;
+    const action = message.MessageAttributes?.[MESSAGE_ATTRIBUTES.ACTION]?.StringValue;
+    
+    // If we have message attributes, use those for filtering
+    if (userId) {
+      // User ID must match
+      if (userId !== filterOptions.userId) return false;
+      
+      // Agent ID must match if specified
+      if (filterOptions.agentId && agentId !== filterOptions.agentId) return false;
+      
+      // Action must match one of the specified actions if provided
+      if (filterOptions.actions && action && !filterOptions.actions.includes(action)) return false;
+      
+      // If we got here, the message matches the criteria
+      return true;
+    }
+    
+    // If we don't have message attributes, parse the body
+    if (!message.Body) return false;
+    
+    const body = JSON.parse(message.Body);
+    
+    // Check user ID
+    if (body.userId !== filterOptions.userId) return false;
+    
+    // Check agent ID if specified
+    if (filterOptions.agentId && body.agentId !== filterOptions.agentId) return false;
+    
+    // Check action if specified
+    if (filterOptions.actions) {
+      const eventAction = body.action;
+      
+      if (!eventAction || !filterOptions.actions.includes(eventAction)) return false;
+    }
+    
+    // If we got here, the message matches the criteria
+    return true;
+  } catch (error) {
+    console.error('Error filtering message:', error);
+    return false;
+  }
+};
 
 /**
  * Receive messages from a specified queue with filtering
  * @param queueType The type of queue to receive from
  * @param filterOptions Options for filtering messages
- * @returns Filtered messages if successful, null otherwise. TODO: Review if generate_avatar_request are being self consumed.
+ * @returns Filtered messages if successful, null otherwise
  */
 export const receiveMessages = async (
   queueType: QueueType,
@@ -162,7 +235,7 @@ export const receiveMessages = async (
   const { client, url } = getQueueConfig(queueType);
   
   try {
-    console.log(`Receiving from ${queueType} queue at ${new Date().getUTCSeconds()}`);
+    console.debug(`Receiving from ${queueType} queue at ${new Date().toISOString()}`);
     
     const { Messages } = await client.send(
       new ReceiveMessageCommand({
@@ -170,7 +243,6 @@ export const receiveMessages = async (
         MaxNumberOfMessages: 10,
         WaitTimeSeconds: 5,
         MessageAttributeNames: ['All'],
-        // Set a short visibility timeout to prevent duplicate processing
         VisibilityTimeout: 30, // 30 seconds
       })
     );
@@ -179,74 +251,14 @@ export const receiveMessages = async (
       return [];
     }
     
-    console.log(`Received ${Messages.length} raw messages from ${queueType} queue`);
+    console.debug(`Received ${Messages.length} raw messages from ${queueType} queue`);
     
     // Filter messages based on the provided options
-    const filteredMessages = Messages.filter(message => {
-      // Try to get user and agent IDs from message attributes
-      const userId = message.MessageAttributes?.userId?.StringValue;
-      const agentId = message.MessageAttributes?.agentId?.StringValue;
-      const action = message.MessageAttributes?.runtimeAction?.StringValue;
-      
-      // If necessary attributes don't exist, try to parse the message body
-      if (!userId) {
-        try {
-          const body = JSON.parse(message.Body || '{}');
-          
-          // Debug: Log the body to see what we're getting
-          console.log(`Message body from ${queueType} queue:`, {
-            messageId: message.MessageId,
-            body: JSON.stringify(body).substring(0, 200) + '...',
-          });
-          
-          // Check if user ID matches
-          const userIdMatch = body.userId === filterOptions.userId;
-          if (!userIdMatch) return false;
-          
-          // Check if agent ID matches (if specified)
-          if (filterOptions.agentId && body.agentId !== filterOptions.agentId) {
-            return false;
-          }
-          
-          // For ACK messages, check if action matches
-          if (filterOptions.actions && body.action) {
-            return filterOptions.actions.includes(body.action);
-          }
-          
-          // For avatar messages, check if event_type matches
-          if (filterOptions.eventTypes && body.event_type) {
-            return filterOptions.eventTypes.includes(body.event_type);
-          }
-          
-          // If we got here, the message matches the filter criteria
-          return true;
-        } catch (e) {
-          console.error(`Error parsing message body from ${queueType} queue:`, e);
-          return false;
-        }
-      }
-      
-      // Filter based on message attributes
-      if (userId !== filterOptions.userId) return false;
-      
-      if (filterOptions.agentId && agentId !== filterOptions.agentId) {
-        return false;
-      }
-
-      // Filter by event type
-      if (message.Body && filterOptions.eventTypes) {
-        let parsedBody = JSON.parse(message.Body)
-        return filterOptions.eventTypes?.includes(parsedBody.event_type);
-      }
-      
-      if (filterOptions.actions && action) {
-        return filterOptions.actions.includes(action);
-      }
-      
-      return true;
-    });
+    const filteredMessages = Messages.filter(message => 
+      messageMatchesFilter(message, filterOptions)
+    );
     
-    console.log(`Filtered to ${filteredMessages.length} messages from ${queueType} queue`);
+    console.debug(`Filtered to ${filteredMessages.length} messages from ${queueType} queue`);
     return filteredMessages;
   } catch (error) {
     console.error(`Error receiving messages from ${queueType} queue:`, error);
@@ -264,7 +276,7 @@ export const receiveAckEvents = async (
   return receiveMessages(QueueType.ACK, {
     userId,
     agentId,
-    actions: ['bootACK', 'stopACK', 'updateACK']
+    actions: [EVENT_TYPES.BOOT_ACK, EVENT_TYPES.STOP_ACK, EVENT_TYPES.UPDATE_ACK]
   });
 };
 
@@ -278,7 +290,7 @@ export const receiveAvatarEvents = async (
   return receiveMessages(QueueType.AVATAR, {
     userId,
     agentId,
-    eventTypes: ['progress', 'final']
+    actions: [EVENT_TYPES.AVATAR_PROGRESS, EVENT_TYPES.AVATAR_FINAL]
   });
 };
 
@@ -294,7 +306,7 @@ export const deleteMessage = async (
   const { client, url } = getQueueConfig(queueType);
   
   try {
-    console.log(`Deleting message from ${queueType} queue with receipt: ${receiptHandle.substring(0, 20)}...`);
+    console.debug(`Deleting message from ${queueType} queue with receipt: ${receiptHandle.substring(0, 20)}...`);
     
     await client.send(
       new DeleteMessageCommand({
@@ -303,7 +315,7 @@ export const deleteMessage = async (
       })
     );
     
-    console.log(`Successfully deleted message from ${queueType} queue`);
+    console.debug(`Successfully deleted message from ${queueType} queue`);
     return true;
   } catch (error) {
     console.error(`Error deleting message from ${queueType} queue:`, error);
@@ -320,13 +332,17 @@ export const parseMessageToEvent = (message: any): AgentEvent | null => {
       return null;
     }
     
-    const parsedEvent = JSON.parse(message.Body) as AgentEvent;
+    // Parse and normalize the event
+    const parsedEvent = normalizeEvent(JSON.parse(message.Body));
+    
+    // Add the SQS message ID for additional uniqueness
+    if (message.MessageId) {
+      parsedEvent.messageId = message.MessageId;
+    }
     
     // Debug: Log the event type
     if ('action' in parsedEvent) {
-      console.log(`Parsed ${parsedEvent.action} event from message ${message.MessageId}`);
-    } else if ('event_type' in parsedEvent) {
-      console.log(`Parsed ${parsedEvent.event_type} event from message ${message.MessageId}`);
+      console.debug(`Parsed ${parsedEvent.action} event from message ${message.MessageId}`);
     }
     
     return parsedEvent;
@@ -340,17 +356,19 @@ export const parseMessageToEvent = (message: any): AgentEvent | null => {
  * Process received messages, extracting events and deleting processed messages
  * @param messages The messages to process
  * @param queueType The type of queue the messages came from
+ * @param expectedEventTypes Optional array of expected event types for validation
  * @returns Array of extracted events
  */
 export const processMessages = async (
   messages: any[],
-  queueType: QueueType
+  queueType: QueueType,
+  expectedEventTypes?: string[]
 ): Promise<AgentEvent[]> => {
   if (!messages || messages.length === 0) {
     return [];
   }
   
-  console.log(`Processing ${messages.length} messages from ${queueType} queue`);
+  console.debug(`Processing ${messages.length} messages from ${queueType} queue`);
   
   const events: AgentEvent[] = [];
   const processedEvents = new Set<string>(); // Track processed events to prevent duplicates
@@ -359,54 +377,45 @@ export const processMessages = async (
     try {
       const event = parseMessageToEvent(message);
       
-      if (event) {
-        // Additional validation based on queue type
-        if (queueType === QueueType.ACK && !isAckEvent(event)) {
-          console.warn(`Found non-ACK event in ACK queue, will delete but not process:`, event);
-          if (message.ReceiptHandle) {
-            //await deleteMessage(queueType, message.ReceiptHandle);
-          }
-          continue;
+      if (!event) {
+        // Delete invalid messages
+        if (message.ReceiptHandle) {
+          await deleteMessage(queueType, message.ReceiptHandle);
         }
+        continue;
+      }
+      
+      // Validate event type if expected types are provided
+      if (expectedEventTypes && 'action' in event) {
+        const isValidType = expectedEventTypes.includes(event.action);
         
-        if (queueType === QueueType.AVATAR && !isAvatarEvent(event)) {
-          console.warn(`Found non-avatar event in AVATAR queue, will delete but not process:`, event);
-          if (message.ReceiptHandle) {
-            //await deleteMessage(queueType, message.ReceiptHandle);
-          }
-          continue;
-        }
-        
-        // Create a unique key for this event to prevent duplicates
-        let eventKey = '';
-        
-        if ('action' in event) {
-          eventKey = `${event.action}-${event.agentId}-${event.userId}`;
-        } else if ('event_type' in event) {
-          eventKey = `${event.event_type}-${event.agentId}-${event.userId}-${(event as any).image_url || ''}`;
-        }
-        
-        // Only process if we haven't seen this event before
-        if (eventKey && !processedEvents.has(eventKey)) {
-          processedEvents.add(eventKey);
-          events.push(event);
-          
-          // Delete the message after processing
-          if (message.ReceiptHandle) {
-            const deleted = await deleteMessage(queueType, message.ReceiptHandle);
-            if (!deleted) {
-              console.warn(`Failed to delete message, may be processed again: ${eventKey}`);
-            }
-          }
-        } else {
-          console.log(`Skipping duplicate event: ${eventKey}`);
-          // Still delete duplicate messages
+        if (!isValidType) {
+          console.warn(`Found unexpected event type ${event.action} in ${queueType} queue, will delete:`, event);
           if (message.ReceiptHandle) {
             await deleteMessage(queueType, message.ReceiptHandle);
           }
+          continue;
+        }
+      }
+      
+      // Generate a unique key for this event
+      const eventKey = generateEventKey(event, message.MessageId);
+      
+      // Only process if we haven't seen this event before
+      if (!processedEvents.has(eventKey)) {
+        processedEvents.add(eventKey);
+        events.push(event);
+        
+        // Delete the message after processing
+        if (message.ReceiptHandle) {
+          const deleted = await deleteMessage(queueType, message.ReceiptHandle);
+          if (!deleted) {
+            console.warn(`Failed to delete message, may be processed again: ${eventKey}`);
+          }
         }
       } else {
-        // Delete invalid messages
+        console.debug(`Skipping duplicate event: ${eventKey}`);
+        // Still delete duplicate messages
         if (message.ReceiptHandle) {
           await deleteMessage(queueType, message.ReceiptHandle);
         }
@@ -420,7 +429,7 @@ export const processMessages = async (
     }
   }
   
-  console.log(`Processed ${events.length} valid events from ${queueType} queue`);
+  console.debug(`Processed ${events.length} valid events from ${queueType} queue`);
   return events;
 };
 
@@ -436,26 +445,22 @@ export const processAvatarMessages = async (
     return [];
   }
   
-  // Process the messages using the common function first
-  const allEvents = await processMessages(messages, QueueType.AVATAR);
+  // Process the messages with expected avatar event types
+  const allEvents = await processMessages(
+    messages, 
+    QueueType.AVATAR,
+    [EVENT_TYPES.AVATAR_PROGRESS, EVENT_TYPES.AVATAR_FINAL]
+  );
   
   // Filter for avatar response events
   const avatarEvents = allEvents
     .filter(isAvatarResponseEvent) as GenerateAvatarResponseEvent[];
   
   // Debug log about final events
-  const finalEvents = avatarEvents.filter(e => e.event_type === 'final');
+  const finalEvents = avatarEvents.filter(e => e.action === EVENT_TYPES.AVATAR_FINAL);
   if (finalEvents.length > 0) {
-    console.log(`Found ${finalEvents.length} final avatar events`);
+    console.debug(`Found ${finalEvents.length} final avatar events`);
   }
   
   return avatarEvents;
-};
-
-/**
- * Get a message receipt ID for debugging
- */
-export const getMessageId = (message: any): string => {
-  if (!message) return 'unknown';
-  return message.MessageId || message.ReceiptHandle?.substring(0, 10) || 'unknown';
 };

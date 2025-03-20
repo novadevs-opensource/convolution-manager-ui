@@ -4,8 +4,8 @@ import {
   AgentEvent, 
   GenerateAvatarRequestEvent,
   GenerateAvatarResponseEvent,
-  isAckEvent
-  // Removed unused imports: isAvatarResponseEvent, isAvatarEvent
+  isAckEvent,
+  EVENT_TYPES
 } from "../types/commEvents";
 import { 
   sendRuntimeEvent, 
@@ -13,8 +13,7 @@ import {
   receiveAckEvents, 
   receiveAvatarEvents,
   QueueType,
-  processMessages,
-  processAvatarMessages
+  processMessages
 } from "./aws/sqsService";
 
 /**
@@ -25,13 +24,21 @@ export const enqueueEvent = async (
   action: AgentRuntimeAction,
   userId: string, 
   agentId: string
-): Promise<void> => {
-  const messageId = await sendRuntimeEvent(eventMessage, action, userId, agentId);
+): Promise<string | null> => {
+  // Add timestamp if not present
+  const enhancedMessage = {
+    ...eventMessage,
+    timestamp: eventMessage.timestamp || Date.now()
+  };
+  
+  const messageId = await sendRuntimeEvent(enhancedMessage, action, userId, agentId);
   
   if (messageId) {
-    console.log(`Runtime event enqueued with ID: ${messageId}`, eventMessage);
+    console.debug(`Runtime event enqueued with ID: ${messageId}`, enhancedMessage);
+    return messageId;
   } else {
     console.error("Failed to enqueue runtime event");
+    return null;
   }
 };
 
@@ -42,20 +49,23 @@ export const enqueueAvatarRequest = async (
   userId: string,
   agentId: string,
   prompt: string
-): Promise<void> => {
+): Promise<string | null> => {
   const eventMessage: GenerateAvatarRequestEvent = {
     userId,
     agentId,
-    event_type: "generate_avatar_request",
-    prompt,
+    timestamp: Date.now(),
+    action: EVENT_TYPES.AVATAR_REQUEST,
+    prompt
   };
   
   const messageId = await sendAvatarGenerationRequest(eventMessage, userId, agentId);
   
   if (messageId) {
-    console.log(`Avatar generation request enqueued with ID: ${messageId}`, eventMessage);
+    console.debug(`Avatar generation request enqueued with ID: ${messageId}`, eventMessage);
+    return messageId;
   } else {
     console.error("Failed to enqueue avatar generation request");
+    return null;
   }
 };
 
@@ -66,26 +76,21 @@ export const enqueueAvatarRequest = async (
 export const listenForEvents = async (userId: string, agentId?: string): Promise<AgentEvent[]> => {
   const messages = await receiveAckEvents(userId, agentId);
   
-  console.log(`ack events:`, messages);
-  
   if (!messages || messages.length === 0) {
     return [];
   }
   
   console.log(`Received ${messages.length} ACK messages for user ${userId}`);
   
-  // Process messages and return the events
-  const events = await processMessages(messages, QueueType.ACK);
+  // Process messages with expected ACK event types
+  const events = await processMessages(
+    messages, 
+    QueueType.ACK,
+    [EVENT_TYPES.BOOT_ACK, EVENT_TYPES.STOP_ACK, EVENT_TYPES.UPDATE_ACK]
+  );
   
-  // Additional validation to make sure we're not mixing event types
-  const filteredEvents = events.filter(event => {
-    const isAckEventResult = isAckEvent(event);
-    if (!isAckEventResult && 'event_type' in event) {
-      console.warn('Found avatar event in ACK queue, will ignore:', event);
-      return false;
-    }
-    return isAckEventResult;
-  });
+  // Additional validation to ensure we only return ACK events
+  const filteredEvents = events.filter(isAckEvent);
   
   return filteredEvents;
 };
@@ -97,22 +102,24 @@ export const listenForEvents = async (userId: string, agentId?: string): Promise
 export const listenForAvatarEvents = async (userId: string, agentId: string): Promise<GenerateAvatarResponseEvent[]> => {
   const messages = await receiveAvatarEvents(userId, agentId);
   
-  console.log(`avatar events:`, messages);
-  
   if (!messages || messages.length === 0) {
     return [];
   }
   
-  console.log(`Received ${messages.length} avatar events for agent ${agentId}`);
+  console.debug(`Received ${messages.length} avatar events for agent ${agentId}`);
   
   // Process messages and return the avatar events
-  const events = await processAvatarMessages(messages);
+  const events = await processMessages(
+    messages, 
+    QueueType.AVATAR,
+    [EVENT_TYPES.AVATAR_PROGRESS, EVENT_TYPES.AVATAR_FINAL]
+  ) as GenerateAvatarResponseEvent[];
   
   // Debug logging to check what events we're getting back
   events.forEach(event => {
-    console.log(`Processed avatar event: type=${event.event_type}, url=${event.image_url.substring(0, 30)}...`);
-    if (event.event_type === 'final') {
-      console.log('*** FINAL EVENT DETECTED ***');
+    console.info(`Processed avatar event: type=${event.action}, url=${event.image_url.substring(0, 30)}...`);
+    if (event.action === EVENT_TYPES.AVATAR_FINAL) {
+      console.info('*** FINAL EVENT DETECTED ***');
     }
   });
   

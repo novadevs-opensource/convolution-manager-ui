@@ -71,7 +71,7 @@ const CharacterDetailPage: React.FC = () => {
     pollingInterval: 5000,
     autoRefreshStatus: true
   });
-  
+
   // Handle agent start
   const handleStartAgent = async () => {
     if (!userProfile?.id || !id) return;

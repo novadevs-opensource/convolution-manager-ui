@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useToasts } from './useToasts';
 import { 
+  EVENT_TYPES,
   GenerateAvatarResponseEvent
   // Removed unused import isAvatarFinalEvent
 } from '../types/commEvents';
@@ -48,14 +49,14 @@ export function useAvatarEvents({
    */
   const processEvent = useCallback((event: GenerateAvatarResponseEvent) => {
     // Generate a unique event ID based on its content
-    const eventId = `${event.event_type}-${event.agentId}-${event.userId}-${event.image_url}`;
+    const eventId = `${event.action}-${event.agentId}-${event.userId}-${event.image_url}`;
     
     // Debug log
-    console.log(`Processing avatar event: ${eventId.substring(0, 50)}...`);
+    console.debug(`Processing avatar event: ${eventId.substring(0, 50)}...`);
     
     // Check if we've already processed this event
     if (processedEventsRef.current.has(eventId)) {
-      console.log(`Skipping duplicate avatar event: ${eventId.substring(0, 50)}...`);
+      console.debug(`Skipping duplicate avatar event: ${eventId.substring(0, 50)}...`);
       return;
     }
     
@@ -66,7 +67,7 @@ export function useAvatarEvents({
     setAvatarEvents(prevEvents => {
       // Still check for duplicates in the state as a safety measure
       if (prevEvents.some(e => 
-        e.event_type === event.event_type && 
+        e.action === event.action && 
         e.agentId === event.agentId && 
         e.userId === event.userId &&
         e.image_url === event.image_url
@@ -81,8 +82,8 @@ export function useAvatarEvents({
     setLatestImageUrl(event.image_url);
     
     // If it's a final event, we're done generating
-    if (event.event_type === 'final') {
-      console.log('*** FINAL AVATAR EVENT DETECTED ***', event);
+    if (event.action === EVENT_TYPES.AVATAR_FINAL) {
+      console.info('*** FINAL AVATAR EVENT DETECTED ***', event);
       
       // Mark that we've received the final event
       finalEventReceivedRef.current = true;
@@ -112,18 +113,18 @@ export function useAvatarEvents({
     
     // Don't poll if we've already received the final event
     if (finalEventReceivedRef.current) {
-      console.log('Final event already received, not polling for new events');
+      console.debug('Final event already received, not polling for new events');
       return;
     }
     
     // Don't poll if we're not generating (unless we're doing a manual poll)
     if (!isGenerating && !isPolling) {
-      console.log('Not generating and not manually polling, skipping poll');
+      console.debug('Not generating and not manually polling, skipping poll');
       return;
     }
     
     setIsPolling(true);
-    console.log('Polling for avatar events:', { 
+    console.debug('Polling for avatar events:', { 
       userId: userProfile.id, 
       agentId, 
       isGenerating 
@@ -131,13 +132,13 @@ export function useAvatarEvents({
     
     try {
       const events = await listenForAvatarEvents(userProfile.id, agentId);
-      console.log(`Received ${events.length} avatar events`);
+      console.debug(`Received ${events.length} avatar events`);
       
       if (events && events.length > 0) {
         // Check for final events first
-        const finalEvent = events.find(e => e.event_type === 'final');
+        const finalEvent = events.find(e => e.action === EVENT_TYPES.AVATAR_FINAL);
         if (finalEvent) {
-          console.log('Found final event in poll results');
+          console.debug('Found final event in poll results');
         }
         
         // Process each event
@@ -204,7 +205,7 @@ export function useAvatarEvents({
       const savedGeneratingAgentId = localStorage.getItem('is_generating_avatar');
       
       if (savedGeneratingAgentId === agentId) {
-        console.log('Found saved generation state, resuming generation');
+        console.debug('Found saved generation state, resuming generation');
         setIsGenerating(true);
         finalEventReceivedRef.current = false;
       }
@@ -224,7 +225,7 @@ export function useAvatarEvents({
       return;
     }
     
-    console.log('Setting up polling interval for avatar events');
+    console.debug('Setting up polling interval for avatar events');
     
     // Initial poll
     pollForEvents();
@@ -233,7 +234,7 @@ export function useAvatarEvents({
     const intervalId = setInterval(() => {
       // Check if we should still be polling
       if (finalEventReceivedRef.current) {
-        console.log('Final event received, clearing polling interval');
+        console.debug('Final event received, clearing polling interval');
         clearInterval(intervalId);
         return;
       }
@@ -243,7 +244,7 @@ export function useAvatarEvents({
     
     // Cleanup
     return () => {
-      console.log('Cleaning up avatar events polling interval');
+      console.debug('Cleaning up avatar events polling interval');
       clearInterval(intervalId);
     };
   }, [userProfile?.id, agentId, isGenerating, pollingInterval, pollForEvents]);

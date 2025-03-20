@@ -9,7 +9,9 @@ import {
   GenerateAvatarResponseEvent,
   isAvatarResponseEvent,
   isAvatarFinalEvent,
-  ackErrorCodeMessages
+  ackErrorCodeMessages,
+  generateEventKey,
+  EVENT_TYPES
 } from '../types/commEvents';
 import { listenForEvents } from '../services/messageHandler';
 import { useAuth } from './useAuth';
@@ -80,47 +82,22 @@ export function useAgentEvents({
   
   // Process a single event
   const processEvent = useCallback((event: AgentEvent) => {
-    // Generate a unique event ID based on its content
-    let eventId = '';
-    
-    if ('action' in event) {
-      eventId = `${event.action}-${event.agentId}-${event.userId}`;
-    } else if ('event_type' in event) {
-      eventId = `${event.event_type}-${event.agentId}-${event.userId}-${(event as any).image_url || ''}`;
-    }
+    // Generate a unique event ID 
+    const eventId = generateEventKey(event);
     
     // Check if we've already processed this event
-    if (eventId && processedEventsRef.current.has(eventId)) {
+    if (processedEventsRef.current.has(eventId)) {
       console.log(`Skipping duplicate event: ${eventId}`);
       return;
     }
     
     // Mark this event as processed
-    if (eventId) {
-      processedEventsRef.current.add(eventId);
-    }
+    processedEventsRef.current.add(eventId);
     
     // Add to events list (use functional update to avoid dependencies)
     setEvents(prevEvents => {
       // Still check for duplicates in the state as a safety measure
-      if (prevEvents.some(e => {
-        // Check for runtime events
-        if ('action' in e && 'action' in event) {
-          return e.action === event.action && 
-                 e.agentId === event.agentId && 
-                 e.userId === event.userId;
-        }
-        
-        // Check for avatar events
-        if ('event_type' in e && 'event_type' in event) {
-          return e.event_type === event.event_type && 
-                 e.agentId === event.agentId && 
-                 e.userId === event.userId &&
-                 (e as any).image_url === (event as any).image_url;
-        }
-        
-        return false;
-      })) {
+      if (prevEvents.some(e => generateEventKey(e) === eventId)) {
         return prevEvents;
       }
       
@@ -128,19 +105,19 @@ export function useAgentEvents({
     });
 
     // If there is an agentId filter and this event doesn't match, ignore it
-    if (agentId && event.agentId !== agentId) {
+    if (agentId && 'agentId' in event && event.agentId !== agentId) {
       return;
     }
 
     // Process ACK events (boot, stop, update)
     if ('action' in event && [
-      'bootACK', 'stopACK', 'updateACK'
+      EVENT_TYPES.BOOT_ACK, EVENT_TYPES.STOP_ACK, EVENT_TYPES.UPDATE_ACK
     ].includes(event.action)) {
       const ackEvent = event as (BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent);
       const success = ackEvent.success === 'true';
       
       switch (ackEvent.action) {
-        case 'bootACK':
+        case EVENT_TYPES.BOOT_ACK:
           if (success) {
             updateAgentStatus(ackEvent.agentId, "running").then(_updateSuccess => {
               addNotification(`Agent started successfully`, "success");
@@ -151,7 +128,7 @@ export function useAgentEvents({
           }
           break;
           
-        case 'stopACK':
+        case EVENT_TYPES.STOP_ACK:
           if (success) {
             updateAgentStatus(ackEvent.agentId, "stopped").then(_updateSuccess => {
               addNotification(`Agent stopped successfully`, "success");
@@ -162,7 +139,7 @@ export function useAgentEvents({
           }
           break;
           
-        case 'updateACK':
+        case EVENT_TYPES.UPDATE_ACK:
           if (success) {
             updateAgentStatus(ackEvent.agentId, 'running').then(_updateSuccess => {
               addNotification(`Agent updated successfully`, "success");
@@ -245,7 +222,7 @@ export function useAgentEvents({
       // Find the latest event for this agent
       return [...events]
         .reverse()
-        .find(event => event.agentId === targetAgentId);
+        .find(event => 'agentId' in event && event.agentId === targetAgentId);
     },
     // Clear events for the specified agent
     clearEvents: (specificAgentId?: string) => {
@@ -255,7 +232,7 @@ export function useAgentEvents({
         processedEventsRef.current.clear();
       } else {
         setEvents(prevEvents => 
-          prevEvents.filter(event => event.agentId !== targetAgentId)
+          prevEvents.filter(event => !('agentId' in event) || event.agentId !== targetAgentId)
         );
         
         // Also remove processed events for this agent
