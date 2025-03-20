@@ -223,6 +223,16 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
     }
   ];
 
+  useEffect(() => {
+    if (openRouterAvailableModels.length > 0 && !selectedModelValue) {
+      let defaultFreeModel = openRouterAvailableModels.find((model: OpenRouterModel) => model.id === 'meta-llama/llama-3.3-70b-instruct:free'); // TODO: Add to env var
+      console.log(defaultFreeModel);
+      if (defaultFreeModel) {
+        setSelectedModelValue(defaultFreeModel.id);
+      }
+    }
+  }, [openRouterAvailableModels])
+
   // Call onDataChange when character or selected model changes
   useEffect(() => {
     if (onDataChange) {
