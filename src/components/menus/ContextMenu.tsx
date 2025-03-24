@@ -38,7 +38,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ button, options }) => {
   }, []);
 
   return (
-    <div className="relative inline-block text-left w-full">
+    <div className="relative inline-block text-left w-full font-anek-latin">
       <span
         ref={buttonRef}
         onClick={() => setIsMenuOpened(prev => !prev)}
