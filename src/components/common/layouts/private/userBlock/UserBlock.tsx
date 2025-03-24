@@ -18,7 +18,7 @@ const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: bool
   ];
 
   return (
-    <div className={`bg-black-ultra rounded-lg shadow-md p-4 mb-4 ${hasBorder ? 'border' : ''} ${className ?? ''}`}>
+    <div className={`bg-black-ultra rounded-lg  p-4 mb-4 ${hasBorder ? 'border' : ''} ${className ?? ''}`}>
       {hasMenu ? (
         <ContextMenu
           button={
