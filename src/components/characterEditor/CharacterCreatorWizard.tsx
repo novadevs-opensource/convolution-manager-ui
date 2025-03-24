@@ -241,7 +241,7 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
         />
       ),
       isDisabled: () => false,
-      canProceed: () => character.name && character.name.length > 0
+      canProceed: () => (character.name && character.name.length > 0) || (characterHasName && selectedModel)
     },
     {
       id: 'step-basics',
@@ -419,6 +419,15 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
                     className='min-w-[120px] justify-center'
                   />
                 }
+                {currentStep === 0 && (!characterHasName && !selectedModel) &&
+                  <Button
+                    label='Skip step'
+                    onClick={() => goToStep(1)}
+                    disabled={generatingFromPromt}
+                    icon="fa-forward"
+                    className='min-w-[120px] justify-center'
+                  />
+                }
                 <Button
                   label={currentStep === steps.length - 1 ? 'Finish' : 'Next'}
                   onClick={goToNextStep}
@@ -430,7 +439,7 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
             </div>
           </div>
 
-          <div className="my-8 p-8 rounded-lg bg-black-ultra border border-gray-200 shadow-lg transition duration-150 ease-in-out">
+          <div className="my-8 p-8 rounded-lg bg-black-ultra border-gray-200 shadow-lg transition duration-150 ease-in-out">
             {currentStepData.content}
           </div>
 

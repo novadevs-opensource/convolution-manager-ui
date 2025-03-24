@@ -50,7 +50,7 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
       <main className="sm:p-8 p-4 w-full max-h-[100vh] overflow-y-scroll">
         <div className='flex flex-row justify-between gap-4'>
           <Header title={pageTitle} />
-          <UserBlock className={'hidden sm:block'} hasBorder={true} hasMenu={true}/>
+          <UserBlock className={'hidden sm:block'} hasBorder={false} hasMenu={true}/>
           <button 
             className='sm:hidden block bg-white rounded-lg border p-4 mb-4' 
             onClick={toggleSidebar}

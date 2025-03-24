@@ -25,6 +25,9 @@ interface ImportMetaEnv {
   VITE_HELIUS_API_KEY?: string;
   VITE_MINIMUM_TOKEN_BALANCE: number;
   VITE_TOKEN_MINT: string;
+
+  VITE_SUPPORT_URL?: string;
+  VITE_DOC_URL?: string;
 }
 
 interface ImportMeta {

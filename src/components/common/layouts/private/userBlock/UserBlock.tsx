@@ -14,10 +14,11 @@ const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: bool
   const options = [
     { label: 'Profile', href: '/profile', isExternal: false },
     { label: 'Logout', href: '#', isExternal: false, handler: logout },
+    { label: 'Help & Support', href: import.meta.env.VITE_SUPPORT_URL ?? '#', isExternal: true },
   ];
 
   return (
-    <div className={`bg-white rounded-lg p-4 mb-4 ${hasBorder ? 'border' : ''} ${className ?? ''}`}>
+    <div className={`bg-black-ultra rounded-lg shadow-md p-4 mb-4 ${hasBorder ? 'border' : ''} ${className ?? ''}`}>
       {hasMenu ? (
         <ContextMenu
           button={
@@ -28,11 +29,11 @@ const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: bool
                 <p>{userProfile?.email}</p>
               )}
               <span 
-                className='inline-block border p-2 rounded-full border-black-light' 
+                className='inline-block border-2 border-gray-300 p-2 rounded-full border-black-light' 
                 aria-expanded="false" 
                 aria-haspopup="true"
               >
-                <SlUser color='black' />
+                <SlUser className='text-gray-500' />
               </span>
             </div>
           }

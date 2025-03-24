@@ -84,12 +84,14 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
           />
           
           <div className="">
-            <Button 
-              onClick={handleGenerate} 
-              label={isGenerating ? 'Generating...' : 'Generate'} 
-              icon={isGenerating ? 'fa-spin fa-gear' : 'fa-bolt'}
-              disabled={isGenerating || !savedApiKey}
-            />
+            <div className='flex flex-row gap-4'>
+              <Button 
+                onClick={handleGenerate} 
+                label={isGenerating ? 'Generating...' : 'Generate'} 
+                icon={isGenerating ? 'fa-spin fa-gear' : 'fa-bolt'}
+                disabled={isGenerating || !savedApiKey}
+              />
+            </div>
             
             {!savedApiKey && (
               <p className="text-amber-500 mt-2 text-sm">
