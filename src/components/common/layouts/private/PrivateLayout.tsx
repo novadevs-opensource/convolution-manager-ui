@@ -7,8 +7,6 @@ import { GrHomeRounded } from "react-icons/gr";
 import { GrUserAdd } from "react-icons/gr";
 import { GrSettingsOption } from "react-icons/gr";
 
-
-
 type LayoutProps = {
   pageTitle: string,
   children: React.ReactNode
@@ -34,7 +32,7 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
   }
 
   return (
-    <div className="m-0 font-sans bg-gray-50 flex">
+    <div className="m-0 font-sans bg-gray-50 flex relative z-2">
       {/* Overlay para cerrar el sidebar cuando se hace click fuera (solo en móvil) */}
       {sidebarIsVisible && (
         <div 
@@ -49,7 +47,7 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
         onClose={closeSidebar} 
       />
       
-      <main className="p-4 w-full overflow-hidden">
+      <main className="sm:p-8 p-4 w-full max-h-[100vh] overflow-y-scroll">
         <div className='flex flex-row justify-between gap-4'>
           <Header title={pageTitle} />
           <UserBlock className={'hidden sm:block'} hasBorder={true} hasMenu={true}/>
@@ -61,7 +59,8 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
             Menu
           </button>
         </div>
-        <div className="sm:p-4 p-1 sm:bg-white sm:rounded-lg sm:border">
+        {/*<div className="sm:p-4 p-1 sm:bg-white sm:rounded-lg sm:border">*/}
+        <div className="rounded">
           {children}
         </div>
       </main>

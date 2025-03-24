@@ -52,7 +52,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ button, options }) => {
       <div
         ref={menuRef}
         className={`absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 transition ease-out duration-100 transform ${
-          isMenuOpened ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          isMenuOpened ? 'opacity-100 scale-100' : 'opacity-0 hidden scale-95'
         }`}
         role="menu" 
         aria-orientation="vertical" 

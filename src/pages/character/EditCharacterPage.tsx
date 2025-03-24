@@ -81,8 +81,10 @@ const EditCharacterPage: React.FC = () => {
         editedData, 
         {
           onSuccess: async (data) => {
-            // Then trigger agent update in the runtime
-            await updateAgent(userProfile.id, id, data.character.status);
+            // Then trigger agent update in the runtime if is running
+            if (data.character.status === 'running') {
+              await updateAgent(userProfile.id, id, data.character.status);
+            }
             // Navigate back to detail page
             navigate(`/agent/${id}`);
           },

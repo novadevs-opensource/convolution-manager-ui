@@ -2,7 +2,6 @@
 import React, { ReactNode } from 'react'
 import { Link } from "react-router-dom";
 import { useAuth } from '../../../../hooks/useAuth';
-import UserBlock from './userBlock/UserBlock';
 import { GrLogout } from "react-icons/gr";
 import logoWhite from "../../../../assets/images/convolution-logo-white.svg"
 
@@ -70,8 +69,6 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
           <hr className='mt-8 border-0 h-[2px] bg-gradient-primary'/>
             {isAuthenticated && (
               <div>
-
-                <UserBlock className={'block sm:hidden text-white'} hasBorder={false} hasMenu={false}/>
                 <a
                   className="block px-8 py-4 hover:bg-gradient-secondary hover:text-black text-white ease-in-out duration-300"
                   href="#"

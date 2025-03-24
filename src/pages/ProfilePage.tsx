@@ -16,7 +16,7 @@ const ProfilePage: React.FC = () => {
   const { addNotification } = useToasts();
   const { userProfile, isAuthenticated } = useAuth();
   // Use the API key hook with the user's id (if available)
-  const { key, updateHandler,removeHandler, error, creditsData, updateResponse } = useLLMProviderApiKey();
+  const { key, updateHandler, removeHandler, error, creditsData, updateResponse } = useLLMProviderApiKey();
   // Local state to manage the API key input field
   const [apiKeyInput, setApiKeyInput] = useState<string>(key || '');
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
@@ -80,17 +80,17 @@ const ProfilePage: React.FC = () => {
             disabled={true}
             plain={true}
           />
-          <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+          <div className="shadow-md bg-green-400 flex flex-row rounded-lg">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
-              <div className="rounded-full bg-lightPrimary p-3 ">
-                <span className="flex items-center text-brand-500 ">
+              <div className="rounded-full bg-lightPrimary p-3">
+                <span className="flex items-center text-black">
                   <img src={convolutionLogoBlack} className="h-[24px]" alt="convolution logo"/>
                 </span>
               </div>
             </div>
             <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-              <p className="font-dm text-sm font-medium text-gray-600">$CNVLTN balance</p>
-              <h4 className="text-xl font-bold text-navy-700 ">{tokenBalance}</h4>
+              <p className="text-black-light font-dm text-sm font-medium font-anek-latin">$CNVLTN balance</p>
+              <h4 className="text-xl font-bold font-anek-latin text-black">{tokenBalance}</h4>
             </div>
           </div>
         </FormGroup>
@@ -131,21 +131,23 @@ const ProfilePage: React.FC = () => {
           </div>
         </FormGroup>
         {creditsData && (
-          <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-md border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
-            <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
+          <div className="shadow-md bg-blue-400 flex flex-row rounded-lg">
+            <div className="ml-[18px] flex h-[90px] flex-row items-center">
               <div className="rounded-full bg-lightPrimary p-3 ">
                 <span className="flex items-center text-brand-500 ">
                   <img src={openRouterLogoBlack} className="h-[24px]" alt="convolution logo"/>
                 </span>
               </div>
             </div>
-            <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-              <p className="font-dm text-sm font-medium text-gray-600">Credits balance</p>
-              <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_credits}</h4>
-            </div>
-            <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-              <p className="font-dm text-sm font-medium text-gray-600">Used credits</p>
-              <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_usage}</h4>
+            <div className='flex flex-row justify-between w-1/2'>
+              <div className="h-50 ml-4 flex w-auto flex-col justify-center">
+                <p className="font-dm text-sm font-medium text-gray-600">Credits balance</p>
+                <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_credits}</h4>
+              </div>
+              <div className="h-50 ml-4 flex w-auto flex-col justify-center">
+                <p className="font-dm text-sm font-medium text-gray-600">Used credits</p>
+                <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_usage}</h4>
+              </div>
             </div>
           </div>
         )}

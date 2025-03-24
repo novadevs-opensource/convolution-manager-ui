@@ -22,7 +22,7 @@ const UpdateAgentButton: React.FC<UpdateAgentButtonProps> = ({
   return (
     <Button
       onClick={onClick}
-      label={loading ? "Updating..." : "Update"}
+      label={loading ? "Updating settings..." : "Update settings"}
       icon={loading ? "fa-spinner fa-spin" : "fa-sync"}
       disabled={disabled || loading}
       className={className}

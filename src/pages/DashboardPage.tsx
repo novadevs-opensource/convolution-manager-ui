@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useCharacters } from '../hooks/useCharacters';
 import { Link } from 'react-router-dom';
 import Pagination from '../components/common/Pagination';
-import Separator from '../components/common/Separator';
 import { Agent } from '../types';
 import { useCredits } from '../hooks/useCredits';
 import convolutionLogoBlack from '../assets/images/convolution-square-black.svg';
@@ -63,183 +62,183 @@ const DashboardPage: React.FC = () => {
 
       <div className="md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         {/* $CNVLTN balance */}
-        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md bg-green-400 flex flex-row rounded-lg">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3">
-              <span className="flex items-center text-brand-500">
+              <span className="flex items-center text-black">
                 <img src={convolutionLogoBlack} className="h-[24px]" alt="convolution logo"/>
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">$CNVLTN balance</p>
-            <h4 className="text-xl font-bold text-navy-700">{tokenBalance}</h4>
+            <p className="text-black-light font-dm text-sm font-medium font-anek-latin">$CNVLTN balance</p>
+            <h4 className="text-xl font-bold font-anek-latin text-black">{tokenBalance}</h4>
           </div>
         </div>
         {/* remaining credits */}
-        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md bg-blue-400 flex flex-row rounded-lg">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
-              <span className="flex items-center text-brand-500 ">
+              <span className="flex items-center text-black ">
                 <LuBadgeCheck size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">Open Router credit balance</p>
-            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : remainingCredits}</h4>
+            <p className="text-black-light font-dm text-sm font-medium font-anek-latin">Open Router credit balance</p>
+            <h4 className="text-xl font-bold font-anek-latin text-black ">{loadingCredits ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : remainingCredits}</h4>
           </div>
         </div>
         {/* used credits */}
-        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md bg-blue-400 flex flex-row rounded-lg">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
-              <span className="flex items-center text-brand-500 ">
+              <span className="flex items-center text-black ">
                 <LuBadgeAlert size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">Open Router used credits</p>
-            <h4 className="text-xl font-bold text-navy-700 ">{loadingCredits ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : totalCreditsUsage}</h4>
+            <p className="text-black-light font-dm text-sm font-medium font-anek-latin">Open Router used credits</p>
+            <h4 className="text-xl font-bold font-anek-latin text-black ">{loadingCredits ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : totalCreditsUsage}</h4>
           </div>
         </div>
         {/* total uptime */}
-        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border">
+        <div className="shadow-md bg-purple-400 flex flex-row rounded-lg">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
-              <span className="flex items-center text-brand-500 ">
+              <span className="flex items-center text-white ">
                 <MdOutlineTimer size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">Total uptime</p>
-            <h4 className="text-xl font-bold text-navy-700 w-full flex flex-row">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : formatSeconds(totalUptime ?? 0, false)}</h4>
+            <p className="text-black-ultra font-dm text-sm font-medium font-anek-latin">Total uptime</p>
+            <h4 className="text-xl font-bold font-anek-latin text-white w-full flex flex-row">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : formatSeconds(totalUptime ?? 0, false)}</h4>
           </div>
         </div>
         {/* Total agents */}
-        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
+        <div className="shadow-md bg-purple-400 flex flex-row rounded-lg">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
-              <span className="flex items-center text-brand-500 ">
+              <span className="flex items-center text-white ">
                 <MdOutlineSupportAgent size={24} />
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">Created ICONs</p>
-            <h4 className="text-xl font-bold text-navy-700 ">{pagination?.total}</h4>
+            <p className="text-black-ultra font-dm text-sm font-medium font-anek-latin">Created ICONs</p>
+            <h4 className="text-xl font-bold font-anek-latin text-white ">{pagination?.total}</h4>
           </div>
         </div>
         {/* running agents */}
-        <div className="shadow-md relative flex flex-grow !flex-row flex-col items-center rounded-[10px] rounded-[10px] border-[1px] bg-gray-50 border-gray-200 bg-clip-border ">
+        <div className="shadow-md bg-purple-400 flex flex-row rounded-lg">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3 ">
-              <span className="flex items-center text-brand-500 ">
+              <span className="flex items-center text-white ">
                 <IoIosPlay size={24}/>
               </span>
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="font-dm text-sm font-medium text-gray-600">Running ICONs</p>
-            <h4 className="text-xl font-bold text-navy-700 ">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : runningAgents}</h4>
+            <p className="text-black-ultra font-dm text-sm font-medium font-anek-latin">Running ICONs</p>
+            <h4 className="text-xl font-bold font-anek-latin text-white ">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : runningAgents}</h4>
           </div>
         </div>
       </div>
 
-      <Separator/>
-
-      <div className="w-full flex justify-between items-center mb-3 mt-1">
-        <div>
-          <h3 className="text-lg font-semibold text-slate-800 flex flex-row gap-2">Your ICONs {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
-          <p className="text-slate-500">Overview of your created ICONs.</p>
+      <div className='p-4 mt-8 bg-black-ultra rounded-lg'>
+        <div className="w-full flex justify-between items-center mb-3 mt-1">
+          <div>
+            <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Your ICONs {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
+            <p className="text-lg font-afacad text-black-light">Overview of your created ICONs.</p>
+          </div>
+          <div className="ml-3">
+            {/* TODO: search */}
+          </div>
         </div>
-        <div className="ml-3">
-          {/* TODO: search */}
-        </div>
-      </div>
 
-      <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
-        <table className="w-full text-left table-auto min-w-max">
-          <thead>
-            <tr>
-              <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
-                <p className="text-sm font-normal leading-none text-slate-500">
-                  Avatar
-                </p>
-              </th>
-              <th className="p-4 border-b border-slate-200 bg-slate-50">
-                <p className="text-sm font-normal leading-none text-slate-500">
-                  Name
-                </p>
-              </th>
-              <th className="p-4 border-b border-slate-200 bg-slate-50">
-                <p className="text-sm font-normal leading-none text-slate-500">
-                  Clients
-                </p>
-              </th>
-              <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
-                <p className="text-sm font-normal leading-none text-slate-500">
-                  Created at
-                </p>
-              </th>
-              <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
-                <p className="text-sm font-normal leading-none text-slate-500">
-                  Updated at
-                </p>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {agents.map((agent: Agent) => (
-              <tr key={agent.id} className="hover:bg-slate-50 border-b border-slate-200">
-                <td className="sm:table-cell hidden p-4 py-2">
-                  <Link to={`/agent/${agent.id}`}>
-                    {agent.face_image_path ? (
-                      <img 
-                        className='rounded rounded-full h-10 w-10 hover:opacity-60'
-                        src={`${import.meta.env.VITE_AVATAR_BUCKET_BASE_URL}/${agent.face_image_path}`}
-                      />
-                    ) : (
-                      <div className='h-10 w-10 rounded rounded-full p-2 border hover:opacity-60 items-center justify-center flex'>
-                        <i className='fa fa-user'></i>
-                      </div>
-                    )}
-                    
-                  </Link>
-                </td>
-                <td className="p-4 py-2">
-                  <p className="text-sm text-slate-500">
-                    <Link to={`/agent/${agent.id}`}>{agent.definition.name}</Link>
+        <div className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border">
+          <table className="w-full text-left table-auto min-w-max font-anek-latin">
+            <thead>
+              <tr>
+                <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
+                  <p className="text-md font-afacad leading-none text-slate-500">
+                    Avatar
                   </p>
-                </td>
-                <td className="p-4 py-2">
-                  <p className="text-sm text-slate-500 gap-2 flex flex-row">
-                    {agent.definition.clients.map((client: string, index: number) => (
-                      <span className='rounded-xl bg-black text-white px-3 py-1' key={index}>{client}</span>
-                    ))}
+                </th>
+                <th className="p-4 border-b border-slate-200 bg-slate-50">
+                  <p className="text-md font-afacad leading-none text-slate-500">
+                    Name
                   </p>
-                </td>
-                <td className="sm:table-cell hidden p-4 py-2">
-                  <p className="text-sm text-slate-500">
-                    {agent.created_at}
+                </th>
+                <th className="p-4 border-b border-slate-200 bg-slate-50">
+                  <p className="text-md font-afacad leading-none text-slate-500">
+                    Clients
                   </p>
-                </td>
-                <td className="sm:table-cell hidden p-4 py-2">
-                  <p className="text-sm text-slate-500">
-                    {agent.updated_at}
+                </th>
+                <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
+                  <p className="text-md font-afacad leading-none text-slate-500">
+                    Created at
                   </p>
-                </td>
+                </th>
+                <th className="sm:table-cell hidden p-4 border-b border-slate-200 bg-slate-50">
+                  <p className="text-md font-afacad leading-none text-slate-500">
+                    Updated at
+                  </p>
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {agents.map((agent: Agent) => (
+                <tr key={agent.id} className="hover:bg-slate-50 border-b border-slate-200">
+                  <td className="sm:table-cell hidden p-4 py-2">
+                    <Link to={`/agent/${agent.id}`}>
+                      {agent.face_image_path ? (
+                        <img 
+                          className='rounded rounded-full h-10 w-10 hover:opacity-60'
+                          src={`${import.meta.env.VITE_AVATAR_BUCKET_BASE_URL}/${agent.face_image_path}`}
+                        />
+                      ) : (
+                        <div className='h-10 w-10 rounded rounded-full p-2 border hover:opacity-60 items-center justify-center flex'>
+                          <i className='fa fa-user'></i>
+                        </div>
+                      )}
+                      
+                    </Link>
+                  </td>
+                  <td className="p-4 py-2">
+                    <p className="text-sm text-slate-500">
+                      <Link to={`/agent/${agent.id}`}>{agent.definition.name}</Link>
+                    </p>
+                  </td>
+                  <td className="p-4 py-2">
+                    <p className="text-sm text-slate-500 gap-2 flex flex-row">
+                      {agent.definition.clients.map((client: string, index: number) => (
+                        <span className='rounded-xl bg-black text-white px-3 py-1' key={index}>{client}</span>
+                      ))}
+                    </p>
+                  </td>
+                  <td className="sm:table-cell hidden p-4 py-2">
+                    <p className="text-sm text-slate-500">
+                      {agent.created_at}
+                    </p>
+                  </td>
+                  <td className="sm:table-cell hidden p-4 py-2">
+                    <p className="text-sm text-slate-500">
+                      {agent.updated_at}
+                    </p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        {/* Usamos el nuevo componente de paginación */}
-        {pagination && (
-          <Pagination pagination={pagination} onPageChange={handlePageChange} isLoading={loading}/>
-        )}
+          {/* Usamos el nuevo componente de paginación */}
+          {pagination && (
+            <Pagination pagination={pagination} onPageChange={handlePageChange} isLoading={loading}/>
+          )}
+        </div>
       </div>
     </div>
   );

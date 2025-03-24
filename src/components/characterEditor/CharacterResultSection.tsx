@@ -7,9 +7,10 @@ import Button from '../common/Button';
 
 interface CharacterResultSectionProps {
   character: CharacterData;
+  forWizard?: boolean;
 }
 
-const CharacterResultSection: React.FC<CharacterResultSectionProps> = ({ character }) => {
+const CharacterResultSection: React.FC<CharacterResultSectionProps> = ({ character, forWizard }) => {
   const [resultJson, setResultJson] = useState<string>('');
   const [downloadDisabled, setDownloadDisabled] = useState<boolean>(true);
 
@@ -47,6 +48,21 @@ const CharacterResultSection: React.FC<CharacterResultSectionProps> = ({ charact
     URL.revokeObjectURL(url);
   };
 
+  if (forWizard) {
+    return (
+      <FormGroup className='!mb-0'>
+        <div className="flex flex-row gap-2">
+          <Button onClick={handleGenerateJson} label={'Reveal settings in JSON format'} icon='fa-bolt'/>
+          <Button onClick={handleDownloadJson} label='Download' disabled={downloadDisabled} icon='fa-download'/>
+        </div>
+        <div id="knowledge-content" className="debug-output">
+          {/* Mostramos el JSON resultante en un bloque <pre> */}
+          <pre className='bg-white rounded-lg mt-8 p-4 text-xs'>{resultJson}</pre>
+        </div>
+      </FormGroup>
+    )
+  }
+
   return (
     <CharacterEditorSection
       title={'Character Result'}
@@ -61,7 +77,7 @@ const CharacterResultSection: React.FC<CharacterResultSectionProps> = ({ charact
     >
       <FormGroup>
         <div className="result-controls">
-          <Button onClick={handleGenerateJson} label={'Generate'} icon='fa-bolt'/>
+          <Button onClick={handleGenerateJson} label={'Generate JSON preview'} icon='fa-bolt'/>
           <Button onClick={handleDownloadJson} label='Download' disabled={downloadDisabled} icon='fa-download'/>
         </div>
         <div id="knowledge-content" className="debug-output">

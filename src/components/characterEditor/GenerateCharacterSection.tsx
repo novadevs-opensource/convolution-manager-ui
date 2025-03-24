@@ -9,16 +9,19 @@ import { useToasts } from '../../hooks/useToasts';
 
 interface GenerateCharacterSectionProps {
   onGenerateCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
-  onRefineCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
+  forWizard?: boolean;
+  savedPrompt?: string;
 }
 
 const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   onGenerateCharacter,
+  forWizard = false,
+  savedPrompt,
 }) => {
   const { addNotification } = useToasts();
   const [model] = useState<string>('meta-llama/llama-3.3-70b-instruct:free');
   const [savedApiKey, setSavedApiKey] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState<string>('');
+  const [prompt, setPrompt] = useState<string>(savedPrompt ?? '');
   const [status, setStatus] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
@@ -31,72 +34,129 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
     const storedKey = apiKeyService.getApiKey();
     if (storedKey) {
       setSavedApiKey(storedKey);
+    } else {
+      setStatus('Please set your OpenRouter API key in your "Profile" settings first');
     }
   }, [apiKeyService]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
-      setStatus('Please enter a prompt');
+      setStatus('Please enter a valid prompt');
       return;
     }
-    if (!model) {
-      setStatus('Please select a model');
-      return;
-    }
+    
     if (!savedApiKey) {
       setStatus('Please set your OpenRouter API key');
       return;
     }
     setIsGenerating(true);
+    setStatus('');
 
     try {
       await onGenerateCharacter(prompt, model, savedApiKey);
-      setStatus('');
-      setIsGenerating(false);
       addNotification('Settings generated successfully', 'success');
     } catch (err: any) {
-      addNotification('Settings generation error', 'error');
+      addNotification('Error generating settings', 'error');
       setStatus(`Error: ${err.message}`);
+    } finally {
       setIsGenerating(false);
     }
   };
 
-  return (
-    <CharacterEditorSection
-      title={'Autogenerate settings with AI'}
-      headerIcon={
-        <button
-          className="icon-button help-button"
-          title="Generate a new agent using AI by providing a description"
-        >
-          <i className="fa-solid fa-wand-sparkles"></i>
-        </button>
-      }
-    >
-      <FormGroup>
-        <GenericTextArea
-          label='Seed prompt'
-          name='character-prompt-box'
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Describe your character in detail..."
-          value={prompt}
-          showCharCount={true}
-          maxLength={650}
-          className='h-[250px]'
-          plain={true}
-          errorMessages={[status]}
-          disabled={isGenerating}
-        />
-        <div className="flex flex-row gap-2 sm:justify-start justify-end">
-          <Button 
-            onClick={handleGenerate} 
-            label={isGenerating ? 'Generating...' : 'Generate'} 
-            icon={isGenerating ? 'fa-spin fa-gear' : 'fa-bolt'}
+  return forWizard ? (
+    <div>
+        <FormGroup>
+          <GenericTextArea
+            label={forWizard ? 'Describe your character' : 'Seed prompt'}
+            name='character-prompt-box'
+            onChange={(e) => {
+              setPrompt(e.target.value)
+              setStatus('');
+            }}
+            placeholder="Write a detailed prompt describing your AI personality - include their name, background, personality traits, interests, communication style, and any other relevant information..."
+            value={prompt}
+            showCharCount={true}
+            maxLength={650}
+            className={'border-0 border-b-2'}
+            plain={true}
+            errorMessages={[status]}
             disabled={isGenerating}
           />
+          
+          <div className="">
+            <Button 
+              onClick={handleGenerate} 
+              label={isGenerating ? 'Generating...' : 'Generate'} 
+              icon={isGenerating ? 'fa-spin fa-gear' : 'fa-bolt'}
+              disabled={isGenerating || !savedApiKey}
+            />
+            
+            {!savedApiKey && (
+              <p className="text-amber-500 mt-2 text-sm">
+                <i className="fa-solid fa-triangle-exclamation mr-1"></i>
+                Please set your OpenRouter API key in your "Profile" settings first
+              </p>
+            )}
+          </div>
+        </FormGroup>
+        
+        <div className="mt-6 p-4 bg-black rounded-lg text-white">
+          <h4 className="font-semibold mb-2 font-afacad">Prompt Tips:</h4>
+          <ul className="list-disc list-inside space-y-1 text-sm font-anek-latin">
+            <li>Include a specific name for your character</li>
+            <li>Describe their personality traits, background, and interests</li>
+            <li>Mention their communication style and tone</li>
+            <li>Add details about their knowledge areas or expertise</li>
+          </ul>
         </div>
-      </FormGroup>
-    </CharacterEditorSection>
+    </div>
+  ): (
+      <CharacterEditorSection
+        title={'Autogenerate settings with AI'}
+        headerIcon={
+          <button
+            className="icon-button help-button"
+            title="Generate a new agent using AI by providing a description"
+          >
+            <i className="fa-solid fa-wand-sparkles"></i>
+          </button>
+        }
+      >
+        <FormGroup>
+          <GenericTextArea
+            label={forWizard ? 'Describe your character' : 'Seed prompt'}
+            name='character-prompt-box'
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Write a detailed prompt describing your AI personality - include their name, background, personality traits, interests, communication style, and any other relevant information..."
+            value={prompt}
+            showCharCount={true}
+            maxLength={650}
+            className={forWizard 
+              ? 'h-[250px] border-0 border-b-2 rounded-none bg-black-ultra placeholder-gray-400' 
+              : ''
+            }
+            plain={true}
+            errorMessages={[status]}
+            disabled={isGenerating}
+          />
+          
+          <div className="mt-4">
+            <Button 
+              onClick={handleGenerate} 
+              label={isGenerating ? 'Generating...' : 'Generate'} 
+              icon={isGenerating ? 'fa-spin fa-gear' : 'fa-bolt'}
+              disabled={isGenerating || !prompt.trim() || !savedApiKey}
+            />
+            
+            {!savedApiKey && (
+              <p className="text-amber-500 mt-2 text-sm">
+                <i className="fa-solid fa-triangle-exclamation mr-1"></i>
+                Please set your OpenRouter API key in your "Profile" settings first
+              </p>
+            )}
+          </div>
+        </FormGroup>
+      </CharacterEditorSection>
   )
 };
 

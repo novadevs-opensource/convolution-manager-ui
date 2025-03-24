@@ -65,7 +65,7 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
     }
     if (label) {
       return (
-        <label htmlFor={id} className="block font-medium mb-1">
+        <label htmlFor={id} className="block font-medium mb-2 text-lg">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
@@ -156,7 +156,7 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
           rows={rows}
           maxLength={maxLength}
           className={`
-            w-full px-4 py-2 rounded-md resize-y
+            w-full px-4 py-2 rounded-t-md resize-y
             ${isInvalid ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}
             ${iconSource ? 'pl-10' : ''}
             ${props.disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}

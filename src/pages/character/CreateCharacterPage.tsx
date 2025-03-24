@@ -1,15 +1,17 @@
 // src/pages/CreateCharacterPage.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CharacterEditor from '../../components/characterEditor/CharacterEditor';
+//import CharacterEditor from '../../components/characterEditor/CharacterEditor';
 import { useAuth } from '../../hooks/useAuth';
-import SaveAgentButton from '../../components/agent/buttons/SaveAgentButton';
+//import SaveAgentButton from '../../components/agent/buttons/SaveAgentButton';
 import { useAgent } from '../../hooks/useAgent';
 import { ApiKeyService } from '../../services/apiKeyService';
 import { useToasts } from '../../hooks/useToasts';
 import { CharacterData } from '../../types';
-import Button from '../../components/common/Button';
-import ActionToolsBlock from '../../components/common/ActionToolsBlock';
+//import Button from '../../components/common/Button';
+//import ActionToolsBlock from '../../components/common/ActionToolsBlock';
+import CharacterCreatorWizard from '../../components/characterEditor/CharacterCreatorWizard';
+
 
 const CreateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -85,7 +87,7 @@ const CreateCharacterPage: React.FC = () => {
 
   return (
     <div>
-      {/* navigation */}
+      {/* navigation 
         <ActionToolsBlock>
           <SaveAgentButton 
             onClick={handleSave}
@@ -100,11 +102,14 @@ const CreateCharacterPage: React.FC = () => {
             label={'Back'}
           />
         </ActionToolsBlock>
-
+      */}
+      {/*
       <CharacterEditor 
         userId={userProfile.id}
         onDataChange={handleEditorChange}
       />
+      */}
+      <CharacterCreatorWizard userId={userProfile.id} onDataChange={handleEditorChange} onFinish={handleSave}></CharacterCreatorWizard>
     </div>
   );
 };

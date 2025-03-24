@@ -42,7 +42,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
       <div 
         className={`overflow-hidden transition-all duration-500 ${
           isOpen 
-            ? 'max-h-screen opacity-100 visible' 
+            ? 'opacity-100 visible' 
             : 'max-h-0 opacity-0 invisible'
         }`}
       >
@@ -55,7 +55,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
 };
 
 // Tipo para los items del acordeón
-interface AccordionItem {
+export interface AccordionItem {
   title: string;
   content: ReactNode;
 }

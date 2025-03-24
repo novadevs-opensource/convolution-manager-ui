@@ -6,11 +6,13 @@ import Button from '../common/Button';
 interface KnowledgeProcessingSectionProps {
   knowledge: string[];
   onKnowledgeChange: (newKnowledge: string[]) => void;
+  forWizard?: boolean; 
 }
 
 const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
   knowledge,
   onKnowledgeChange,
+  forWizard = false,
 }) => {
   const [fileList, setFileList] = useState<File[]>([]);
   const [processingStatus, setProcessingStatus] = useState<string>('');
@@ -111,6 +113,92 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
     const updated = knowledge.filter((_, i) => i !== index);
     onKnowledgeChange(updated);
   };
+
+  if (forWizard) {
+    return (
+      <div>
+        {/* Zona de drop */}
+        <div
+          className="border-2 border-gray-300 border-dashed rounded-lg p-8 mb-8"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
+          <div className="flex flex-row items-left items-center gap-2">
+            <i className="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <p className='font-anek-latin'>
+              Drag and drop PDF or text files here to add to the character's knowledge base or
+            </p>
+            <input
+              type="file"
+              multiple
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
+            <button
+              className=""
+              title="Select Knowledge Files"
+              onClick={handleFileButtonClick}
+            >
+              <i className="fa-solid fa-folder-open"></i>
+            </button>
+          </div>
+        </div>
+        {/* Lista de archivos subidos */}
+        <div id="file-list">
+          {fileList.map((file, index) => (
+            <div key={index} className="file-item">
+              <span className="file-name">{file.name}</span>
+              <span className="file-size">{(file.size / 1024).toFixed(2)} KB</span>
+            </div>
+          ))}
+        </div>
+        {/* Estado de procesamiento */}
+        <div id="processing-status" className={statusClass}>
+          {processingStatus}
+        </div>
+
+        {/* Botón para procesar archivos */}
+        <Button disabled={processing} onClick={handleProcessKnowledge} label={'Generate'} icon='fa-gears'/>
+
+        {/* Visualización y edición del conocimiento */}
+        <div className="knowledge-display">
+          <div className="knowledge-header">
+            <h3 className='text-lg font-bold font-anek-latin'>Knowledge Base <span className='text-sm text-gray-500 font-medium'>({knowledge.length} entries)</span></h3>
+            <button
+              className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+              title="Add Knowledge Entry"
+              onClick={handleAddKnowledgeEntry}
+            >
+              <i className="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="knowledge-entries" className="knowledge-entries rounded-md border-0 py-2">
+            {knowledge?.map((entry, index) => (
+              <div key={index} className="knowledge-entry items-center border-0">
+                <span className="entry-number">{index + 1}.</span>
+                <input
+                  type="text"
+                  className="knowledge-text"
+                  value={entry}
+                  placeholder="Enter knowledge..."
+                  onChange={(e) => handleKnowledgeEntryChange(index, e.target.value)}
+                  onBlur={(e) => handleKnowledgeEntryBlur(index, e.target.value)}
+                />
+                <button
+                  className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                  title="Remove Knowledge"
+                  onClick={() => handleRemoveKnowledgeEntry(index)}
+                >
+                  <i className='fa fa-trash'></i>
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <CharacterEditorSection

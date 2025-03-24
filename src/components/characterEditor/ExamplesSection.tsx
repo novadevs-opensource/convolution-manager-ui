@@ -12,6 +12,7 @@ interface ExamplesSectionProps {
   characterName: string;
   onMessageExamplesChange: (examples: MessageExample[][]) => void;
   onPostExamplesChange: (posts: string[]) => void;
+  forWizard?: boolean;
 }
 
 const ExamplesSection: React.FC<ExamplesSectionProps> = ({
@@ -20,6 +21,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
   characterName,
   onMessageExamplesChange,
   onPostExamplesChange,
+  forWizard,
 }) => {
   // Agregar un nuevo ejemplo (conversación) usando el valor de characterName para el mensaje del personaje
   const handleAddExample = () => {
@@ -61,6 +63,77 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
     });
     onMessageExamplesChange(updated);
   };
+
+  if (forWizard) {
+    return (
+      <div>
+        {/* Message Examples */}
+        <FormGroup>
+          <div className="flex flex-row items-center justify-between">
+            <h3 className='text-lg font-bold font-anek-latin'>Message Examples <span className='text-sm text-gray-500 font-medium'>({messageExamples.length} entries)</span></h3>
+            <button
+              id="add-example"
+              className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+              title="Add Example"
+              onClick={handleAddExample}
+            >
+              <i className="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="message-examples-container">
+            {messageExamples?.map((example, index) => (
+              <div key={index} className="bg-gray-50 p-4 rounded-lg flex flex-row gap-3 mb-4">
+                <div className="message-pair grow">
+                  <GenericTextArea
+                    placeholder="Write an example user message..."
+                    className="border-0 border-b-2 bg-white min-h-[140px]"
+                    value={example[0].content.text}
+                    onChange={(e) =>
+                      handleUserMessageChange(index, e.target.value)
+                    }
+                    label='User message example'
+                    plain={true}
+                  ></GenericTextArea>
+                </div>
+                <div className="message-pair grow">
+                  <GenericTextArea
+                    placeholder="Write the character's response..."
+                    className="border-0 border-b-2 bg-white min-h-[140px]"
+                    value={example[1].content.text}
+                    onChange={(e) =>
+                      handleCharacterMessageChange(index, e.target.value)
+                    }
+                    label='Your ICON response example'
+                    plain={true}
+                  ></GenericTextArea>
+                </div>
+                <button
+                  className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                  title="Remove Example"
+                  onClick={() => handleRemoveExample(index)}
+                >
+                  <i className='fa fa-trash'></i>
+                </button>
+              </div>
+            ))}
+          </div>
+        </FormGroup>
+
+        {/* Post Examples */}
+        <FormGroup>
+          <SplitTextArea
+            customLabel={<h3 className='text-lg font-bold font-anek-latin mb-4'>Post Examples <span className='text-sm text-gray-500 font-medium'>({postExamples.length} entries)</span></h3>}
+            id='post-examples'
+            name='post-examples'
+            placeholder="Write example posts that demonstrate the character's writing style. Include different types of content they might create. Write one complete post per line."
+            value={postExamples} 
+            className="border-0 border-b-2 bg-white min-h-[140px]"
+            onChange={(val) => onPostExamplesChange(val)}
+          />
+        </FormGroup>
+      </div>
+    )
+  }
 
   return (
     <CharacterEditorSection

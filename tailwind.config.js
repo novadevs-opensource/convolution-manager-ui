@@ -9,6 +9,7 @@ export default {
         black: {
           DEFAULT: '#232323',
           light: '#71717A',
+          ultra: '#F1F1F1',
           dark: '#1a1a1a',
         },
         phantom: {

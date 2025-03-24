@@ -412,8 +412,8 @@ const CharacterDetailPage: React.FC = () => {
           <div className="relative bg-white p-6 rounded-lg border border-[#e5e7eb] sm:w-[440px] w-full">
             {/* Heading */}
             <div className="p-6 flex flex-col space-y-1.5">
-              <h2 className="font-semibold text-lg tracking-tight">Chatbot</h2>
-              <p className="text-sm text-[#6b7280] leading-3">Powered by Convolution</p>
+              <h2 className="font-semibold text-lg tracking-tight">Chatbot preview (disabled)</h2>
+              <p className="text-sm text-[#6b7280] leading-3">powered by Convolution</p>
             </div>
             {/* Chat Container */}
             <div className="h-[500px] border border-gray-200" style={{overflowY: 'scroll'}}>

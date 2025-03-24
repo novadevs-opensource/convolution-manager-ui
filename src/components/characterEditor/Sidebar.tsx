@@ -23,13 +23,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   onRenameBackup,
   onDeleteBackup,
   onGenerateCharacter,
-  onRefineCharacter,
 }) => {
   return (
     <div className="w-full">
       <GenerateCharacterSection
         onGenerateCharacter={onGenerateCharacter}
-        onRefineCharacter={onRefineCharacter}
       />
       <LoadCharacterSection
         onLoadCharacter={onLoadCharacter}
