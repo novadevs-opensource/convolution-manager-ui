@@ -249,7 +249,7 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
       subtitle: 'Set name, model and clients',
       content: (
         <div className="flex flex-col gap-6 grow-[10]">
-          <FormGroup className='flex md:flex-row flex-col'>
+          <FormGroup className='flex md:grid md:grid-cols-2 w-full flex flex-col'>
             <GenericTextInput
               plain={true} 
               label='Character Name'
@@ -259,12 +259,20 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
               value={character.name}
               required={true}
             />
-            <ModelProviderSelect
-              label='Model Provider'
-              selected={character.settings?.secrets?.OPENROUTER_MODEL || selectedModelValue || ''}
-              onChange={(value) => setSelectedModelValues(value)}
-              models={openRouterAvailableModels}
-            />
+            <div className='w-full flex flex-col'>
+              <ModelProviderSelect
+                label='Model Provider'
+                selected={character.settings?.secrets?.OPENROUTER_MODEL || selectedModelValue || ''}
+                onChange={(value) => setSelectedModelValues(value)}
+                models={openRouterAvailableModels}
+              />
+              {selectedModelValue?.includes(':free') &&
+                <small className='-mt-2  flex flex-row gap-2 items-center'>
+                  <i className='fa fa-warning rounded-full border-2 p-1 text-white bg-yellow-500 border-red-300'></i>
+                  <span className='text-yellow-600 font-anek-latin'><b>Free</b> models are <b>limited</b> to 20 requests per minute and 200 requests per day. <b>Use them just for testing purposes.</b></span>
+                </small>
+              }
+            </div>
           </FormGroup>
           <FormGroup>
           <ClientConfigurationSection
@@ -423,7 +431,7 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
                   <Button
                     label='Skip step'
                     onClick={() => goToStep(1)}
-                    disabled={generatingFromPromt}
+                    disabled={generatingFromPromt || !apiKeyService.getApiKey()}
                     icon="fa-forward"
                     className='min-w-[120px] justify-center'
                   />
