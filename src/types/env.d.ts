@@ -1,3 +1,5 @@
+declare const __APP_VERSION__: string;
+
 interface ImportMetaEnv {
   VITE_EVENTS_QUEUE_REGION: string,
   VITE_EVENTS_QUEUE_ENDPOINT: string,

@@ -24,12 +24,17 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
       `}
     >
       {/* logo */}
-      <div className="ml-4 px-4 pr-6 py-4 flex mb-8 justify-between items-end">
-        <img
-          src={logoWhite}
-          alt="Logo"
-          className="h-12 max-w-[190px]"
-        />
+      <div className="ml-4 px-4 pr-6 py-4 flex mb-8 justify-between items-baseline">
+        <div className='flex flex-col'>
+          <img
+            src={logoWhite}
+            alt="Logo"
+            className="h-12 max-w-[190px]"
+          />
+          <span className='text-white text-xs'>
+            <i>v.{__APP_VERSION__}</i>
+          </span>
+        </div>
         <button 
           className='sm:hidden block bg-dark rounded-lg' 
           onClick={onClose}

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { config } from 'dotenv';
 import react from '@vitejs/plugin-react'
+import { version } from './package.json';
 
 // Load environment variables from .env file
 config();
@@ -23,6 +24,7 @@ export default defineConfig({
     // Required for Solana to work
     'process.env': process.env,
     global: 'globalThis',
+    __APP_VERSION__: JSON.stringify(version)
   },
   optimizeDeps: {
     esbuildOptions: {
