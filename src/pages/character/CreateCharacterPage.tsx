@@ -16,7 +16,7 @@ import CharacterCreatorWizard from '../../components/characterEditor/CharacterCr
 const CreateCharacterPage: React.FC = () => {
   const navigate = useNavigate();
   const { userProfile, loadUserProfile, isAuthenticated } = useAuth();
-  const [isSaving, setIsSaving] = useState(false);
+  const [, setIsSaving] = useState(false);
   const [characterData, setCharacterData] = useState<CharacterData | null>(null);
   const [selectedModel, setSelectedModel] = useState<string>('');
   const { saveHandler } = useAgent();
