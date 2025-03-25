@@ -84,7 +84,7 @@ const ModelProviderSelect: React.FC<ModelProviderSelectProps> = ({
   const renderLabel = () => {
     if (label) {
       return (
-        <label className="block font-medium mb-1">
+        <label className="block text-lg mb-1">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>

@@ -432,7 +432,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
               value={character.name}
             />
             <ModelProviderSelect
-              label='Model Provider'
+              label='Large Language Model'
               selected={character.settings?.secrets?.OPENROUTER_MODEL || selectedModelValue || ''}
               onChange={(value) => {
                 handleInputChange('settings.secrets.OPENROUTER_MODEL', value);

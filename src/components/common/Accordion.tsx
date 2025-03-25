@@ -17,36 +17,25 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   children, 
   isOpen, 
   onToggle,
-  isFirstItem,
   isLastItem,  
 }) => {
-  const getBorderRadiusClasses = () => {
-    if (isFirstItem) {
-      return 'rounded-t-md';
-    } else if (isLastItem && !isOpen) {
-      return 'rounded-b-md';
-    } else {
-      return '';
-    }
-  };
-
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       <div 
-        className={`flex cursor-pointer items-center justify-between border border-gray-300 ${getBorderRadiusClasses()} bg-gray-100 px-4 py-2`}
+        className={`flex cursor-pointer items-center justify-between rounded-md bg-gray-200 px-4 py-2`}
         onClick={onToggle}
       >
-        <span>{title}</span>
+        <span className='font-anek-latin'>{title}</span>
         <i className={`fa fa-chevron-down transition-all duration-500 ${isOpen ? '-rotate-180' : ''}`}></i>
       </div>
       <div 
-        className={`overflow-hidden transition-all duration-500 ${
+        className={`overflow-hidden transition-all duration-500 -mt-2 mb-2 ${
           isOpen 
             ? 'opacity-100 visible' 
             : 'max-h-0 opacity-0 invisible'
         }`}
       >
-        <div className={`px-4 py-2 border border-t-0 border-gray-300 bg-gray-50 ${isLastItem ? 'rounded-b-md' : ''}`}>
+        <div className={`px-4 py-2 border-t-0  bg-white ${isLastItem ? 'rounded-b-md' : ''}`}>
           {children}
         </div>
       </div>

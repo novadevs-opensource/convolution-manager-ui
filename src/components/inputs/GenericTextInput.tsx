@@ -40,8 +40,8 @@ const GenericTextInput = forwardRef<HTMLInputElement, GenericTextInputProps>(({
         }
         if (label) {
             return (
-                <label htmlFor={name ?? ''} className="block font-medium mb-1">
-                    {label}
+                <label htmlFor={name ?? ''} className="block text-lg items-center flex flex-row mb-1">
+                    <span>{label}</span>
                     {required && <span className="text-red-500 ml-1">*</span>}
                 </label>
             );
@@ -52,7 +52,7 @@ const GenericTextInput = forwardRef<HTMLInputElement, GenericTextInputProps>(({
     const renderErrorPills = () => {
         if (errorMessages && errorMessages.length > 0) {
             return (
-                <div className="mt-1">
+                <div className="flex flex-col">
                     {errorMessages.map((error, index) => (
                         <ErrorPill key={index}>{error}</ErrorPill>
                     ))}
@@ -87,9 +87,8 @@ const GenericTextInput = forwardRef<HTMLInputElement, GenericTextInputProps>(({
     return (
         <div className="w-full mb-4">
             {(label || customLabel) && (
-                <div className="flex justify-between items-center">
+                <div className="flex flex-row justify-between items-center">
                     {renderLabel()}
-                    {!errorPosition && renderErrorPills()}
                 </div>
             )}
             
@@ -122,6 +121,7 @@ const GenericTextInput = forwardRef<HTMLInputElement, GenericTextInputProps>(({
                     {...props}
                 />
             </div>
+            {!errorPosition && renderErrorPills()}
         </div>
     );
 });

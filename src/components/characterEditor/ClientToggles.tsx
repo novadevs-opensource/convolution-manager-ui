@@ -19,7 +19,7 @@ const ClientToggles: React.FC<ClientTogglesProps> = ({ availableClients, selecte
 
   return (
     <div className='flex flex-col'>
-      {label && <label>{label}</label>}
+      {label && <label className='text-lg'>{label}</label>}
       <div className='flex flex-row gap-2'>
         {availableClients.map(client => (
           <button
