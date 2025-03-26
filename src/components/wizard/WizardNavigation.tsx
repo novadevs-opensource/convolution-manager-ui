@@ -1,3 +1,4 @@
+// src/components/wizard/WizardNavigation.tsx
 import React from 'react';
 import Button from '../common/Button';
 
@@ -12,6 +13,7 @@ interface WizardNavigationProps {
   showSkipButton?: boolean;
   skipButtonDisabled?: boolean;
   className?: string;
+  onValidatePrevious?: () => Promise<boolean>;
 }
 
 /**
@@ -27,10 +29,28 @@ const WizardNavigation: React.FC<WizardNavigationProps> = ({
   isProcessing,
   showSkipButton = false,
   skipButtonDisabled = false,
-  className = ''
+  className = '',
+  onValidatePrevious
 }) => {
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
+
+  const handleNext = async () => {
+    // If we have a validation function for previous steps, call it
+    if (onValidatePrevious) {
+      // Check if all previous steps are valid
+      const allValid = await onValidatePrevious();
+      
+      if (!allValid) {
+        // Show error toast or message here if needed
+        console.error('Previous steps have validation errors. Please review.'); // TODO: Change by toast
+        return;
+      }
+    }
+    
+    // If all steps are valid or we don't need to validate, proceed
+    onNext();
+  };
 
   return (
     <div className={`flex flex-row gap-2 items-end ${className}`}>
@@ -56,7 +76,7 @@ const WizardNavigation: React.FC<WizardNavigationProps> = ({
       
       <Button
         label={isLastStep ? 'Finish' : 'Next'}
-        onClick={onNext}
+        onClick={handleNext}
         icon={isProcessing ? 'fa-spin fa-gear' : 'fa-angle-right'}
         disabled={isProcessing || !canProceed}
         className={`min-w-[120px] justify-center flex-row-reverse ${isLastStep ? 'bg-green-400 !text-black' : ''}`}

@@ -1,5 +1,5 @@
 // src/components/characterEditor/CharacterCreatorWizard.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Services
 import { ApiKeyService } from '../../services/apiKeyService';
@@ -20,7 +20,7 @@ import ClientConfigurationSection from './ClientConfigurationSection';
 import WizardSidebar from '../wizard/WizardSidebar';
 import WizardHeader from '../wizard/WizardHeader';
 import WizardContent from '../wizard/WizardContent';
-import StepValidationStatus from '../wizard/StepValidationStatus';
+import StepValidationStatus, { ValidationStatusItem } from '../wizard/StepValidationStatus';
 
 // Custom hooks
 import { useToasts } from '../../hooks/useToasts';
@@ -101,6 +101,9 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
     wizardSteps.currentStep
   );
   
+  // State to track validation attempts for steps
+  const [validationAttempts, setValidationAttempts] = useState<Record<number, boolean>>({});
+  
   // Hook for character generation
   const {
     loading: generatingFromPrompt, 
@@ -175,28 +178,99 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
     );
     characterState.setFullCharacter(updatedCharacter);
     characterState.setSelectedModelValue(modelId);
-    
-    // Trigger validation - but don't do it in a loop!
-    // Instead of calling validation directly, we'll rely on the character state change
-    // to trigger validation through the useEffect in useWizardValidation
   };
   
-  // Check if a step is disabled
+  // Check if a step is disabled - improved implementation
   const isStepDisabled = (stepIndex: number): boolean => {
     if (stepIndex === 0) return false; // First step is never disabled
     
-    // Basic information required for all subsequent steps
-    const nameExists = !!characterState.character.name?.trim();
-    
-    if (stepIndex > 1) {
-      // After step 1, require model and clients
-      const modelSelected = !!characterState.selectedModelValue;
-      const clientsSelected = characterState.character.clients.length > 0;
-      
-      return !nameExists || !modelSelected || !clientsSelected;
+    // If the user has never attempted to validate this step, disable it
+    if (stepIndex > wizardSteps.currentStep && !validationAttempts[stepIndex]) {
+      return true;
     }
     
-    return !nameExists;
+    // Check if all previous steps are valid
+    for (let i = 0; i < stepIndex; i++) {
+      // Skip validation check for step 0 (generation step)
+      if (i === 0 && characterState.character.name?.trim()) continue;
+      
+      // For steps that require validation, check if they're valid
+      const stepConfig = WIZARD_STEPS_CONFIG[i];
+      
+      // Skip steps with skipValidation: true
+      if (stepConfig.skipValidation) continue;
+      
+      // Get validation result for this step
+      const validationResult = validation.getStepValidation(i);
+      
+      // If validation is not done or failed, disable this step
+      if (!validation.initialValidationDone[i] || !validationResult.isValid) {
+        return true;
+      }
+    }
+    
+    return false;
+  };
+
+  // Validate all previous steps when attempting to go to a new step
+  const validatePreviousSteps = async (): Promise<boolean> => {
+    const allValid = await validation.validateAllPreviousSteps();
+    
+    if (!allValid) {
+      addNotification('Please complete all previous steps correctly before proceeding.', 'error');
+    }
+    
+    return allValid;
+  };
+
+  // Handle step click in sidebar
+  const handleStepClick = async (index: number) => {
+    // Mark that the user attempted to validate this step
+    setValidationAttempts(prev => ({
+      ...prev,
+      [index]: true
+    }));
+    
+    // If trying to go forward, validate previous steps first
+    if (index > wizardSteps.currentStep) {
+      const allValid = await validation.validateAllPreviousSteps();
+      
+      if (!allValid) {
+        addNotification('Please complete all previous steps correctly before proceeding.', 'error');
+        return;
+      }
+    }
+    
+    // If all validations pass or going backward, allow navigation
+    wizardSteps.goToStep(index);
+  };
+  
+  // Prepare validation status for sidebar
+  const prepareStepValidationStatus = () => {
+    const status: Record<number, {
+      isValid: boolean;
+      validationItems?: ValidationStatusItem[];
+      isValidationDone: boolean;
+    }> = {};
+    
+    // Skip step 0 (generation step)
+    for (let i = 1; i < WIZARD_STEPS_CONFIG.length; i++) {
+      const stepConfig = WIZARD_STEPS_CONFIG[i];
+      
+      // Skip steps with skipValidation: true
+      if (stepConfig.skipValidation) continue;
+      
+      // Get validation result for this step
+      const validationResult = validation.getStepValidation(i);
+      
+      status[i] = {
+        isValid: validationResult.isValid,
+        validationItems: validationResult.validationItems,
+        isValidationDone: validation.initialValidationDone[i] || false
+      };
+    }
+    
+    return status;
   };
 
   // Determine if we're currently processing something
@@ -372,11 +446,32 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
   const currentStepConfig = WIZARD_STEPS_CONFIG[wizardSteps.currentStep];
   const canProceed = validation.canProceedToNextStep();
 
-  // Finalize handler for the finish button
-  const handleFinish = () => {
-    if (onFinish) {
-      onFinish();
+  // Handle next step with validation
+  const handleNextStep = async () => {
+    if (wizardSteps.isLastStep) {
+      // If this is the last step, call finalize handler
+      if (onFinish) {
+        onFinish();
+      }
+      return;
     }
+    
+    // Mark that we attempted to validate the next step
+    const nextStep = wizardSteps.currentStep + 1;
+    setValidationAttempts(prev => ({
+      ...prev,
+      [nextStep]: true
+    }));
+    
+    // Validate all previous steps before proceeding
+    const allValid = await validation.validateAllPreviousSteps();
+    if (!allValid) {
+      addNotification('Please complete all previous steps correctly before proceeding.', 'error');
+      return;
+    }
+    
+    // If all validations pass, go to next step
+    wizardSteps.goToNextStep();
   };
 
   return (
@@ -385,21 +480,23 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
       <WizardSidebar
         steps={WIZARD_STEPS_CONFIG}
         currentStep={wizardSteps.currentStep}
-        onStepClick={wizardSteps.goToStep}
+        onStepClick={handleStepClick}
         isStepDisabled={isStepDisabled}
+        stepValidationStatus={prepareStepValidationStatus()}
       />
 
       {/* Main Content Area using WizardContent */}
       <WizardContent
         currentStep={wizardSteps.currentStep}
         totalSteps={WIZARD_STEPS_CONFIG.length}
-        onNext={wizardSteps.isLastStep ? handleFinish : wizardSteps.goToNextStep}
+        onNext={handleNextStep}
         onPrevious={wizardSteps.goToPreviousStep}
         onSkip={wizardSteps.goToNextStep}
         canProceed={canProceed}
         isProcessing={isProcessing}
         showSkipButton={currentStepConfig.canSkip}
         skipButtonDisabled={!apiKeyService.getApiKey()}
+        onValidatePrevious={validatePreviousSteps}
       >
         {/* Header */}
         <WizardHeader
@@ -407,13 +504,14 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
           subtitle={currentStepConfig.subtitle}
           currentStep={wizardSteps.currentStep}
           totalSteps={WIZARD_STEPS_CONFIG.length}
-          onNext={wizardSteps.isLastStep ? handleFinish : wizardSteps.goToNextStep}
+          onNext={handleNextStep}
           onPrevious={wizardSteps.goToPreviousStep}
           onSkip={wizardSteps.goToNextStep}
           canProceed={canProceed}
           isProcessing={isProcessing}
           showSkipButton={currentStepConfig.canSkip}
           skipButtonDisabled={!apiKeyService.getApiKey()}
+          onValidatePrevious={validatePreviousSteps}
         />
         
         {/* Step Content */}

@@ -1,3 +1,4 @@
+// src/components/wizard/WizardHeader.tsx
 import React from 'react';
 import WizardNavigation from './WizardNavigation';
 
@@ -13,6 +14,7 @@ interface WizardHeaderProps {
   isProcessing: boolean;
   showSkipButton?: boolean;
   skipButtonDisabled?: boolean;
+  onValidatePrevious?: () => Promise<boolean>; // New prop for validation
 }
 
 /**
@@ -29,7 +31,8 @@ const WizardHeader: React.FC<WizardHeaderProps> = ({
   canProceed,
   isProcessing,
   showSkipButton = false,
-  skipButtonDisabled = false
+  skipButtonDisabled = false,
+  onValidatePrevious
 }) => {
   return (
     <div className="mb-6">
@@ -51,6 +54,7 @@ const WizardHeader: React.FC<WizardHeaderProps> = ({
             isProcessing={isProcessing}
             showSkipButton={showSkipButton}
             skipButtonDisabled={skipButtonDisabled}
+            onValidatePrevious={onValidatePrevious}
           />
         </div>
       </div>

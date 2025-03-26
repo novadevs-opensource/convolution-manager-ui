@@ -1,3 +1,4 @@
+// src/components/wizard/WizardContent.tsx
 import React, { ReactNode } from 'react';
 import WizardNavigation from './WizardNavigation';
 
@@ -12,6 +13,7 @@ interface WizardContentProps {
   isProcessing: boolean;
   showSkipButton?: boolean;
   skipButtonDisabled?: boolean;
+  onValidatePrevious?: () => Promise<boolean>; // New prop for validation
 }
 
 /**
@@ -27,7 +29,8 @@ const WizardContent: React.FC<WizardContentProps> = ({
   canProceed,
   isProcessing,
   showSkipButton = false,
-  skipButtonDisabled = false
+  skipButtonDisabled = false,
+  onValidatePrevious
 }) => {
   return (
     <div className="lg:w-3/4 w-full">
@@ -47,6 +50,7 @@ const WizardContent: React.FC<WizardContentProps> = ({
             isProcessing={isProcessing}
             showSkipButton={showSkipButton}
             skipButtonDisabled={skipButtonDisabled}
+            onValidatePrevious={onValidatePrevious}
           />
         </div>
       </div>

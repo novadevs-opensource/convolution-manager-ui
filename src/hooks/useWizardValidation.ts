@@ -19,16 +19,16 @@ export function useWizardValidation(
   const lastModelRef = useRef<string>('');
 
   /**
-   * Validate the current step based on its configuration
+   * Validate a specific step based on its configuration
    */
-  const validateCurrentStep = useCallback(async () => {
-    const stepConfig = WIZARD_STEPS_CONFIG[currentStep];
+  const validateStep = useCallback(async (stepIndex: number): Promise<boolean> => {
+    const stepConfig = WIZARD_STEPS_CONFIG[stepIndex];
     
     // Skip validation if specified
     if (stepConfig.skipValidation) {
       setInitialValidationDone(prev => {
         const updated = [...prev];
-        updated[currentStep] = true;
+        updated[stepIndex] = true;
         return updated;
       });
       return true;
@@ -56,13 +56,14 @@ export function useWizardValidation(
       if (!allFieldsPresent) {
         setInitialValidationDone(prev => {
           const updated = [...prev];
-          updated[currentStep] = true;
+          updated[stepIndex] = true;
           return updated;
         });
         return false;
       }
     }
 
+    // Handle client-specific validations
     if (stepConfig.specialValidations && character.clients) {
       /*
         TODO: 
@@ -73,12 +74,11 @@ export function useWizardValidation(
         if (stepConfig.specialValidations[client]) {
           const specialConfig = stepConfig.specialValidations[client];
 
-          // Para validaciones de token de Telegram
+          // Telegram token validation
           if (client === 'telegram' && specialConfig.type === 'telegramCredentials') {
             const tokenPath = specialConfig.fieldPath;
             let token = '';
             
-            // Obtener el token del path especificado
             if (tokenPath && tokenPath.includes('.')) {
               const parts = tokenPath.split('.');
               let obj = character as any;
@@ -90,21 +90,18 @@ export function useWizardValidation(
             }
             
             if (token) {
-              // Validar las credenciales de Telegram
               const credentialsResult = await validation.validateClientCredentials('telegram', { token });
               
-              // Guardar el resultado para este paso
               setStepValidationResults(prev => {
                 const newResults = [...prev];
-                newResults[currentStep] = credentialsResult;
+                newResults[stepIndex] = credentialsResult;
                 return newResults;
               });
               
-              // Si falla, marcar como validado pero devolver false
               if (!credentialsResult.isValid) {
                 setInitialValidationDone(prev => {
                   const updated = [...prev];
-                  updated[currentStep] = true;
+                  updated[stepIndex] = true;
                   return updated;
                 });
                 return false;
@@ -112,12 +109,11 @@ export function useWizardValidation(
             }
           }
           
-          // Para validaciones de credenciales de Twitter
+          // Twitter credentials validation
           if (client === 'twitter' && specialConfig.type === 'twitterCredentials') {
             const fieldPaths = specialConfig.fieldPaths || [];
             const credentials: Record<string, string> = {};
             
-            // Obtener cada credencial del path especificado
             for (const path of fieldPaths) {
               let field = path.split('.').pop() || '';
               let value = '';
@@ -132,28 +128,24 @@ export function useWizardValidation(
                 value = obj;
               }
               
-              // Asignar al objeto de credenciales con nombres simplificados
               if (field.includes('USERNAME')) credentials.username = value;
               else if (field.includes('PASSWORD')) credentials.password = value;
               else if (field.includes('EMAIL')) credentials.email = value;
             }
             
             if (credentials.username && credentials.password && credentials.email) {
-              // Validar las credenciales de Twitter
               const credentialsResult = await validation.validateClientCredentials('twitter', credentials);
               
-              // Guardar el resultado para este paso
               setStepValidationResults(prev => {
                 const newResults = [...prev];
-                newResults[currentStep] = credentialsResult;
+                newResults[stepIndex] = credentialsResult;
                 return newResults;
               });
               
-              // Si falla, marcar como validado pero devolver false
               if (!credentialsResult.isValid) {
                 setInitialValidationDone(prev => {
                   const updated = [...prev];
-                  updated[currentStep] = true;
+                  updated[stepIndex] = true;
                   return updated;
                 });
                 return false;
@@ -184,7 +176,7 @@ export function useWizardValidation(
       if (!sectionKey) {
         setInitialValidationDone(prev => {
           const updated = [...prev];
-          updated[currentStep] = true;
+          updated[stepIndex] = true;
           return updated;
         });
         return true;
@@ -196,14 +188,14 @@ export function useWizardValidation(
       // Save the validation result
       setStepValidationResults(prev => {
         const newResults = [...prev];
-        newResults[currentStep] = result;
+        newResults[stepIndex] = result;
         return newResults;
       });
       
       // Mark as validated initially
       setInitialValidationDone(prev => {
         const updated = [...prev];
-        updated[currentStep] = true;
+        updated[stepIndex] = true;
         return updated;
       });
       
@@ -212,12 +204,42 @@ export function useWizardValidation(
       console.error('Validation error:', error);
       setInitialValidationDone(prev => {
         const updated = [...prev];
-        updated[currentStep] = true;
+        updated[stepIndex] = true;
         return updated;
       });
       return false;
     }
-  }, [character, selectedModelValue, currentStep, validation]);
+  }, [character, selectedModelValue, validation]);
+
+  /**
+   * Validate the current step based on its configuration
+   */
+  const validateCurrentStep = useCallback(async () => {
+    return validateStep(currentStep);
+  }, [currentStep, validateStep]);
+
+  /**
+   * Validate all steps up to the current step
+   */
+  const validateAllPreviousSteps = useCallback(async () => {
+    const results: boolean[] = [];
+    
+    // Skip first step if it has a name (generation step)
+    const startStep = character.name?.trim() ? 1 : 0;
+    
+    for (let i = startStep; i < currentStep; i++) {
+      // Skip validating steps that don't need validation
+      if (WIZARD_STEPS_CONFIG[i].skipValidation) {
+        results.push(true);
+        continue;
+      }
+      
+      const isValid = await validateStep(i);
+      results.push(isValid);
+    }
+    
+    return results.every(result => result === true);
+  }, [currentStep, validateStep, character.name]);
   
   /**
    * Automatically validate the current step when it changes
@@ -316,12 +338,85 @@ export function useWizardValidation(
     return false;
   }, [currentStep, getStepValidation, initialValidationDone]);
 
+  /**
+   * Validate steps in a specified range
+   */
+  const validateStepRange = useCallback(async (startStep: number, endStep: number) => {
+    const results: boolean[] = [];
+    
+    for (let i = startStep; i <= endStep; i++) {
+      if (i >= WIZARD_STEPS_CONFIG.length) break;
+      
+      // Skip validating steps that don't need validation
+      if (WIZARD_STEPS_CONFIG[i].skipValidation) {
+        results.push(true);
+        continue;
+      }
+      
+      const isValid = await validateStep(i);
+      results.push(isValid);
+    }
+    
+    return results;
+  }, [validateStep]);
+
+  /**
+   * Reset validation for a specific step or all steps
+   */
+  const resetValidation = useCallback((step?: number) => {
+    if (step !== undefined) {
+      // Reset a specific step
+      setStepValidationResults(prev => {
+        const newResults = [...prev];
+        delete newResults[step];
+        return newResults;
+      });
+      
+      setInitialValidationDone(prev => {
+        const updated = [...prev];
+        updated[step] = false;
+        return updated;
+      });
+    } else {
+      // Reset all steps
+      setStepValidationResults([]);
+      setInitialValidationDone([]);
+    }
+  }, []);
+
+  /**
+   * Get an array of invalid steps up to the current one
+   */
+  const getInvalidSteps = useCallback(() => {
+    const invalidSteps: number[] = [];
+    
+    for (let i = 0; i < currentStep; i++) {
+      // Skip steps that don't need validation
+      if (WIZARD_STEPS_CONFIG[i].skipValidation) continue;
+      
+      // Get validation result for this step
+      const validationResult = getStepValidation(i);
+      
+      // If validation is not done or failed, add to invalid steps
+      if (!initialValidationDone[i] || !validationResult.isValid) {
+        invalidSteps.push(i);
+      }
+    }
+    
+    return invalidSteps;
+  }, [currentStep, getStepValidation, initialValidationDone]);
+
   return {
     validateCurrentStep,
+    validateStep,
+    validateAllPreviousSteps,
+    validateStepRange,
     getStepValidation,
     canProceedToNextStep,
     isValidating: validation.validating,
     isSectionValidating: validation.isSectionValidating,
-    initialValidationDone
+    initialValidationDone,
+    getInvalidSteps,
+    resetValidation
   };
 }
