@@ -3,6 +3,8 @@ import React, { useEffect } from 'react';
 import { FaCircle, FaSpinner } from "react-icons/fa6";
 import { useRuntimeStatus } from '../../hooks/useRuntimeStatus';
 import { useToasts } from '../../hooks/useToasts';
+import AgentLoader from './AgentLoader';
+import { useCharacter } from '../../hooks/useCharacter';
 
 interface AgentStatusProps {
   id: string;
@@ -20,6 +22,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
 }) => {
   const { statusData, loading, error } = useRuntimeStatus(id, refreshInterval);
   const { addNotification } = useToasts();
+  const {character} = useCharacter(id);
   
   // Show error notifications if fetch fails
   useEffect(() => {
@@ -70,13 +73,11 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
       
     case 'unknown':
       return (
-        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
-          <span className='text-black-light text-xs'>
-            Pending
-          </span>
-          <span className='text-orange-400 animate-ping'>
-            <FaCircle />
-          </span>
+        <div className="p-4 bg-black-ultra rounded-lg w-full">
+          <AgentLoader 
+            loadingText={`Pending`}
+            timeFrom={character?.updated_at!}
+          />
         </div>
       );
       

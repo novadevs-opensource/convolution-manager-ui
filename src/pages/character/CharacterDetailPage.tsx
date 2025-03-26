@@ -186,63 +186,65 @@ const CharacterDetailPage: React.FC = () => {
               General
             </h2>
           </div>
-
+          {/* avatar & data & progress */}
           <div className='flex md:flex-row flex-col items-center gap-4 border rounded-lg flex-grow p-4'>
             {!agentAvatar ? (
               <div 
-                className='p-4 cursor-pointer'
+                className='cursor-pointer'
                 onClick={() => avatarModal.open()} 
               >
                 <img src={convolutionLogoBlack} className={`h-[100px] w-[100px] animate-pulse`} alt="convolution logo"/>
               </div>
             ) : (
               <div 
-                className={`h-[100px] w-[100px] rounded rounded-lg flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
+                className={`h-[82px] w-[82px] rounded rounded-lg flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
                 style={{background: `url(${agentAvatar}`}} 
                 onClick={() => avatarModal.open()} 
               />
             )}
             
-
-            <div className='flex flex-col gap-4 flex-grow sm:w-auto w-full'>
-              {/* name, status */}
-              <div className='flex md:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between relative'>
-                <div className='flex md:flex-row flex-col gap-6'>
-                  {/* name */}
-                  <div className='flex flex-row gap-4'>
-                    <div className='flex flex-col'>
-                      <span className='text-sm text-black-light'>Name</span>
-                      <span className='font-semibold'>{character?.definition.name}</span>
+            <div className='flex sm:flex-row flex-col-reverse w-full h-full sm:gap-0 gap-4'>
+              {/* info & status */}
+              <div className='flex flex-col justify-between h-full w-full'>
+                {/* info */}
+                  <div className='flex md:flex-row flex-col-reverse sm:items-center sm:gap-0 gap-4 justify-between relative'>
+                    <div className='flex md:flex-row flex-col gap-6'>
+                      {/* name */}
+                      <div className='flex flex-row gap-4'>
+                        <div className='flex flex-col'>
+                          <span className='text-sm text-black-light'>Name</span>
+                          <span className='font-semibold'>{character?.definition.name}</span>
+                        </div>
+                      </div>
+                      <div className='flex flex-col'>
+                        <span className='text-sm text-black-light'>LLM Model</span>
+                        <span className='font-semibold'>{character?.llm_provider_settings.llm_provider_model}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className='flex flex-col'>
-                    <span className='text-sm text-black-light'>LLM Model</span>
-                    <span className='font-semibold'>{character?.llm_provider_settings.llm_provider_model}</span>
-                  </div>
-                </div>
-                {/* status */}
-                <div className='flex flex-col self-end sm:relative absolute top-0'>
-                  <AgentStatus id={character?.id!} />
-                </div>
-              </div>
 
-              {/* created_at, model, clients */}
-              <div className='flex md:flex-row flex-col gap-6'>
-                {/* created at */}
-                <div className='flex flex-col'>
-                  <span className='text-sm text-black-light'>Created at</span>
-                  <span className='font-semibold'>{formatDateFromString(character?.created_at!)}</span>
-                </div>
-                {/* total uptime */}
-                <div className='flex flex-col'>
-                  <span className='text-sm text-black-light'>Total uptime</span>
-                  <span className='font-semibold'>{formatSeconds(totalUptime)}</span>
-                </div>
-                {/* current uptime */}
-                <div className='flex flex-col'>
-                  <span className='text-sm text-black-light'>Current uptime</span>
-                  <span className='font-semibold'>{formatSeconds(currentUptime)}</span>
-                </div>
+                  {/* created_at, model, clients */}
+                  <div className='flex md:flex-row flex-col gap-6'>
+                    {/* created at */}
+                    <div className='flex flex-col'>
+                      <span className='text-sm text-black-light'>Created at</span>
+                      <span className='font-semibold'>{formatDateFromString(character?.created_at!)}</span>
+                    </div>
+                    {/* total uptime */}
+                    <div className='flex flex-col'>
+                      <span className='text-sm text-black-light'>Total uptime</span>
+                      <span className='font-semibold'>{formatSeconds(totalUptime)}</span>
+                    </div>
+                    {/* current uptime */}
+                    <div className='flex flex-col'>
+                      <span className='text-sm text-black-light'>Current uptime</span>
+                      <span className='font-semibold'>{formatSeconds(currentUptime)}</span>
+                    </div>
+                  </div>
+              </div>
+              {/* status */}
+              <div className='flex flex-col flex-grow h-full w-full sm:items-end items-start justify-end'>
+                <AgentStatus id={character?.id!} />
               </div>
             </div>
           </div>
@@ -501,7 +503,7 @@ const CharacterDetailPage: React.FC = () => {
           icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
           label={isGeneratingAvatar ? 'Generating avatar...' : 'Generate avatar'}
           disabled={isGeneratingAvatar}
-          className='animate-pulse'
+          className='bg-gradient-primary hover:[background-image:none]'
         />
       </ActionToolsBlock>
 

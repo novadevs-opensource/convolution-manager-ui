@@ -59,7 +59,7 @@ const WizardNavigation: React.FC<WizardNavigationProps> = ({
         onClick={onNext}
         icon={isProcessing ? 'fa-spin fa-gear' : 'fa-angle-right'}
         disabled={isProcessing || !canProceed}
-        className={`min-w-[120px] justify-center flex-row-reverse ${isLastStep ? 'bg-gradient-secondary !hover:bg-white !text-black' : ''}`}
+        className={`min-w-[120px] justify-center flex-row-reverse ${isLastStep ? 'bg-green-400 !text-black' : ''}`}
       />
     </div>
   );
