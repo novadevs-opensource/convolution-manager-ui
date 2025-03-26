@@ -173,28 +173,30 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
               <i className="fa-solid fa-plus"></i>
             </button>
           </div>
-          <div id="knowledge-entries" className="knowledge-entries rounded-md border-0 py-2">
-            {knowledge?.map((entry, index) => (
-              <div key={index} className="knowledge-entry items-center border-0">
-                <span className="entry-number">{index + 1}.</span>
-                <input
-                  type="text"
-                  className="knowledge-text"
-                  value={entry}
-                  placeholder="Enter knowledge..."
-                  onChange={(e) => handleKnowledgeEntryChange(index, e.target.value)}
-                  onBlur={(e) => handleKnowledgeEntryBlur(index, e.target.value)}
-                />
-                <button
-                  className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
-                  title="Remove Knowledge"
-                  onClick={() => handleRemoveKnowledgeEntry(index)}
-                >
-                  <i className='fa fa-trash'></i>
-                </button>
-              </div>
-            ))}
-          </div>
+          {knowledge.length > 0 &&
+            <div id="knowledge-entries" className="knowledge-entries rounded-md border-0 py-2">
+              {knowledge?.map((entry, index) => (
+                <div key={index} className="knowledge-entry items-center border-0">
+                  <span className="entry-number">{index + 1}.</span>
+                  <input
+                    type="text"
+                    className="knowledge-text"
+                    value={entry}
+                    placeholder="Enter knowledge..."
+                    onChange={(e) => handleKnowledgeEntryChange(index, e.target.value)}
+                    onBlur={(e) => handleKnowledgeEntryBlur(index, e.target.value)}
+                  />
+                  <button
+                    className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                    title="Remove Knowledge"
+                    onClick={() => handleRemoveKnowledgeEntry(index)}
+                  >
+                    <i className='fa fa-trash'></i>
+                  </button>
+                </div>
+              ))}
+            </div>
+          }
         </div>
       </div>
     )

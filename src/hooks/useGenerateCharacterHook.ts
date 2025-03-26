@@ -43,11 +43,7 @@ export const useGenerateCharacter = () => {
           if (!response.ok) {
             const errorData = await response.json();
             // Si es error 500 con el mensaje específico, reintenta
-            if (
-              response.status === 500 &&
-              errorData.error ===
-                "Failed to parse generated content: No complete JSON object found in response"
-            ) {
+            if (response.status === 500) {
               attempts++;
               if (attempts < 3) {
                 continue; // se reintenta la petición

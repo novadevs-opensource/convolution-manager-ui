@@ -226,7 +226,6 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
   useEffect(() => {
     if (openRouterAvailableModels.length > 0 && !selectedModelValue) {
       let defaultFreeModel = openRouterAvailableModels.find((model: OpenRouterModel) => model.id === 'meta-llama/llama-3.3-70b-instruct:free'); // TODO: Add to env var
-      console.log(defaultFreeModel);
       if (defaultFreeModel) {
         setSelectedModelValue(defaultFreeModel.id);
       }
@@ -454,7 +453,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
               onChange={(value: Client[]) =>
                 setCharacter(prev => ({ ...prev, clients: value }))
               }
-              label='Available clients'
+              label='Supported platforms'
             />
             <Accordion items={accordionItems} />
           </FormGroup>

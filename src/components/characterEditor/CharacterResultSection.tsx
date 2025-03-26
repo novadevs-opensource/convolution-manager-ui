@@ -55,10 +55,15 @@ const CharacterResultSection: React.FC<CharacterResultSectionProps> = ({ charact
           <Button onClick={handleGenerateJson} label={'Reveal settings in JSON format'} icon='fa-bolt'/>
           <Button onClick={handleDownloadJson} label='Download' disabled={downloadDisabled} icon='fa-download'/>
         </div>
-        <div id="knowledge-content" className="debug-output">
-          {/* Mostramos el JSON resultante en un bloque <pre> */}
-          <pre className='bg-white rounded-lg mt-8 p-4 text-xs'>{resultJson}</pre>
-        </div>
+        {resultJson &&
+            <div id="knowledge-content" className="debug-output flex flex-col gap-4 mt-4">
+              <div className='mt-4 flex flex-row gap-2 items-center bg-red-100 rounded-md p-2'>
+                <i className='fa fa-warning rounded-full border-2 p-1 text-white bg-red-500 border-red-700'></i>
+                <span className='text-red-600 font-anek-latin'><b>Caution!</b> Your <b>credentials</b> might be here. <b>Use this data responsibly.</b></span>
+              </div>
+              <pre className='bg-white rounded-lg p-4 text-xs'>{resultJson}</pre>
+            </div>
+        }
       </FormGroup>
     )
   }

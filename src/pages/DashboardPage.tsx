@@ -34,7 +34,6 @@ const DashboardPage: React.FC = () => {
 
   // Fetch token balance when wallet address changes.
   useEffect(() => {
-    console.log(import.meta.env.VITE_AVATAR_BUCKET_BASE_URL)
     const fetchBalance = async () => {
       if (userProfile?.wallet_address) {
         // Ensure the mint address is a string from your environment variables.
@@ -152,9 +151,6 @@ const DashboardPage: React.FC = () => {
           <div>
             <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Your ICONs {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
             <p className="text-lg font-afacad text-black-light">Overview of your created ICONs.</p>
-          </div>
-          <div className="ml-3">
-            {/* TODO: search */}
           </div>
         </div>
 

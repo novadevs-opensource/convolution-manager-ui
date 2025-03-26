@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { CharacterData, MessageExample, OpenRouterModel } from '../../types';
+// src/components/characterEditor/CharacterCreatorWizard.tsx
+import React, { useEffect } from 'react';
+
+// Services
 import { ApiKeyService } from '../../services/apiKeyService';
-import { useToasts } from '../../hooks/useToasts';
-import Button from '../common/Button';
 
 // Component imports
 import GenerateCharacterSection from './GenerateCharacterSection';
@@ -14,10 +14,28 @@ import KnowledgeProcessingSection from './KnowledgeProcessingSection';
 import ExamplesSection from './ExamplesSection';
 import AdjectivesAndPeopleSection from './AdjectivesAndPeopleSection';
 import CharacterResultSection from './CharacterResultSection';
-import { useGenerateCharacter } from '../../hooks/useGenerateCharacterHook';
 import ClientConfigurationSection from './ClientConfigurationSection';
 
-// Default settings
+// Wizard components
+import WizardSidebar from '../wizard/WizardSidebar';
+import WizardHeader from '../wizard/WizardHeader';
+import WizardContent from '../wizard/WizardContent';
+import StepValidationStatus from '../wizard/StepValidationStatus';
+
+// Custom hooks
+import { useToasts } from '../../hooks/useToasts';
+import { useGenerateCharacter } from '../../hooks/useGenerateCharacterHook';
+import { useCharacterState } from '../../hooks/useCharacterState';
+import { useWizardSteps } from '../../hooks/useWizardSteps';
+import { useOpenRouterModels } from '../../hooks/useOpenRouterModel';
+
+import { useWizardValidation } from '../../hooks/useWizardValidation';
+
+// Configuration
+import { WIZARD_STEPS_CONFIG } from '../../config/wizardStepConfig';
+import { CharacterData } from '../../types';
+
+// Default character settings
 const defaultXSettings = {
   TWITTER_POLL_INTERVAL: 120,
   POST_INTERVAL_MIN: 90,
@@ -60,418 +78,349 @@ interface CharacterCreatorWizardProps {
   onFinish?: () => void;
 }
 
+/**
+ * Main wizard component for creating characters
+ */
 const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
   characterData,
   selectedModel,
   onDataChange,
   onFinish
 }) => {
+  // Services and utilities
   const { addNotification } = useToasts();
   const apiKeyService = ApiKeyService.getInstance();
   
-  // State management
-  const [currentStep, setCurrentStep] = useState(0);
-  const [character, setCharacter] = useState<CharacterData>(characterData || characterPlaceholder);
-  const [selectedModelValue, setSelectedModelValue] = useState<string>(selectedModel || '');
-  const [openRouterAvailableModels, setOpenRouterAvailableModels] = useState<OpenRouterModel[]>([]);
+  // Custom hooks for state management
+  const characterState = useCharacterState(characterData || characterPlaceholder, selectedModel || '');
+  const wizardSteps = useWizardSteps(0, WIZARD_STEPS_CONFIG.length);
+  const modelsState = useOpenRouterModels(apiKeyService);
+  const validation = useWizardValidation(
+    characterState.character, 
+    characterState.selectedModelValue, 
+    wizardSteps.currentStep
+  );
+  
+  // Hook for character generation
+  const {
+    loading: generatingFromPrompt, 
+    error: generationError, 
+    character: generatedCharacter, 
+    generateCharacter, 
+    prompt
+  } = useGenerateCharacter();
 
-  // Initialize with models
+  // Initialize with models and default values
   useEffect(() => {
-    handleGetAvailableModels();
-  }, []);
-
-  // Set default model when options load
-  useEffect(() => {
-    if (openRouterAvailableModels.length > 0 && !selectedModelValue) {
-      setSelectedModelValues('meta-llama/llama-3.3-70b-instruct:free');
+    if (modelsState.models.length > 0 && !characterState.selectedModelValue) {
+      const defaultModelId = modelsState.getDefaultModelId();
+      if (defaultModelId) {
+        const updatedCharacter = modelsState.configureModelSettings(
+          characterState.character, 
+          defaultModelId
+        );
+        characterState.setFullCharacter(updatedCharacter);
+        characterState.setSelectedModelValue(defaultModelId);
+      }
     }
-  }, [openRouterAvailableModels]);
-  // Set model related stuff
-  const setSelectedModelValues = (modelId: string) => {
-    let model = openRouterAvailableModels.find(
-      (model: OpenRouterModel) => model.id === modelId
-    );
-    if (model) {
-      setSelectedModelValue(model.id);
-      handleInputChange('settings.secrets.OPENROUTER_MODEL', model.id);
-      handleInputChange('settings.secrets.SMALL_OPENROUTER_MODEL', model.id);
-      handleInputChange('settings.secrets.MEDIUM_OPENROUTER_MODEL', model.id);
-      handleInputChange('settings.secrets.LARGE_OPENROUTER_MODEL', model.id);
-      handleInputChange('settings.secrets.OPENROUTER_API_KEY', apiKeyService.getApiKey());
-      handleInputChange('modelProvider', 'openrouter');
-      setSelectedModelValue(model.id);
-    }
-  }
+  }, [modelsState.models]);
 
   // Call onDataChange when character or selected model changes
   useEffect(() => {
     if (onDataChange) {
-      onDataChange(character, selectedModelValue || character.settings?.secrets?.LARGE_OPENROUTER_MODEL || '');
+      onDataChange(
+        characterState.character,
+        characterState.selectedModelValue || 
+        characterState.character.settings?.secrets?.LARGE_OPENROUTER_MODEL || ''
+      );
     }
-  }, [character, selectedModelValue, onDataChange]);
+  }, [characterState.character, characterState.selectedModelValue, onDataChange]);
 
   // Set Twitter target users when people array changes
   useEffect(() => {
-    if (character.clients.includes('twitter')) {
-      // Comma separated list of Twitter user names to force interact with
-      const newSettings = {...character.settings};
-      newSettings.TWITTER_TARGET_USERS = character.people.length > 0 ? character.people.join(',') : '';
-      setCharacter(prev => ({ ...prev, settings: newSettings }));
-    }
-  }, [character.people, character.clients]);
+    characterState.syncTwitterTargetUsers();
+  }, [characterState.character.people, characterState.character.clients]);
 
-  // Handler for updating nested fields
-  const handleInputChange = (field: string, value: any) => {
-    if (field.includes('.')) {
-      const keys = field.split('.');
-      setCharacter(prev => {
-        const newChar = { ...prev } as any;
-        let pointer = newChar;
-        for (let i = 0; i < keys.length - 1; i++) {
-          pointer[keys[i]] = { ...pointer[keys[i]] };
-          pointer = pointer[keys[i]];
-        }
-        pointer[keys[keys.length - 1]] = value;
-        return newChar;
-      });
-    } else {
-      setCharacter(prev => ({ ...prev, [field]: value }));
-    }
-  };
-
-  // Hook for generating a character
-  const {loading: generatingFromPromt, error: generationError, character: generatedCharacter, generateCharacter, prompt} = useGenerateCharacter();
-  // Handler for generating a character
+  // Handle generated character
   useEffect(() => {
     if (generatedCharacter) {
-      generatedCharacter.modelProvider = character.modelProvider // Autogenerated settings doesn't preserve the default modelProvider
-      generatedCharacter.settings = character.settings // Autogenerated settings doesn't preserve the default settings and settings.secrets
-      setCharacter(generatedCharacter);
+      // Preserve settings that aren't in the generated character
+      const updatedCharacter = {
+        ...generatedCharacter,
+        modelProvider: characterState.character.modelProvider,
+        settings: characterState.character.settings
+      };
+      
+      characterState.setFullCharacter(updatedCharacter);
+      
       // Auto advance to next step when generation is complete
-      if (currentStep === 0) {
-        setCurrentStep(1);
+      if (wizardSteps.currentStep === 0) {
+        wizardSteps.goToNextStep();
       }
     }
+    
     if (generationError) {
-      console.log(generationError);
-    }
-  }, [generatedCharacter, generationError])
-
-  // Fetch available models from OpenRouter
-  const handleGetAvailableModels = async() => {
-    try {
-      const rawResponse = await fetch('https://openrouter.ai/api/v1/models', {
-        method: 'GET',
-      });
-      
-      if (!rawResponse.ok) {
-        throw new Error(`HTTP error! status: ${rawResponse.status}`);
-      }
-      
-      const jsonData = await rawResponse.json();
-      const text2textModels = jsonData.data.filter(
-        (model: OpenRouterModel) => model.architecture.modality === 'text->text'
-      );
-      
-      setOpenRouterAvailableModels(text2textModels);
-    } catch (error: any) {
-      console.error('Load error:', error);
-      addNotification(`Error retrieving available models: ${error.message}`, 'error');
-    }
-  };
-
-  // Array handlers
-  const updateKnowledge = (newKnowledge: string[]) => {
-    setCharacter(prev => ({ ...prev, knowledge: newKnowledge }));
-  };
-
-  const updateMessageExamples = (newExamples: MessageExample[][]) => {
-    setCharacter(prev => ({ ...prev, messageExamples: newExamples }));
-  };
-
-  const updatePostExamples = (newPosts: string[]) => {
-    setCharacter(prev => ({ ...prev, postExamples: newPosts }));
-  };
-
-  const updateAdjectives = (newAdjectives: string[]) => {
-    setCharacter(prev => ({ ...prev, adjectives: newAdjectives }));
-  };
-
-  const updatePeople = (newPeople: string[]) => {
-    setCharacter(prev => ({ ...prev, people: newPeople }));
-  };
-
-  // Wizard navigation
-  const goToNextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      if (onFinish) {
-        onFinish();
+      console.error(generationError);
+      if (generationError.message) {
+        addNotification(generationError.message, 'error');
       }
     }
-  };
+  }, [generatedCharacter, generationError]);
 
-  const goToPreviousStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+  // Set selected model
+  const handleModelSelection = (modelId: string) => {
+    const updatedCharacter = modelsState.configureModelSettings(
+      characterState.character, 
+      modelId
+    );
+    characterState.setFullCharacter(updatedCharacter);
+    characterState.setSelectedModelValue(modelId);
+    
+    // Trigger validation - but don't do it in a loop!
+    // Instead of calling validation directly, we'll rely on the character state change
+    // to trigger validation through the useEffect in useWizardValidation
   };
-
-  const goToStep = (step: number) => {
-    if (step >= 0 && step < steps.length) {
-      setCurrentStep(step);
-    }
-  };
-
-  // Check if character has a name (required to proceed)
-  const characterHasName = character.name && character.name.trim().length > 0;
   
-  // Define wizard steps
-  const steps = [
-    {
-      id: 'step-generate',
-      title: 'Autogenerate your ICON',
-      subtitle: 'Create your ICON personality with a seed prompt',
-      content: (
-        <GenerateCharacterSection
-          onGenerateCharacter={generateCharacter}
-          forWizard={true}
-          savedPrompt={prompt}
-        />
-      ),
-      isDisabled: () => false,
-      canProceed: () => (character.name && character.name.length > 0) || (characterHasName && selectedModel)
-    },
-    {
-      id: 'step-basics',
-      title: 'Basic Information',
-      subtitle: 'Set name, model and clients',
-      content: (
-        <div className="flex flex-col gap-6 grow-[10]">
-          <FormGroup className='flex md:grid md:grid-cols-2 w-full flex flex-col'>
-            <GenericTextInput
-              plain={true} 
-              label='Character Name'
-              name='character-name'
-              placeholder="Enter the character's full name (e.g., John Smith, Lady Catherine)"
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              value={character.name}
-              required={true}
-            />
-            <div className='w-full flex flex-col'>
-              <ModelProviderSelect
-                label='Model Provider'
-                selected={character.settings?.secrets?.OPENROUTER_MODEL || selectedModelValue || ''}
-                onChange={(value) => setSelectedModelValues(value)}
-                models={openRouterAvailableModels}
-              />
-              {selectedModelValue?.includes(':free') &&
-                <small className='-mt-2  flex flex-row gap-2 items-center'>
-                  <i className='fa fa-warning rounded-full border-2 p-1 text-white bg-yellow-500 border-red-300'></i>
-                  <span className='text-yellow-600 font-anek-latin'><b>Free</b> models are <b>limited</b> to 20 requests per minute and 200 requests per day. <b>Use them just for testing purposes.</b></span>
-                </small>
-              }
-            </div>
-          </FormGroup>
-          <FormGroup>
-          <ClientConfigurationSection
-            character={character}
-            handleInputChange={handleInputChange}
-            forWizard={true}
-          />
-          </FormGroup>
-        </div>
-      ),
-      isDisabled: () => !characterHasName, // TODO: Add validation
-      canProceed: () => character.clients.length > 0 && character.name.length > 0 && selectedModelValue.length > 0 // TODO: Add validation
-    },
-    {
-      id: 'step-details',
-      title: 'Character Details',
-      subtitle: 'Define personality and style',
-      content: (
-        <CharacterDetailsSection
-          character={character}
-          handleInputChange={handleInputChange}
-          forWizard={true}
-        />
-      ),
-      isDisabled: () => character.clients.length < 1 || !character.name || !selectedModelValue, // TODO: Add validation
-      canProceed: () => character.clients.length > 0 && character.name.length > 0 && selectedModelValue.length > 0 // TODO: Add validation
-    },
-    {
-      id: 'step-knowledge',
-      title: 'Knowledge',
-      subtitle: 'Add knowledge for your character',
-      content: (
-        <KnowledgeProcessingSection
-          knowledge={character.knowledge}
-          onKnowledgeChange={updateKnowledge}
-          forWizard={true}
-        />
-      ),
-      isDisabled: () => character.clients.length < 1 || !character.name || !selectedModelValue, // TODO: Add validation
-      canProceed: () => character.clients.length > 0 && character.name.length > 0 && selectedModelValue.length > 0 // TODO: Add validation
-    },
-    {
-      id: 'step-examples',
-      title: 'Examples',
-      subtitle: 'Add message and post examples',
-      content: (
-        <ExamplesSection
-          messageExamples={character.messageExamples}
-          postExamples={character.postExamples}
-          characterName={character.name}
-          onMessageExamplesChange={updateMessageExamples}
-          onPostExamplesChange={updatePostExamples}
-          forWizard={true}
-        />
-      ),
-      isDisabled: () => character.clients.length < 1 || !character.name || !selectedModelValue, // TODO: Add validation
-      canProceed: () => character.clients.length > 0 && character.name.length > 0 && selectedModelValue.length > 0 // TODO: Add validation
-    },
-    {
-      id: 'step-attributes',
-      title: 'Attributes & People',
-      subtitle: 'Define adjectives and people related to your character',
-      content: (
-        <AdjectivesAndPeopleSection
-          adjectives={character.adjectives}
-          people={character.people}
-          onAdjectivesChange={updateAdjectives}
-          onPeopleChange={updatePeople}
-          forWizard={true}
-        />
-      ),
-      isDisabled: () => character.clients.length < 1 || !character.name || !selectedModelValue, // TODO: Add validation
-      canProceed: () => character.clients.length > 0 && character.name.length > 0 && selectedModelValue.length > 0 // TODO: Add validation
-    },
-    {
-      id: 'step-review',
-      title: 'Review',
-      subtitle: 'Review your character settings',
-      content: (
-        <CharacterResultSection character={character} forWizard={true}/>
-      ),
-      isDisabled: () => character.clients.length < 1 || !character.name || !selectedModelValue, // TODO: Add validation
-      canProceed: () => character.clients.length > 0 && character.name.length > 0 && selectedModelValue.length > 0 // TODO: Add validation
+  // Check if a step is disabled
+  const isStepDisabled = (stepIndex: number): boolean => {
+    if (stepIndex === 0) return false; // First step is never disabled
+    
+    // Basic information required for all subsequent steps
+    const nameExists = !!characterState.character.name?.trim();
+    
+    if (stepIndex > 1) {
+      // After step 1, require model and clients
+      const modelSelected = !!characterState.selectedModelValue;
+      const clientsSelected = characterState.character.clients.length > 0;
+      
+      return !nameExists || !modelSelected || !clientsSelected;
     }
-  ];
+    
+    return !nameExists;
+  };
 
-  const currentStepData = steps[currentStep];
-  const canProceedToNextStep = currentStepData?.canProceed();
+  // Determine if we're currently processing something
+  const isProcessing = generatingFromPrompt || validation.isValidating;
+  
+  // Render validation status or loading indicator
+  const renderValidationStatus = () => {
+    // Skip validation status for generate step (0)
+    if (wizardSteps.currentStep === 0) return null;
+    
+    if (currentStepConfig.skipValidation) {
+      return (
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="flex items-center">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
+              <i className="fa-solid fa-info-circle text-blue-500"></i>
+            </div>
+            <div>
+              <h4 className="font-anek-latin font-bold text-blue-700">Optional Section</h4>
+              <p className="text-sm text-blue-600">
+                Adding knowledge is optional but helps your character be more informed.
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    // Get validation result for current step
+    const validationResult = validation.getStepValidation(wizardSteps.currentStep);
+    
+    return (
+      <StepValidationStatus 
+        isValid={validationResult.isValid}
+        message={validationResult.message}
+        validationItems={validationResult.validationItems}
+        errors={validationResult.errors}
+        showDetails={true}
+        isValidating={validation.isValidating}
+      />
+    );
+  };
+
+  // Render content for current step
+  const renderStepContent = () => {
+    switch (wizardSteps.currentStep) {
+      case 0: // Generate Character
+        return (
+          <>
+            <GenerateCharacterSection
+              onGenerateCharacter={generateCharacter}
+              forWizard={true}
+              savedPrompt={prompt}
+            />
+            {characterState.character.name && (
+              <div className="mt-4">
+                {renderValidationStatus()}
+              </div>
+            )}
+          </>
+        );
+
+      case 1: // Basic Information
+        return (
+          <>
+            <div className="flex flex-col">
+              <FormGroup className='flex md:grid md:grid-cols-2 w-full flex flex-col !mb-0'>
+                <GenericTextInput
+                  plain={true} 
+                  label='Character Name'
+                  name='character-name'
+                  placeholder="Enter the character's full name (e.g., John Smith, Lady Catherine)"
+                  onChange={(e) => characterState.handleInputChange('name', e.target.value)}
+                  value={characterState.character.name}
+                  required={true}
+                />
+                <div className='w-full flex flex-col'>
+                  <ModelProviderSelect
+                    label='Large Language Model'
+                    selected={characterState.character.settings?.secrets?.OPENROUTER_MODEL || characterState.selectedModelValue || ''}
+                    onChange={handleModelSelection}
+                    models={modelsState.models}
+                  />
+                  {characterState.selectedModelValue?.includes(':free') && (
+                    <small className='-mt-2 flex flex-row gap-2 items-center bg-yellow-100 rounded-md p-2'>
+                      <i className='fa fa-warning rounded-full border-2 p-1 text-white bg-yellow-500 border-red-300'></i>
+                      <span className='text-yellow-600 font-anek-latin'><b>Free</b> models are <b>limited</b> to 20 requests per minute and 200 requests per day. <b>Use them just for testing purposes.</b></span>
+                    </small>
+                  )}
+                </div>
+              </FormGroup>
+              <FormGroup>
+                <ClientConfigurationSection
+                  character={characterState.character}
+                  handleInputChange={characterState.handleInputChange}
+                  forWizard={true}
+                />
+              </FormGroup>
+            </div>
+            {renderValidationStatus()}
+          </>
+        );
+
+      case 2: // Character Details
+        return (
+          <>
+            <CharacterDetailsSection
+              character={characterState.character}
+              handleInputChange={characterState.handleInputChange}
+              forWizard={true}
+            />
+            {renderValidationStatus()}
+          </>
+        );
+
+      case 3: // Knowledge
+        return (
+          <>
+            <KnowledgeProcessingSection
+              knowledge={characterState.character.knowledge}
+              onKnowledgeChange={characterState.updateKnowledge}
+              forWizard={true}
+            />
+            {renderValidationStatus()}
+          </>
+        );
+
+      case 4: // Examples
+        return (
+          <>
+            <ExamplesSection
+              messageExamples={characterState.character.messageExamples}
+              postExamples={characterState.character.postExamples}
+              characterName={characterState.character.name}
+              onMessageExamplesChange={characterState.updateMessageExamples}
+              onPostExamplesChange={characterState.updatePostExamples}
+              forWizard={true}
+            />
+            {renderValidationStatus()}
+          </>
+        );
+
+      case 5: // Attributes & People
+        return (
+          <>
+            <AdjectivesAndPeopleSection
+              adjectives={characterState.character.adjectives}
+              people={characterState.character.people}
+              onAdjectivesChange={characterState.updateAdjectives}
+              onPeopleChange={characterState.updatePeople}
+              forWizard={true}
+            />
+            {renderValidationStatus()}
+          </>
+        );
+
+      case 6: // Review
+        return (
+          <>
+            <CharacterResultSection character={characterState.character} forWizard={true}/>
+            <div className="mt-4">
+              {renderValidationStatus()}
+            </div>
+          </>
+        );
+
+      default:
+        return <div>Unknown step</div>;
+    }
+  };
+
+  // Get current step configuration
+  const currentStepConfig = WIZARD_STEPS_CONFIG[wizardSteps.currentStep];
+  const canProceed = validation.canProceedToNextStep();
+
+  // Finalize handler for the finish button
+  const handleFinish = () => {
+    if (onFinish) {
+      onFinish();
+    }
+  };
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 rounded-xl">
       {/* Sidebar Navigation */}
-      <div className="lg:w-1/4 w-full rounded-lg">
-        <nav className="space-y-1">
-          {steps.map((step, index) => (
-            <button
-              key={step.id}
-              onClick={() => goToStep(index)}
-              disabled={step.isDisabled()}
-              className={`flex items-center w-full p-6 text-left rounded-md transition-colors ${
-                currentStep === index
-                  ? 'bg-gradient-primary text-white'
-                  : step.isDisabled()
-                  ? 'text-gray-800 bg-gray-200 cursor-not-allowed'
-                  : 'text-gray-500 bg-gray-100 hover:bg-gray-200'
-              }`}
-            >
-              <div className="flex-shrink-0 mr-3">
-                <div className={`flex items-center justify-center h-6 w-6 rounded-full ${
-                  index < currentStep
-                    ? 'bg-green-500 text-white'
-                    : currentStep === index
-                    ? 'bg-white text-black'
-                    : 'bg-gray-700 text-gray-400'
-                }`}>
-                  {index < currentStep ? (
-                    <i className="fa-solid fa-check text-xs"></i>
-                  ) : (
-                    <span className="text-xs">{index + 1}</span>
-                  )}
-                </div>
-              </div>
-              <div className="truncate">
-                <div className="font-medium font-anek-latin">{step.title}</div>
-                {step.subtitle && (
-                  <div className="text-xs opacity-75 font-afacad">{step.subtitle}</div>
-                )}
-              </div>
-            </button>
-          ))}
-        </nav>
-      </div>
+      <WizardSidebar
+        steps={WIZARD_STEPS_CONFIG}
+        currentStep={wizardSteps.currentStep}
+        onStepClick={wizardSteps.goToStep}
+        isStepDisabled={isStepDisabled}
+      />
 
-      {/* Main Content Area */}
-      <div className="lg:w-3/4 w-full">
-        <div className="sm:p-6 p-0 rounded-lg">
-          <div className="mb-6">
-            <div className='sm:grid sm:grid-cols-2 flex flex-col'>
-              <div className='flex flex-col'>
-                <h2 className="text-3xl font-bold font-anek-latin">{currentStepData.title}</h2>
-                {currentStepData.subtitle && (
-                  <h3 className="text-lg font-afacad">{currentStepData.subtitle}</h3>
-                )}
-              </div>
-              <div className="sm:flex flex-row gap-2 items-end justify-end flex-grow hidden">
-                {currentStep > 0 &&
-                  <Button
-                    label='Previous'
-                    onClick={goToPreviousStep}
-                    disabled={generatingFromPromt || currentStep === 0}
-                    icon="fa-angle-left"
-                    className='min-w-[120px] justify-center'
-                  />
-                }
-                {currentStep === 0 && (!characterHasName && !selectedModel) &&
-                  <Button
-                    label='Skip step'
-                    onClick={() => goToStep(1)}
-                    disabled={generatingFromPromt || !apiKeyService.getApiKey()}
-                    icon="fa-forward"
-                    className='min-w-[120px] justify-center'
-                  />
-                }
-                <Button
-                  label={currentStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  onClick={goToNextStep}
-                  icon={generatingFromPromt ? 'fa-spin fa-gear' : 'fa-angle-right'}
-                  disabled={generatingFromPromt || !canProceedToNextStep}
-                  className='min-w-[120px] justify-center flex-row-reverse'
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="my-8 p-8 rounded-lg bg-black-ultra border-gray-200 shadow-lg transition duration-150 ease-in-out">
-            {currentStepData.content}
-          </div>
-
-          <div className="sm:hidden flex-row gap-2 items-end justify-end flex-grow flex">
-            {currentStep > 0 &&
-              <Button
-                label='Previous'
-                onClick={goToPreviousStep}
-                disabled={generatingFromPromt || currentStep === 0}
-                icon="fa-angle-left"
-                className='min-w-[120px] justify-center'
-              />
-            }
-            <Button
-              label={currentStep === steps.length - 1 ? 'Finish' : 'Next'}
-              onClick={goToNextStep}
-              icon={generatingFromPromt ? 'fa-spin fa-gear' : 'fa-angle-right'}
-              disabled={generatingFromPromt || !canProceedToNextStep}
-              className='min-w-[120px] justify-center flex-row-reverse'
-            />
-          </div>
-
+      {/* Main Content Area using WizardContent */}
+      <WizardContent
+        currentStep={wizardSteps.currentStep}
+        totalSteps={WIZARD_STEPS_CONFIG.length}
+        onNext={wizardSteps.isLastStep ? handleFinish : wizardSteps.goToNextStep}
+        onPrevious={wizardSteps.goToPreviousStep}
+        onSkip={wizardSteps.goToNextStep}
+        canProceed={canProceed}
+        isProcessing={isProcessing}
+        showSkipButton={currentStepConfig.canSkip}
+        skipButtonDisabled={!apiKeyService.getApiKey()}
+      >
+        {/* Header */}
+        <WizardHeader
+          title={currentStepConfig.title}
+          subtitle={currentStepConfig.subtitle}
+          currentStep={wizardSteps.currentStep}
+          totalSteps={WIZARD_STEPS_CONFIG.length}
+          onNext={wizardSteps.isLastStep ? handleFinish : wizardSteps.goToNextStep}
+          onPrevious={wizardSteps.goToPreviousStep}
+          onSkip={wizardSteps.goToNextStep}
+          canProceed={canProceed}
+          isProcessing={isProcessing}
+          showSkipButton={currentStepConfig.canSkip}
+          skipButtonDisabled={!apiKeyService.getApiKey()}
+        />
+        
+        {/* Step Content */}
+        <div className="my-8 p-8 rounded-lg bg-black-ultra border-gray-200 shadow-lg transition duration-150 ease-in-out">
+          {renderStepContent()}
         </div>
-      </div>
+      </WizardContent>
     </div>
   );
 };
