@@ -527,7 +527,7 @@ const CharacterDetailPage: React.FC = () => {
                 onClick={() => handleGenerateAvatar()} 
                 icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
                 label={isGeneratingAvatar ? 'Creating face...' : 'Create anime face'}
-                disabled={isGeneratingAvatar || !avatarPromt }
+                disabled={isGeneratingAvatar}
                 className='!px-6'
               />
             </div>
