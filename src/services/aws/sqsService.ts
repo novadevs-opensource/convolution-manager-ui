@@ -6,7 +6,6 @@ import {
 } from "@aws-sdk/client-sqs";
 import { 
   getEventClient, 
-  getAckClient, 
   getAvatarClient 
 } from "./sqsClient";
 import { 
@@ -30,12 +29,10 @@ const MESSAGE_ATTRIBUTES = {
 
 // SQS clients
 const eventClient = getEventClient();
-const ackClient = getAckClient();
 const avatarClient = getAvatarClient();
 
 // Queue URLs
 const eventQueueUrl = `${import.meta.env.VITE_EVENTS_QUEUE_ENDPOINT}${import.meta.env.VITE_EVENTS_QUEUE_PATH}`;
-const ackQueueUrl = `${import.meta.env.VITE_ACK_EVENTS_QUEUE_ENDPOINT}${import.meta.env.VITE_ACK_EVENTS_QUEUE_PATH}`;
 const avatarQueueUrl = `${import.meta.env.VITE_AVATAR_GENERATION_QUEUE_ENDPOINT}${import.meta.env.VITE_AVATAR_GENERATION_QUEUE_PATH}`;
 
 /**
@@ -43,7 +40,6 @@ const avatarQueueUrl = `${import.meta.env.VITE_AVATAR_GENERATION_QUEUE_ENDPOINT}
  */
 export enum QueueType {
   EVENT = 'event',
-  ACK = 'ack',
   AVATAR = 'avatar'
 }
 
@@ -54,8 +50,6 @@ const getQueueConfig = (queueType: QueueType) => {
   switch (queueType) {
     case QueueType.EVENT:
       return { client: eventClient, url: eventQueueUrl };
-    case QueueType.ACK:
-      return { client: ackClient, url: ackQueueUrl };
     case QueueType.AVATAR:
       return { client: avatarClient, url: avatarQueueUrl };
     default:
@@ -264,20 +258,6 @@ export const receiveMessages = async (
     console.error(`Error receiving messages from ${queueType} queue:`, error);
     return null;
   }
-};
-
-/**
- * Receive ACK events for a specific user
- */
-export const receiveAckEvents = async (
-  userId: string,
-  agentId?: string
-): Promise<any[] | null> => {
-  return receiveMessages(QueueType.ACK, {
-    userId,
-    agentId,
-    actions: [EVENT_TYPES.BOOT_ACK, EVENT_TYPES.STOP_ACK, EVENT_TYPES.UPDATE_ACK]
-  });
 };
 
 /**

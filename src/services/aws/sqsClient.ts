@@ -33,17 +33,6 @@ export const getEventClient = () => {
   });
 };
 
-export const getAckClient = () => {
-  return createSQSClient({
-    region: import.meta.env.VITE_ACK_EVENTS_QUEUE_REGION,
-    endpoint: import.meta.env.VITE_ACK_EVENTS_QUEUE_ENDPOINT,
-    credentials: {
-      accessKeyId: import.meta.env.VITE_ACK_EVENTS_QUEUE_CREDENTIALS_KEY_ID,
-      secretAccessKey: import.meta.env.VITE_ACK_EVENTS_QUEUE_CREDENTIALS_ACCESS_KEY,
-    },
-  });
-};
-
 export const getAvatarClient = () => {
   return createSQSClient({
     region: import.meta.env.VITE_AVATAR_GENERATION_QUEUE_REGION,

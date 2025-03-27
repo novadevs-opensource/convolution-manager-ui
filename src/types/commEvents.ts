@@ -6,10 +6,7 @@ export const EVENT_TYPES = {
   BOOT: 'boot',
   STOP: 'stop',
   UPDATE: 'update',
-  BOOT_ACK: 'bootACK',
-  STOP_ACK: 'stopACK',
-  UPDATE_ACK: 'updateACK',
-  
+
   // Avatar actions
   AVATAR_REQUEST: 'generate_avatar_request',
   AVATAR_PROGRESS: 'generate_avatar_progress_response',
@@ -29,9 +26,6 @@ export type AgentRuntimeAction =
   | typeof EVENT_TYPES.BOOT 
   | typeof EVENT_TYPES.STOP 
   | typeof EVENT_TYPES.UPDATE 
-  | typeof EVENT_TYPES.BOOT_ACK 
-  | typeof EVENT_TYPES.STOP_ACK 
-  | typeof EVENT_TYPES.UPDATE_ACK
   | typeof EVENT_TYPES.AVATAR_REQUEST
   | typeof EVENT_TYPES.AVATAR_PROGRESS
   | typeof EVENT_TYPES.AVATAR_FINAL;
@@ -52,44 +46,6 @@ export interface UpdateAgentEvent extends BaseEvent {
   executionId: string;
 }
 
-// ACK error codes
-export type AckErrorCode = 1000 | 1001 | 1002 | 1003 | 1004 | 1005 | 1006 | 1007 | 1008 | 1009 | 1010 | 1011 | 2000;
-
-export const ackErrorCodeMessages: Record<AckErrorCode, string> = {
-  1000: "Unknown error from AWS",
-  1001: "Unknown error",
-  1002: "Invalid fields in the event",
-  1003: "Agent is still being removed",
-  1004: "Cannot create metadata file in Amazon S3",
-  1005: "Cannot create the agent",
-  1006: "Cannot send ACK due to an Amazon SQS error",
-  1007: "Cannot delete the agent",
-  1008: "Cannot restart the agent",
-  1009: "The agent does not exist",
-  1010: "The agent repeatedly failed to start",
-  1011: "Cannot get metadata file",
-  2000: "Agent removed successfully"
-};
-
-// ACK events
-export interface BaseAckEvent extends BaseEvent {
-  action: typeof EVENT_TYPES.BOOT_ACK | typeof EVENT_TYPES.STOP_ACK | typeof EVENT_TYPES.UPDATE_ACK;
-  success: string;
-  errorCode?: AckErrorCode;
-}
-
-export interface BootAgentAckEvent extends BaseAckEvent {
-  action: typeof EVENT_TYPES.BOOT_ACK;
-}
-
-export interface StopAgentAckEvent extends BaseAckEvent {
-  action: typeof EVENT_TYPES.STOP_ACK;
-}
-
-export interface UpdateAgentAckEvent extends BaseAckEvent {
-  action: typeof EVENT_TYPES.UPDATE_ACK;
-}
-
 // Avatar generation events (unified with action field)
 export interface GenerateAvatarRequestEvent extends BaseEvent {
   action: typeof EVENT_TYPES.AVATAR_REQUEST;
@@ -107,9 +63,6 @@ export type AgentEvent =
   | BootAgentEvent 
   | StopAgentEvent 
   | UpdateAgentEvent 
-  | BootAgentAckEvent 
-  | StopAgentAckEvent 
-  | UpdateAgentAckEvent
 
   | GenerateAvatarRequestEvent
   | GenerateAvatarResponseEvent;
@@ -131,13 +84,7 @@ export const generateEventKey = (event: AgentEvent, sqsMessageId?: string): stri
 export const isRuntimeEvent = (event: AgentEvent): event is BootAgentEvent | StopAgentEvent | UpdateAgentEvent => {
   return event && 'action' in event && 
     [EVENT_TYPES.BOOT, EVENT_TYPES.STOP, EVENT_TYPES.UPDATE].includes((event as any).action) && 
-    !('success' in event); // Exclude ACK events
-};
-
-export const isAckEvent = (event: AgentEvent): event is BootAgentAckEvent | StopAgentAckEvent | UpdateAgentAckEvent => {
-  return event && 'action' in event && 
-    [EVENT_TYPES.BOOT_ACK, EVENT_TYPES.STOP_ACK, EVENT_TYPES.UPDATE_ACK].includes((event as any).action) && 
-    'success' in event;
+    !('success' in event);
 };
 
 export const isAvatarEvent = (event: AgentEvent): event is GenerateAvatarRequestEvent | GenerateAvatarResponseEvent => {

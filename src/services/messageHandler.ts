@@ -4,13 +4,11 @@ import {
   AgentEvent, 
   GenerateAvatarRequestEvent,
   GenerateAvatarResponseEvent,
-  isAckEvent,
   EVENT_TYPES
 } from "../types/commEvents";
 import { 
   sendRuntimeEvent, 
   sendAvatarGenerationRequest,
-  receiveAckEvents, 
   receiveAvatarEvents,
   QueueType,
   processMessages
@@ -67,32 +65,6 @@ export const enqueueAvatarRequest = async (
     console.error("Failed to enqueue avatar generation request");
     return null;
   }
-};
-
-/**
- * Listen for ACK events from the queue
- * @returns Processed agent events
- */
-export const listenForEvents = async (userId: string, agentId?: string): Promise<AgentEvent[]> => {
-  const messages = await receiveAckEvents(userId, agentId);
-  
-  if (!messages || messages.length === 0) {
-    return [];
-  }
-  
-  console.log(`Received ${messages.length} ACK messages for user ${userId}`);
-  
-  // Process messages with expected ACK event types
-  const events = await processMessages(
-    messages, 
-    QueueType.ACK,
-    [EVENT_TYPES.BOOT_ACK, EVENT_TYPES.STOP_ACK, EVENT_TYPES.UPDATE_ACK]
-  );
-  
-  // Additional validation to ensure we only return ACK events
-  const filteredEvents = events.filter(isAckEvent);
-  
-  return filteredEvents;
 };
 
 /**

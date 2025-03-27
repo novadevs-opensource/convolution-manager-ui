@@ -8,7 +8,6 @@ import { formatDateFromString, formatSeconds } from '../../utils/character';
 import { useCharacter } from '../../hooks/useCharacter';
 import { useRuntimeStatus } from '../../hooks/useRuntimeStatus';
 import { useAgentTransition } from '../../hooks/useAgentTransition';
-import { useAgentAckEvents } from '../../hooks/useAgentAckEvents'; // Keep using the original hook name
 import { useAvatarEvents } from '../../hooks/useAvatarEvents';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -61,15 +60,6 @@ const CharacterDetailPage: React.FC = () => {
     agentId: id,
     pollingInterval: 5000,
     onFinalEvent: (event: GenerateAvatarResponseEvent) => handleSaveFinalAvatarUrl(event.agentId, event.prompt, event.image_url)
-  });
-  
-  // Use agent ACK events hook with autoRefreshStatus=true
-  // This will automatically refresh the status when an ACK event is received
-  // Keep using useAgentAckEvents for backward compatibility
-  useAgentAckEvents({ 
-    agentId: id,
-    pollingInterval: 5000,
-    autoRefreshStatus: true
   });
 
   // Handle agent start
