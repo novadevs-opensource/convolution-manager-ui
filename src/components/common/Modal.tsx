@@ -147,7 +147,7 @@ const Modal = forwardRef((props: ModalProps, ref: ForwardedRef<ModalHandles>) =>
         <div className={`relative w-full ${maxWidthClasses[maxWidth]} max-h-full`}>
           {/* Modal content */}
           <div 
-            className={`relative bg-white rounded-lg shadow-lg dark:bg-gray-700 ${getAnimationClass()}`}
+            className={`relative bg-white rounded-lg shadow-lg ${getAnimationClass()}`}
             onClick={(e) => e.stopPropagation()}
             style={{ animationDuration: `${animationDuration}ms` }}
           >
