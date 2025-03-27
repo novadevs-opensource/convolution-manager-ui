@@ -5,6 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import convolutionLogo from '../assets/images/convolution-logo-vertical-black.svg';
 import PhantomLogin from '../components/PhantomLogin';
+import useIsMobile from '../hooks/useIsMobile';
 
 const LoginPage: React.FC = () => {
   const { login: _login, isAuthenticated } = useAuth();
@@ -13,6 +14,21 @@ const LoginPage: React.FC = () => {
 
   //const [email, setEmail] = useState('');
   //const [password, setPassword] = useState('');
+
+  const isMobile = useIsMobile();
+  if (isMobile) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-100">
+        <div className="text-center p-6 border rounded-lg shadow-lg">
+          <img src={convolutionLogo} alt="Convolution Logo" className="mx-auto w-24 mb-4" />
+          <h1 className="text-2xl font-bold mb-2">Soon</h1>
+          <p className="text-gray-600">
+            This application is only available for desktop users. Please access it from a desktop computer.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isAuthenticated) {
     return <Navigate to="/dashboard" />;
@@ -45,12 +61,12 @@ const LoginPage: React.FC = () => {
                 <p className="text-white text-afacad text-sm"><a href='https://convolution.agency' target='_blank'>2025 © convolution.agency</a></p>
                 <div className="flex md:flex-row flex-col gap-3">
                     <p className="text-white text-afacad text-sm">
-                        <a href="#" target="_blank">About</a>
+                        <a href="https://convolution.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
                     </p>
 
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
                     <p className="text-white text-afacad text-sm">
-                        <a href="#" target="_blank">Whitepaper</a>
+                        <a href="https://convolution.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
                     </p>
 
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
@@ -143,12 +159,12 @@ const LoginPage: React.FC = () => {
                 <p className="text-white text-afacad text-sm"><a href='https://convolution.agency' target='_blank'>2025 © convolution.agency</a></p>
                 <div className="flex flex-row gap-3">
                     <p className="text-white text-afacad text-sm">
-                        <a href="#" target="_blank">About</a>
+                        <a href="https://convolution.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
                     </p>
 
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
                     <p className="text-white text-afacad text-sm">
-                        <a href="#" target="_blank">Whitepaper</a>
+                        <a href="https://convolution.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
                     </p>
 
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
