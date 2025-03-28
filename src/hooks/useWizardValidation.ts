@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { CharacterData } from '../types';
 import { ValidationResult, ValidationSectionKey, useCharacterValidation } from './useCharacterValidation';
-import { WIZARD_STEPS_CONFIG } from '../config/wizardStepConfig';
+import { SpecialValidation, WIZARD_STEPS_CONFIG, WizardStepConfig } from '../config/wizardStepConfig';
 
 /**
  * Custom hook to handle validation for each wizard step
@@ -22,7 +22,7 @@ export function useWizardValidation(
    * Validate a specific step based on its configuration
    */
   const validateStep = useCallback(async (stepIndex: number): Promise<boolean> => {
-    const stepConfig = WIZARD_STEPS_CONFIG[stepIndex];
+    const stepConfig: WizardStepConfig = WIZARD_STEPS_CONFIG[stepIndex];
     
     // Skip validation if specified
     if (stepConfig.skipValidation) {
@@ -34,12 +34,12 @@ export function useWizardValidation(
       return true;
     }
     
-    // Check for required fields
+    /* 
+      Check for required fields before to send to backend. Unless programming 
+      error, all of them are always be pressent because of the data placeholders or
+      configuration mistake
+    */
     if (stepConfig.dependencies?.fields) {
-      /* 
-        TODO: This system is not valid, because all fields 
-        are always present. We need to validate it to the backend
-      */
       const allFieldsPresent = stepConfig.dependencies.fields.every(field => {
         if (field.includes('.')) {
           const parts = field.split('.');
@@ -52,7 +52,7 @@ export function useWizardValidation(
         }
         return character[field as keyof CharacterData] !== undefined;
       });
-      
+      // If some required field is not present return false and mark validation as done.
       if (!allFieldsPresent) {
         setInitialValidationDone(prev => {
           const updated = [...prev];
@@ -65,47 +65,27 @@ export function useWizardValidation(
 
     // Handle client-specific validations
     if (stepConfig.specialValidations && character.clients) {
-      /*
-        TODO: 
-          - Use types and interfaces
-          - Try to validate every field against the backend
-      */
       for (const client of character.clients) {
         if (stepConfig.specialValidations[client]) {
-          const specialConfig = stepConfig.specialValidations[client];
+          const specialConfig: SpecialValidation = stepConfig.specialValidations[client];
 
           // Telegram token validation
           if (client === 'telegram' && specialConfig.type === 'telegramCredentials') {
-            const tokenPath = specialConfig.fieldPath;
-            let token = '';
-            
-            if (tokenPath && tokenPath.includes('.')) {
-              const parts = tokenPath.split('.');
-              let obj = character as any;
-              for (const part of parts) {
-                if (!obj || obj[part] === undefined) break;
-                obj = obj[part];
-              }
-              token = obj;
-            }
-            
-            if (token) {
-              const credentialsResult = await validation.validateClientCredentials('telegram', { token });
-              
-              setStepValidationResults(prev => {
-                const newResults = [...prev];
-                newResults[stepIndex] = credentialsResult;
-                return newResults;
-              });
-              
-              if (!credentialsResult.isValid) {
-                setInitialValidationDone(prev => {
-                  const updated = [...prev];
-                  updated[stepIndex] = true;
-                  return updated;
+            let token = character.settings.secrets.TELEGRAM_BOT_TOKEN
+            const credentialsResult = await validation.validateClientCredentials('telegram', { token });
+            setStepValidationResults(prev => {
+              const newResults = [...prev];
+              newResults[stepIndex] = credentialsResult;
+              return newResults;
+            });
+
+            if (!credentialsResult.isValid) {
+              setInitialValidationDone(prev => {
+                const updated = [...prev];
+                updated[stepIndex] = true;
+                return updated;
                 });
-                return false;
-              }
+              return false;
             }
           }
           
