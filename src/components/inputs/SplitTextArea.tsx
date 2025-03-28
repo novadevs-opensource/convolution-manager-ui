@@ -2,11 +2,11 @@ import React, { useState, useEffect, forwardRef } from 'react';
 import { splitIntoSentences } from '../../utils/character';
 
 interface SplitTextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'onChange'> {
-  value: string[]; // Valor como array de oraciones
-  onChange: (newValue: string[]) => void; // Callback para actualizar el valor (array)
+  value: string[]; // Value as an array of sentences
+  onChange: (newValue: string[]) => void; // Callback to update the value (array)
   placeholder?: string;
   id?: string;
-  splitOnBlur?: boolean; // Si es true, se aplica splitOnBlur; si es false, se envía el contenido tal cual
+  splitOnBlur?: boolean; // If true, splitOnBlur is applied; if false, the content is sent as is
   label?: string;
   hasError?: boolean;
   errorMessages?: Array<string>;
@@ -40,35 +40,64 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
   className,
   ...props
 }, ref) => {
-  // Estado local para mantener el texto en formato de cadena
-  const [text, setText] = useState<string>(value?.join('\n'));
+  // Local state to maintain the text in string format
+  const [text, setText] = useState<string>(value?.join('\n') || '');
+  // We use an additional state to control if we are actively typing
+  const [isTyping, setIsTyping] = useState(false);
 
-  // Actualiza el estado local si el valor en props cambia (por ejemplo, al cargar un backup)
+  // Update local state if the value in props changes (for example, when loading a backup)
   useEffect(() => {
-    setText(value?.join('\n'));
+    setText(value?.join('\n') || '');
   }, [value]);
 
+  // Handle blur event to apply the split
   const handleBlur = () => {
-    /* TODO: Enable if too much requests are sent to backend
+    setIsTyping(false);
     if (splitOnBlur) {
-      const newArray = splitIntoSentences(text);
-      onChange(newArray);
+      try {
+        const newArray = splitIntoSentences(text);
+        onChange(newArray);
+      } catch (error) {
+        console.error("Error splitting text:", error);
+        // If there's an error, at least preserve the complete text
+        onChange([text]);
+      }
     } else {
-      // Si no se desea dividir, se pasa el texto completo como un único elemento del array
       onChange([text]);
     }
-    */
+  };
+  
+  // Handle change event to update the local state without splitting
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setIsTyping(true);
+    setText(e.target.value);
   };
 
+  // Apply the effect to split only when we finish typing
   useEffect(() => {
-    if (splitOnBlur) {
-      const newArray = splitIntoSentences(text);
-      onChange(newArray);
-    } else {
-      // Si no se desea dividir, se pasa el texto completo como un único elemento del array
-      onChange([text]);
+    let timer: NodeJS.Timeout | undefined;
+    
+    if (!isTyping && text) {
+      timer = setTimeout(() => {
+        if (splitOnBlur) {
+          try {
+            const newArray = splitIntoSentences(text);
+            onChange(newArray);
+          } catch (error) {
+            console.error("Error splitting text:", error);
+            onChange([text]);
+          }
+        } else {
+          onChange([text]);
+        }
+      }, 500); // Delay to avoid too many calls
     }
-  }, [text])
+    
+    // Always return a cleanup function
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isTyping, text, splitOnBlur, onChange]);
 
   const renderLabel = () => {
     if (customLabel) {
@@ -161,8 +190,9 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
           id={id}
           placeholder={placeholder}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={handleChange}
           onBlur={handleBlur}
+          onFocus={() => setIsTyping(true)}
           required={required}
           rows={rows}
           maxLength={maxLength}
@@ -182,7 +212,7 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
   );
 });
 
-// Componente ErrorPill
+// ErrorPill component
 interface ErrorPillProps {
   children: React.ReactNode;
 }
