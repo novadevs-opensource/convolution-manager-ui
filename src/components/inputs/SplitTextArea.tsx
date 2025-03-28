@@ -48,8 +48,8 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
     setText(value?.join('\n'));
   }, [value]);
 
-  // En onBlur, se transforma el texto (si corresponde) y se notifica al padre
   const handleBlur = () => {
+    /* TODO: Enable if too much requests are sent to backend
     if (splitOnBlur) {
       const newArray = splitIntoSentences(text);
       onChange(newArray);
@@ -57,7 +57,18 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
       // Si no se desea dividir, se pasa el texto completo como un único elemento del array
       onChange([text]);
     }
+    */
   };
+
+  useEffect(() => {
+    if (splitOnBlur) {
+      const newArray = splitIntoSentences(text);
+      onChange(newArray);
+    } else {
+      // Si no se desea dividir, se pasa el texto completo como un único elemento del array
+      onChange([text]);
+    }
+  }, [text])
 
   const renderLabel = () => {
     if (customLabel) {

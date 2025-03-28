@@ -283,7 +283,7 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
     
     if (currentStepConfig.skipValidation) {
       return (
-        <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="bg-blue-50 p-4 rounded-lg mt-4">
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
               <i className="fa-solid fa-info-circle text-blue-500"></i>
@@ -291,7 +291,7 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
             <div>
               <h4 className="font-anek-latin font-bold text-blue-700">Optional Section</h4>
               <p className="text-sm text-blue-600">
-                Adding knowledge is optional but helps your character be more informed.
+                Adding knowledge is optional but helps your character be more informed about certain things.
               </p>
             </div>
           </div>
