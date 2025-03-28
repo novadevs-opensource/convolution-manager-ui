@@ -60,7 +60,7 @@ const DashboardPage: React.FC = () => {
       {error && <p>Error: {error}</p>}
 
       <div className="md:min-w-[700px] xl:min-w-[800px] mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
-        {/* $CNVLTN balance */}
+        {/* $CON balance */}
         <div className="shadow-md bg-green-400 flex flex-row rounded-lg">
           <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
             <div className="rounded-full bg-lightPrimary p-3">
@@ -70,7 +70,7 @@ const DashboardPage: React.FC = () => {
             </div>
           </div>
           <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-            <p className="text-black-light font-dm text-sm font-medium font-anek-latin">$CNVLTN balance</p>
+            <p className="text-black-light font-dm text-sm font-medium font-anek-latin">$CON balance</p>
             <h4 className="text-xl font-bold font-anek-latin text-black">{tokenBalance}</h4>
           </div>
         </div>

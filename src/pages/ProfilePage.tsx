@@ -88,7 +88,7 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
             <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-              <p className="text-black-light font-dm text-sm font-medium font-anek-latin">$CNVLTN balance</p>
+              <p className="text-black-light font-dm text-sm font-medium font-anek-latin">$CON balance</p>
               <h4 className="text-xl font-bold font-anek-latin text-black">{tokenBalance}</h4>
             </div>
           </div>
