@@ -15,17 +15,49 @@ const LoginPage: React.FC = () => {
   //const [email, setEmail] = useState('');
   //const [password, setPassword] = useState('');
 
+  const renderFooter = () => {
+    return (
+      <section className="sm:hidden px-8 py-4 bg-black left-0 bottom-0 w-full absolute">
+        <div className="mx-auto flex flex-row gap-3 md:items-center justify-between">
+          <p className="text-white text-afacad text-sm"><a href='https://convolution.agency' target='_blank'>2025 © convolution.agency</a></p>
+          <div className="flex flex-row gap-3">
+              <p className="text-white text-afacad text-sm">
+                  <a href="https://convolution.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
+              </p>
+
+              <p className="text-white text-afacad text-sm hidden md:block">/</p>
+              <p className="text-white text-afacad text-sm">
+                  <a href="https://convolution.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
+              </p>
+
+              <p className="text-white text-afacad text-sm hidden md:block">/</p>
+              <p className="text-white text-afacad text-sm">
+                  <a href="https://x.com/ConvolutionSOL" target="_blank">X</a>
+              </p>
+              {/*
+              <p className="text-white text-afacad text-sm hidden md:block">/</p>
+              <p className="text-white text-afacad text-sm">
+                  <a href="https://github.com/ConvolutionSOL" target="_blank">GitHub</a>
+              </p>
+              */}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const isMobile = useIsMobile();
   if (isMobile) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-100">
-        <div className="text-center p-6 border rounded-lg shadow-lg">
+      <div className="flex h-screen items-center justify-center bg-black-ultra">
+        <div className="text-center p-8 border rounded-lg shadow-lg w-10/12 bg-gradient-secondary">
           <img src={convolutionLogo} alt="Convolution Logo" className="mx-auto w-24 mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Soon</h1>
+          <h1 className="text-2xl font-bold mb-2 font-anek-latin">Soon</h1>
           <p className="text-gray-600">
-            This application is only available for desktop users. Please access it from a desktop computer.
+            This application <b>is only available for desktop users</b>. Please access it from a desktop computer.
           </p>
         </div>
+        {renderFooter()}
       </div>
     );
   }
@@ -154,32 +186,7 @@ const LoginPage: React.FC = () => {
               */}
             </div>
           </div>
-          <section className="sm:hidden px-8 py-4 bg-black left-0 bottom-0 w-full absolute">
-            <div className="mx-auto flex flex-row gap-3 md:items-center justify-between">
-                <p className="text-white text-afacad text-sm"><a href='https://convolution.agency' target='_blank'>2025 © convolution.agency</a></p>
-                <div className="flex flex-row gap-3">
-                    <p className="text-white text-afacad text-sm">
-                        <a href="https://convolution.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
-                    </p>
-
-                    <p className="text-white text-afacad text-sm hidden md:block">/</p>
-                    <p className="text-white text-afacad text-sm">
-                        <a href="https://convolution.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
-                    </p>
-
-                    <p className="text-white text-afacad text-sm hidden md:block">/</p>
-                    <p className="text-white text-afacad text-sm">
-                        <a href="https://x.com/ConvolutionSOL" target="_blank">X</a>
-                    </p>
-                    {/*
-                    <p className="text-white text-afacad text-sm hidden md:block">/</p>
-                    <p className="text-white text-afacad text-sm">
-                        <a href="https://github.com/ConvolutionSOL" target="_blank">GitHub</a>
-                    </p>
-                    */}
-                </div>
-            </div>
-          </section>
+          {renderFooter()}
         </div>
     </div>
   );
