@@ -52,7 +52,7 @@ const ClientConfigurationSection: React.FC<ClientConfigurationSectionProps> = ({
     twitterGuestId: '',
     
     // Twitter settings
-    postImmediately: true,
+    postImmediately: "true",
     postIntervalMin: 90,
     postIntervalMax: 180,
     pollInterval: 120,
@@ -80,7 +80,7 @@ const ClientConfigurationSection: React.FC<ClientConfigurationSectionProps> = ({
       twitterAuthToken: character.settings?.secrets?.TWITTER_COOKIES_AUTH_TOKEN || '',
       twitterCt0: character.settings?.secrets?.TWITTER_COOKIES_CT0 || '',
       twitterGuestId: character.settings?.secrets?.TWITTER_COOKIES_GUEST_ID || '',
-      postImmediately: character.settings?.POST_IMMEDIATELY || true,
+      postImmediately: character.settings?.POST_IMMEDIATELY || "true",
       postIntervalMin: character.settings?.POST_INTERVAL_MIN || 90,
       postIntervalMax: character.settings?.POST_INTERVAL_MAX || 180,
       pollInterval: character.settings?.TWITTER_POLL_INTERVAL || 120,
@@ -374,8 +374,8 @@ const ClientConfigurationSection: React.FC<ClientConfigurationSectionProps> = ({
             <FormGroup className='flex md:flex-row flex-col'>
               <GenericCheckboxInput
                 label='Generate a new post immediately the agent is started or every time is updated while is running'
-                checked={formState.postImmediately}
-                onChange={(e) => handleFormChange('postImmediately', e.target.checked)}
+                checked={formState.postImmediately === "true" ? true : false}
+                onChange={(e) => handleFormChange('postImmediately', e.target.checked ? "true" : "false")}
               />
             </FormGroup>
             

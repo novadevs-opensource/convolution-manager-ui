@@ -26,7 +26,7 @@ const defaultXSettings = {
   ACTION_INTERVAL: 5,
   MAX_ACTIONS_PROCESSING: 1,
   ACTION_TIMELINE_TYPE: 'foryou',
-  POST_IMMEDIATELY: true,
+  POST_IMMEDIATELY: "true",
   TWITTER_TARGET_USERS: '',
 }
 
@@ -159,8 +159,8 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
                   <FormGroup className='flex md:flex-row flex-col'>
                     <GenericCheckboxInput
                       label='Generate a new post immediately the agent is started or every time is updated while is running'
-                      checked={character.settings?.POST_IMMEDIATELY}
-                      onChange={(e) => handleInputChange('settings.POST_IMMEDIATELY', e.target.checked)}
+                      checked={character.settings?.POST_IMMEDIATELY === "true" ? true : false}
+                      onChange={(e) => handleInputChange('settings.POST_IMMEDIATELY', e.target.checked ? "true" : "false")}
                     />
                   </FormGroup>
                   {/* post interval and timeline settings */}

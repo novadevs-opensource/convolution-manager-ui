@@ -35,7 +35,7 @@ export interface CharacterData {
     // --
     ACTION_TIMELINE_TYPE?: string,
     // --
-    POST_IMMEDIATELY?: boolean
+    POST_IMMEDIATELY?: string,
     // --
     TWITTER_TARGET_USERS?: string,
   };

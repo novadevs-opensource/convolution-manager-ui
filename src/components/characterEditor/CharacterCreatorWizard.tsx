@@ -43,7 +43,7 @@ const defaultXSettings = {
   ACTION_INTERVAL: 5,
   MAX_ACTIONS_PROCESSING: 1,
   ACTION_TIMELINE_TYPE: 'foryou',
-  POST_IMMEDIATELY: true,
+  POST_IMMEDIATELY: "true",
   TWITTER_TARGET_USERS: '',
 };
 
