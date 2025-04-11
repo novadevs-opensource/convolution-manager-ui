@@ -1,8 +1,8 @@
 ## This workflow is executed manually by a developer.
 ##
-## Project: convolution-manager-ui
-## Repository: https://github.com/novadevs-opensource/convolution-manager-ui.git
-## Version: 0.0.2
+## Project: wuai-manager-ui
+## Repository: https://github.com/novadevs-opensource/wuai-manager-ui.git
+## Version: 0.0.3
 ## Aim: Deploy the project in AWS S3 static website for production environment.
 
 name: Release to Production
@@ -72,61 +72,30 @@ jobs:
         run: |
           aws s3 sync ./ s3://${{ secrets.AWS_BUCKET }} --delete
 
-      # https://github.com/slackapi/slack-github-action
-      - name: Send success notification
-        if: success()
-        uses: slackapi/slack-github-action@v2.0.0
-        with:
-          method: chat.postMessage
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          payload: |
-            channel: ${{ secrets.SLACK_CHANNEL_ID }}
-            text: "Deployment to Production."
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: ":rocket: :rocket: *Successfully deployed!* :rocket: :rocket:"
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*Repository:* ${{ github.repository }}"
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*Branch:* ${{ github.ref }}"
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*Commit:* ${{ github.sha }}"
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*Workflow:* ${{ github.workflow }}"
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*Run ID:* ${{ github.run_id }}"
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*User:* ${{ github.actor }}"
+      - name: Set emoji status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "EMOJI_STATUS=:rocket: :rocket:" >> $GITHUB_ENV
+          else
+            echo "EMOJI_STATUS=:rotating_light: :rotating_light:" >> $GITHUB_ENV
+          fi
 
       # https://github.com/slackapi/slack-github-action
-      - name: Send failure notification
-        if: failure()
+      - name: Send a notification
+        if: always()
         uses: slackapi/slack-github-action@v2.0.0
         with:
           method: chat.postMessage
           token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
             channel: ${{ secrets.SLACK_CHANNEL_ID }}
-            text: "Deployment to Production."
+            text: "Deployment Task definition to Production - Status: ${{ job.status }}"
             blocks:
               - type: "section"
                 text:
                   type: "mrkdwn"
-                  text: ":rotating_light: :rotating_light: *Deployment failed!* :rotating_light: :rotating_light:"
+                  text: "${{ env.EMOJI_STATUS }} *Deployment Status:* `${{ job.status }}`"
               - type: "section"
                 text:
                   type: "mrkdwn"
@@ -146,12 +115,8 @@ jobs:
               - type: "section"
                 text:
                   type: "mrkdwn"
-                  text: "*Run ID:* ${{ github.run_id }}"
-              - type: "section"
-                text:
-                  type: "mrkdwn"
                   text: "*User:* ${{ github.actor }}"
               - type: "section"
                 text:
                   type: "mrkdwn"
-                  text: "*Run ID URL:* https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  text: "*Run URL:* <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here>"
