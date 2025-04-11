@@ -1,0 +1,122 @@
+## This workflow is executed manually by a developer.
+##
+## Project: wuai-manager-ui
+## Repository: https://github.com/novadevs-opensource/wuai-manager-ui.git
+## Version: 0.0.1
+## Aim: Deploy the project in AWS S3 static website for Staging environment.
+
+name: Release to Staging
+
+# This workflow is triggered manually
+on:
+  workflow_dispatch:
+
+# Permission can be added at job level or workflow level
+permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+
+env:
+  NODE_VERSION: 23
+  DIR_TO_UPLOAD: dist
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch'
+
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      # https://github.com/actions/checkout
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      # https://github.com/aws-actions/configure-aws-credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_OIDC }}
+
+      # https://github.com/actions/setup-node
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Download env file from AWS SSM Parameter Store
+        run: |
+          aws ssm \
+            get-parameter \
+            --with-decryption \
+            --name ${{ secrets.AWS_SSM_PS }} \
+            --output text \
+            --query 'Parameter.Value' \
+            > .env
+
+      - name: Install the project dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Upload to S3
+        working-directory: ${{ env.DIR_TO_UPLOAD }}
+        run: |
+          aws s3 sync ./ s3://${{ secrets.AWS_BUCKET }} --delete
+
+      - name: Set emoji status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "EMOJI_STATUS=:rocket: :rocket:" >> $GITHUB_ENV
+          else
+            echo "EMOJI_STATUS=:rotating_light: :rotating_light:" >> $GITHUB_ENV
+          fi
+
+      # https://github.com/slackapi/slack-github-action
+      - name: Send a notification
+        if: always()
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          payload: |
+            channel: ${{ secrets.SLACK_CHANNEL_ID }}
+            text: "Deployment Task definition to Staging - Status: ${{ job.status }}"
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "${{ env.EMOJI_STATUS }} *Deployment Status:* `${{ job.status }}`"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Repository:* ${{ github.repository }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Branch:* ${{ github.ref }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Commit:* ${{ github.sha }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Workflow:* ${{ github.workflow }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*User:* ${{ github.actor }}"
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Run URL:* <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Click here>"
