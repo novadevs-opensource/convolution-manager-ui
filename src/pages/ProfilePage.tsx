@@ -8,7 +8,7 @@ import GenericTextInput from '../components/inputs/GenericTextInput';
 import { useLLMProviderApiKey } from '../hooks/useLLMProviderApiKey';
 import { useToasts } from '../hooks/useToasts';
 import { getTokenBalance } from '../utils/web3/getTokenBalance';
-import convolutionLogoBlack from '../assets/images/convolution-square-black.svg';
+import convolutionLogoBlack from '../assets/images/wuai-logo.svg';
 import openRouterLogoBlack from '../assets/images/openrouter-logo.svg';
 
 const ProfilePage: React.FC = () => {

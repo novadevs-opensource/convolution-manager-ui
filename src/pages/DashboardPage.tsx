@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Pagination from '../components/common/Pagination';
 import { Agent } from '../types';
 import { useCredits } from '../hooks/useCredits';
-import convolutionLogoBlack from '../assets/images/convolution-square-black.svg';
+import convolutionLogoBlack from '../assets/images/wuai-logo.svg';
 import { LuBadgeAlert } from "react-icons/lu";
 import { LuBadgeCheck } from "react-icons/lu";
 import { MdOutlineTimer } from "react-icons/md";

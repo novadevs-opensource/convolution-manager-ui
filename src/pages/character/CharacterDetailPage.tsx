@@ -20,7 +20,7 @@ import StartAgentButton from '../../components/agent/buttons/StartAgentButton';
 import StopAgentButton from '../../components/agent/buttons/StopAgentButton';
 import MasonryPostsLayout from '../../components/agent/MasonryPosts';
 
-import convolutionLogoBlack from '../../assets/images/convolution-square-black.svg';
+import convolutionLogoBlack from '../../assets/images/wuai-logo.svg';
 import ActionToolsBlock from '../../components/common/ActionToolsBlock';
 import GenericTextArea from '../../components/inputs/GenericTextArea';
 import { useToasts } from '../../hooks/useToasts';
