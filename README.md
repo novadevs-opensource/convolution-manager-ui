@@ -94,7 +94,7 @@ A comprehensive web-based tool for creating, managing, and customizing AI agents
 1. Clone the repository:
 ```bash
 git clone [repository-url]
-cd convolution-manager-ui
+cd wuai-manager-ui
 ```
 
 2. Install dependencies:
@@ -184,5 +184,5 @@ This project is licensed under the [MIT License](LICENSE).
 ## Support
 
 For support, please:
-1. Check the [GitHub Issues](https://github.com/brunolorente/convolution-character-generator/issues)
+1. Check the [GitHub Issues](https://github.com/brunolorente/wuai-character-generator/issues)
 2. Join the [WuAI DAO](https://www.daos.fun/)

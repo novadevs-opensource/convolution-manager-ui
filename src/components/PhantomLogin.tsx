@@ -185,7 +185,7 @@ const PhantomLogin: React.FC = () => {
           label={isLoading ? 'Connecting...' : 'Login with Phantom'}
           disabled={isLoading}
           icon={<img width={24} height={24} src={logo}/>}
-          className='bg-phantom hover:!bg-phantom-dark border-phantom hover:border-phantom-dark hover:text-white'
+          className='!bg-phantom hover:!bg-phantom-dark !rounded !border-phantom hover:!border-phantom-dark !text-white'
         >
         </Button>
       )}

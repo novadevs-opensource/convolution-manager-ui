@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useToasts } from '../hooks/useToasts';
 
 import { registerService } from '../services/authService';
-import convolutionLogo from '../assets/images/convolution-square.svg';
+import wuaiLogo from '../assets/images/wuai-logo.svg';
 
 const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -40,7 +40,7 @@ const RegisterPage: React.FC = () => {
       {/* left pane */}
       <div className="hidden lg:flex items-center justify-center flex-1 bg-white text-black" style={{background: '#232323'}}>
         <div className="max-w-md text-center">
-          <img src={convolutionLogo} className="logo" alt="Vite logo" />
+          <img src={wuaiLogo} className="logo" alt="Vite logo" />
         </div>
       </div>
       {/* right pane */}

@@ -8,7 +8,7 @@ import GenericTextInput from '../components/inputs/GenericTextInput';
 import { useLLMProviderApiKey } from '../hooks/useLLMProviderApiKey';
 import { useToasts } from '../hooks/useToasts';
 import { getTokenBalance } from '../utils/web3/getTokenBalance';
-import convolutionLogoBlack from '../assets/images/wuai-logo.svg';
+import wuaiLogoBlack from '../assets/images/wuai-logo.svg';
 import openRouterLogoBlack from '../assets/images/openrouter-logo.svg';
 
 const ProfilePage: React.FC = () => {
@@ -83,7 +83,7 @@ const ProfilePage: React.FC = () => {
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
               <div className="rounded-full bg-lightPrimary p-3">
                 <span className="flex items-center text-black">
-                  <img src={convolutionLogoBlack} className="h-[24px]" alt="convolution logo"/>
+                  <img src={wuaiLogoBlack} className="h-[24px]" alt="wuai logo"/>
                 </span>
               </div>
             </div>
@@ -132,7 +132,7 @@ const ProfilePage: React.FC = () => {
               <div className="ml-[18px] flex h-[90px] flex-row items-center">
                 <div className="rounded-full bg-lightPrimary p-3 ">
                   <span className="flex items-center text-brand-500 ">
-                    <img src={openRouterLogoBlack} className="h-[24px]" alt="convolution logo"/>
+                    <img src={openRouterLogoBlack} className="h-[24px]" alt="wuai logo"/>
                   </span>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 // src/components/TopFrame.tsx
 import React from 'react';
-import convolutionLogo from '../assets/images/convolution-square.svg';
+import wuaiLogo from '../assets/images/wuai-square.svg';
 import { useTheme } from '../hooks/useTheme';
 import { useAuth } from '../hooks/useAuth';
 
@@ -25,7 +25,7 @@ function SiteBranding() {
   return (
     <div className="site-branding">
       <img
-        src={convolutionLogo}
+        src={wuaiLogo}
         alt="WuAI Icon"
         className="site-icon"
       />

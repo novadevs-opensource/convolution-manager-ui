@@ -4,7 +4,7 @@ import { MdOutlineTimer } from "react-icons/md";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { IoIosPlay } from "react-icons/io";
 import { PiSpinnerBallDuotone } from "react-icons/pi";
-import convolutionLogoWhite from '../assets/images/wuai-logo.svg';
+import wuaiLogoWhite from '../assets/images/wuai-logo.svg';
 
 import { Agent } from '../types';
 
@@ -75,7 +75,7 @@ const DashboardPage: React.FC = () => {
                 <div className="flex w-auto flex-row items-center">
                   <div className="rounded-full p-3">
                     <span className="flex items-center">
-                      <img src={convolutionLogoWhite} className="h-[32px]" alt="convolution logo"/>
+                      <img src={wuaiLogoWhite} className="h-[32px]" alt="wuai logo"/>
                     </span>
                   </div>
                 </div>

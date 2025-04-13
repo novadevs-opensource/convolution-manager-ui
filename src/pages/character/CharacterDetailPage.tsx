@@ -20,7 +20,7 @@ import StartAgentButton from '../../components/agent/buttons/StartAgentButton';
 import StopAgentButton from '../../components/agent/buttons/StopAgentButton';
 import MasonryPostsLayout from '../../components/agent/MasonryPosts';
 
-import convolutionLogoBlack from '../../assets/images/wuai-logo.svg';
+import wuaiLogoBlack from '../../assets/images/wuai-logo.svg';
 import ActionToolsBlock from '../../components/common/ActionToolsBlock';
 import GenericTextArea from '../../components/inputs/GenericTextArea';
 import { useToasts } from '../../hooks/useToasts';
@@ -183,7 +183,7 @@ const CharacterDetailPage: React.FC = () => {
                 className='cursor-pointer'
                 onClick={() => avatarModal.open()} 
               >
-                <img src={convolutionLogoBlack} className={`h-[100px] w-[100px] animate-pulse`} alt="convolution logo"/>
+                <img src={wuaiLogoBlack} className={`h-[100px] w-[100px] animate-pulse`} alt="wuai logo"/>
               </div>
             ) : (
               <div 
@@ -533,7 +533,7 @@ const CharacterDetailPage: React.FC = () => {
               </div>
             ) : (
               <div className='p-4 border rounded-md w-full flex justify-center'>
-                <img src={convolutionLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="convolution logo"/>
+                <img src={wuaiLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="wuai logo"/>
               </div>
             )}
           </div>

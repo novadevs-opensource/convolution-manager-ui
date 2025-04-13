@@ -3,7 +3,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
-import convolutionLogo from '../assets/images/convolution-logo-vertical-black.svg';
+import wuaiLogo from '../assets/images/wuai-logo-long-black.svg';
 import PhantomLogin from '../components/PhantomLogin';
 import useIsMobile from '../hooks/useIsMobile';
 
@@ -19,15 +19,15 @@ const LoginPage: React.FC = () => {
     return (
       <section className="sm:hidden px-8 py-4 bg-black left-0 bottom-0 w-full absolute">
         <div className="mx-auto flex flex-row gap-3 md:items-center justify-between">
-          <p className="text-white text-afacad text-sm"><a href='https://convolution.agency' target='_blank'>2025 © convolution.agency</a></p>
+          <p className="text-white text-afacad text-sm"><a href='https://wuai.io' target='_blank'>2025 © wuai.io</a></p>
           <div className="flex flex-row gap-3">
               <p className="text-white text-afacad text-sm">
-                  <a href="https://convolution.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
+                  <a href="https://wuai.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
               </p>
 
               <p className="text-white text-afacad text-sm hidden md:block">/</p>
               <p className="text-white text-afacad text-sm">
-                  <a href="https://convolution.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
+                  <a href="https://wuai.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
               </p>
 
               <p className="text-white text-afacad text-sm hidden md:block">/</p>
@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
     return (
       <div className="flex h-screen items-center justify-center bg-black-ultra">
         <div className="text-center p-8 border rounded-lg shadow-lg w-10/12 bg-gradient-secondary">
-          <img src={convolutionLogo} alt="WuAI Logo" className="mx-auto w-24 mb-4" />
+          <img src={wuaiLogo} alt="WuAI Logo" className="mx-auto w-24 mb-4" />
           <h1 className="text-2xl font-bold mb-2 font-anek-latin">Soon</h1>
           <p className="text-gray-600">
             This application <b>is only available for desktop users</b>. Please access it from a desktop computer.
@@ -84,21 +84,21 @@ const LoginPage: React.FC = () => {
     /* component */
     <div className="flex h-screen">
         {/* left pane */}
-        <div className="hidden relative lg:flex items-center justify-center flex-1 bg-white text-black" style={{background: '#232323'}}>
-          <div className="text-center bg-green-400 rounded-md h-[250px] w-[350px] justify-center items-center flex">
-            <img src={convolutionLogo} className="logo w-[250px]" alt="Vite logo" />
+        <div className="hidden relative lg:flex items-center justify-center flex-1 bg-white text-black bg-yellow-500">
+          <div className="text-center rounded-md h-[250px] w-[350px] justify-center items-center flex">
+            <img src={wuaiLogo} className="logo w-[250px]" alt="Vite logo" />
           </div>
           <section className="px-8 py-4 bg-black absolute left-0 bottom-0 w-full">
             <div className="mx-auto flex md:flex-row gap-3 flex-col md:items-center justify-between">
-                <p className="text-white text-afacad text-sm"><a href='https://convolution.agency' target='_blank'>2025 © convolution.agency</a></p>
+                <p className="text-white text-afacad text-sm"><a href='https://wuai.io' target='_blank'>2025 © wuai.io</a></p>
                 <div className="flex md:flex-row flex-col gap-3">
                     <p className="text-white text-afacad text-sm">
-                        <a href="https://convolution.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
+                        <a href="https://wuai.gitbook.io/doc/1.-project-overview" target="_blank">About</a>
                     </p>
 
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
                     <p className="text-white text-afacad text-sm">
-                        <a href="https://convolution.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
+                        <a href="https://wuai.gitbook.io/doc/4.-tokenomics" target="_blank">Whitepaper</a>
                     </p>
 
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
@@ -116,16 +116,28 @@ const LoginPage: React.FC = () => {
           </section>
         </div>
         {/* right pane */}
-        <div className="w-full bg-gray-50 lg:w-1/2 flex flex-col items-center justify-center relative">
-          <div className='items-center justify-center flex flex-col bg-gray-200 rounded-xl p-8 sm:h-[250px] sm:w-[350px]'>
+        <div className="w-full bg-yellow-50 lg:w-1/2 flex flex-col items-center justify-center relative">
+          <div className='items-center justify-center flex flex-col rounded-xl p-8 sm:h-[250px] sm:w-[350px]'>
             <div className="sm:hidden max-w-sm text-center p-12 rounded-md">
-              <img src={convolutionLogo} className="logo h-24" alt="Vite logo" />
+              <img src={wuaiLogo} className="logo h-24" alt="Vite logo" />
             </div>
-            <div className="max-w-md w-full p-6">
-              <h1 className="text-3xl font-semibold mb-6 text-black text-center">Sign In</h1>
-              <h1 className="text-sm font-semibold font-anek-latin mb-6 text-gray-500 text-center">Join us using your wallet </h1>
+            <div className="max-w-md w-full flex flex-col items-center p-6">
+              <h1 className="text-3xl font-semibold mb-3 text-black text-center inline-flex">Sign In</h1>
+              <div className="flex justify-center relative">
+                <h2 className="font-anek-latin text-black text-center text-center mb-6 inline-block px-4 relative">
+                  <span className="relative z-10">Create WuAI <b>agents</b> using your wallet</span>
+                  <span 
+                    className="absolute inset-0 bg-yellow-500 z-0"
+                    style={{
+                      transform: "rotate(-2.5deg)",
+                      borderRadius: "3% 20% 5% 20%"
+                    }}
+                  ></span>
+                </h2>
+              </div>
+              <PhantomLogin />
+              {/*
               <div className="mt-4 flex flex-col items-center justify-between gap-2">
-                {/* 
                 <div className="w-full">
                   <button disabled={true} type="button" className="w-full flex justify-center items-center gap-2 bg-white text-sm text-gray-600 p-2 rounded-md hover:bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 transition-colors duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-4" id="google">
@@ -146,10 +158,7 @@ const LoginPage: React.FC = () => {
                     Sign in with email 
                   </button>
                 </div>
-                */}
-                <PhantomLogin />
               </div>
-              {/*
               <div className="mt-4 text-sm text-gray-600 text-center">
                 <p>or with your Wallet</p>
               </div>
