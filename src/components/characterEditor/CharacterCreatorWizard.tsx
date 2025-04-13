@@ -74,7 +74,7 @@ interface CharacterCreatorWizardProps {
   userId: string;
   characterData?: CharacterData;
   selectedModel?: string;
-  onDataChange?: (characterData: CharacterData, model: string) => void;
+  onDataChange?: (characterData: CharacterData, model: string, prompt?: string) => void;
   onFinish?: () => void;
 }
 
@@ -133,8 +133,8 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
     if (onDataChange) {
       onDataChange(
         characterState.character,
-        characterState.selectedModelValue || 
-        characterState.character.settings?.secrets?.LARGE_OPENROUTER_MODEL || ''
+        characterState.selectedModelValue || characterState.character.settings?.secrets?.LARGE_OPENROUTER_MODEL || '',
+        prompt
       );
     }
   }, [characterState.character, characterState.selectedModelValue, onDataChange]);

@@ -40,7 +40,8 @@ export function useAgent() {
     llm_provider_model: string, 
     llm_provider_api_key: string, 
     definition: CharacterData,
-    options?: AgentOperationOptions
+    options?: AgentOperationOptions,
+    auto_generation_prompt?: string,
   ) => {
     setLoading(true);
     setError(null);
@@ -51,7 +52,9 @@ export function useAgent() {
         "llm_provider_model": llm_provider_model,
         "llm_provider_api_key": llm_provider_api_key,
         "definition": JSON.stringify(definition),
+        ...(auto_generation_prompt ? { auto_generation_prompt } : {})
       };
+      console.log(payload)
       
       const { data, status } = await api.post<AgentSuccessResponse>('/character', payload);
       

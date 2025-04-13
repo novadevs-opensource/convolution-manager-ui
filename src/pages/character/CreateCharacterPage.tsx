@@ -19,6 +19,7 @@ const CreateCharacterPage: React.FC = () => {
   const [, setIsSaving] = useState(false);
   const [characterData, setCharacterData] = useState<CharacterData | null>(null);
   const [selectedModel, setSelectedModel] = useState<string>('');
+  const [autoGenerationPrompt, setAutoGenerationPrompt] = useState<string|null>(null);
   const { saveHandler } = useAgent();
   const { addNotification } = useToasts();
   
@@ -66,7 +67,8 @@ const CreateCharacterPage: React.FC = () => {
               addNotification(`Failed to create agent: ${error.message}`, 'error');
             }
           }
-        }
+        },
+        autoGenerationPrompt ?? undefined,
       );
     } catch (error) {
       console.error('Error saving agent:', error);
@@ -76,9 +78,12 @@ const CreateCharacterPage: React.FC = () => {
   };
   
   // Handle editor updates
-  const handleEditorChange = (data: CharacterData, model: string) => {
+  const handleEditorChange = (data: CharacterData, model: string, prompt?: string) => {
     setCharacterData(data);
     setSelectedModel(model);
+    if (prompt) {
+      setAutoGenerationPrompt(prompt)
+    }
   };
   
   if (!userProfile) {

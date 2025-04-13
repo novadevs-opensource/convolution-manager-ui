@@ -58,12 +58,14 @@ interface CharacterEditorProps {
   characterData?: CharacterData;
   selectedModel?: string;
   onDataChange?: (characterData: CharacterData, model: string) => void;
+  agentSeedPrompt?: string,
 }
 
 const CharacterEditor: React.FC<CharacterEditorProps> = ({ 
   characterData, 
   selectedModel,
-  onDataChange 
+  onDataChange,
+  agentSeedPrompt,
 }) => {
   const apiKeyService = ApiKeyService.getInstance();
   const [character, setCharacter] = useState<CharacterData>(characterData || initialCharacter);
@@ -410,6 +412,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({
         onDeleteBackup={handleDeleteBackup}
         onGenerateCharacter={handleGenerateCharacter}
         onRefineCharacter={handleRefineCharacter}
+        agentSeedPrompt={agentSeedPrompt}
       />
       <div className="col-span-3">
         {/* Basic Information */}

@@ -13,6 +13,7 @@ interface SidebarProps {
   onDeleteBackup: (name: string) => void;
   onGenerateCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
   onRefineCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
+  agentSeedPrompt?: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -23,11 +24,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   onRenameBackup,
   onDeleteBackup,
   onGenerateCharacter,
+  agentSeedPrompt,
 }) => {
   return (
     <div className="w-full">
       <GenerateCharacterSection
         onGenerateCharacter={onGenerateCharacter}
+        savedPrompt={agentSeedPrompt}
       />
       <LoadCharacterSection
         onLoadCharacter={onLoadCharacter}

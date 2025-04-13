@@ -146,6 +146,7 @@ const EditCharacterPage: React.FC = () => {
         characterData={character?.definition}
         selectedModel={character?.llm_provider_settings.llm_provider_model}
         onDataChange={handleEditorChange}
+        agentSeedPrompt={character?.auto_generation_prompt}
       />
     </div>
   );
