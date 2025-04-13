@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className='sm:grid sm:grid-cols-2 flex flex-col gap-4'>
-        <FormGroup className='bg-black-ultra p-8 rounded-lg'>
+        <FormGroup className='bg-white border border-yellow-200 p-8 rounded-lg'>
           <h2 className='font-anek-latin text-2xl font-bold mb-8'>Wallet settings</h2>
           <GenericTextInput 
             className='w-full bg-gray-50 !border-gray-200'
@@ -79,7 +79,7 @@ const ProfilePage: React.FC = () => {
             disabled={true}
             plain={true}
           />
-          <div className="shadow-md bg-green-400 flex flex-row rounded-lg">
+          <div className="shadow-md bg-beige-200 flex flex-row rounded-lg text-black">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
               <div className="rounded-full bg-lightPrimary p-3">
                 <span className="flex items-center text-black">
@@ -88,13 +88,13 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
             <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-              <p className="text-black-light font-dm text-sm font-medium font-anek-latin">$CON balance</p>
-              <h4 className="text-xl font-bold font-anek-latin text-black">{tokenBalance}</h4>
+              <p className="font-dm text-sm font-medium font-anek-latin">Token balance</p>
+              <h4 className="text-xl font-bold font-anek-latin">{tokenBalance}</h4>
             </div>
           </div>
         </FormGroup>
 
-        <FormGroup className='bg-black-ultra p-8 rounded-lg'>
+        <FormGroup className='bg-white border border-yellow-200 p-8 rounded-lg'>
           <h2 className='font-anek-latin text-2xl font-bold mb-8'>OpenRouter settings</h2>
           <div className="flex flex-col md:flex-row gap-2 items-end">
             <GenericTextInput 
@@ -128,7 +128,7 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
           {creditsData && (
-            <div className="shadow-md bg-blue-400 flex flex-row rounded-lg">
+            <div className="shadow-md bg-beige-200 flex flex-row rounded-lg">
               <div className="ml-[18px] flex h-[90px] flex-row items-center">
                 <div className="rounded-full bg-lightPrimary p-3 ">
                   <span className="flex items-center text-brand-500 ">
@@ -136,14 +136,14 @@ const ProfilePage: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className='flex flex-row justify-between w-1/2'>
+              <div className='flex flex-row justify-between w-1/2 text-black'>
                 <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-                  <p className="font-dm text-sm font-medium text-gray-600">Credits balance</p>
-                  <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_credits}</h4>
+                  <p className="font-dm text-sm font-medium">Credits balance</p>
+                  <h4 className="text-xl font-bold">{creditsData?.data.total_credits}</h4>
                 </div>
                 <div className="h-50 ml-4 flex w-auto flex-col justify-center">
-                  <p className="font-dm text-sm font-medium text-gray-600">Used credits</p>
-                  <h4 className="text-xl font-bold text-navy-700 ">{creditsData?.data.total_usage}</h4>
+                  <p className="font-dm text-sm font-medium">Used credits</p>
+                  <h4 className="text-xl font-bold ">{creditsData?.data.total_usage}</h4>
                 </div>
               </div>
             </div>

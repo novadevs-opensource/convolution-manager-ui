@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({ pagination, onPageChange, isLoa
 
   return (
     <div className="flex justify-between items-center px-4 py-3">
-      <div className="text-sm font-anek-latin text-gray-500">
+      <div className="text-sm font-anek-latin text-black">
         Showing <b>{pagination.from ?? 0} to {pagination.to ?? 0}</b> of {pagination.total}
       </div>
       <div className="flex space-x-1">
@@ -46,7 +46,7 @@ const Pagination: React.FC<PaginationProps> = ({ pagination, onPageChange, isLoa
             {pagination.prev_page_url && (
               <button
                 onClick={() => handlePageChange(pagination.current_page - 1)}
-                className="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease"
+                className="uppercase px-3 py-1 min-w-9 min-h-9 text-sm font-normal hover:text-white hover:bg-black border hover:border-black rounded bg-yellow-500 border-yellow-500 text-black transition duration-200 ease"
               >
                 Prev
               </button>
@@ -60,7 +60,7 @@ const Pagination: React.FC<PaginationProps> = ({ pagination, onPageChange, isLoa
                   key={link.label}
                   onClick={() => handlePageChange(parseInt(link.label))}
                   disabled={!link.url}
-                  className={`px-3 py-1 min-w-9 min-h-9 text-sm font-normal ${link.active ? 'text-white bg-slate-800' : 'text-slate-500 bg-white border border-slate-200'} rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease`}
+                  className={`px-3 py-1 min-w-9 min-h-9 text-sm font-normal ${link.active ? 'text-white bg-black' : 'text-black bg-yellow-500'} rounded hover:bg-yellow-500 hover:text-black hover:border-slate-400 transition duration-200 ease`}
                 >
                   {link.label}
                 </button>
@@ -70,7 +70,7 @@ const Pagination: React.FC<PaginationProps> = ({ pagination, onPageChange, isLoa
             {pagination.next_page_url && (
               <button
                 onClick={() => handlePageChange(pagination.current_page + 1)}
-                className="px-3 py-1 min-w-9 min-h-9 text-sm font-normal text-slate-500 bg-white border border-slate-200 rounded hover:bg-slate-50 hover:border-slate-400 transition duration-200 ease"
+                className="uppercase px-3 py-1 min-w-9 min-h-9 text-sm font-normal hover:text-white hover:bg-black border hover:border-black rounded bg-yellow-500 border-yellow-500 text-black transition duration-200 ease"
               >
                 Next
               </button>

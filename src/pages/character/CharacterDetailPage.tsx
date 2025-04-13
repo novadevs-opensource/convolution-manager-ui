@@ -405,7 +405,7 @@ const CharacterDetailPage: React.FC = () => {
             {/* Heading */}
             <div className="p-6 flex flex-col space-y-1.5">
               <h2 className="font-semibold text-lg tracking-tight">Chatbot preview (disabled)</h2>
-              <p className="text-sm text-[#6b7280] leading-3">powered by Convolution</p>
+              <p className="text-sm text-[#6b7280] leading-3">powered by WuAI</p>
             </div>
             {/* Chat Container */}
             <div className="h-[500px] border border-gray-200" style={{overflowY: 'scroll'}}>
@@ -466,7 +466,7 @@ const CharacterDetailPage: React.FC = () => {
             </div>
           </div>
           {/* social media examples */}
-          <MasonryPostsLayout scroll={true} scrollSize={600} columns={3} posts={character?.definition.postExamples ?? []} username={character?.definition.name || 'Convolution'}></MasonryPostsLayout>
+          <MasonryPostsLayout scroll={true} scrollSize={600} columns={3} posts={character?.definition.postExamples ?? []} username={character?.definition.name || 'WuAI'}></MasonryPostsLayout>
         </div>
       </div>
 
@@ -485,7 +485,7 @@ const CharacterDetailPage: React.FC = () => {
         <Button 
           onClick={() => navigate(`/agent/character/${character?.id}`)} 
           icon='fa-pencil' 
-          label={`Edit ICON settings`}
+          label={`Edit Agent settings`}
           disabled={shouldLoadBoot || shouldLoadStop || statusData?.status === "unknown"}
         />
         <Button 
@@ -500,7 +500,7 @@ const CharacterDetailPage: React.FC = () => {
       {/* avatar modal */}
       <Modal
         ref={avatarModal.modalRef}
-        title="Add face to your ICON"
+        title="Add face to your Agent"
         animation='slide'
         animationDuration={300}
         maxWidth={'lg'}

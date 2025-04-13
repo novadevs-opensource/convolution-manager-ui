@@ -18,22 +18,22 @@ const UserBlock: React.FC<{className?: string, hasMenu: boolean, hasBorder: bool
   ];
 
   return (
-    <div className={`bg-black-ultra rounded-lg  p-4 mb-4 ${hasBorder ? 'border' : ''} ${className ?? ''}`}>
+    <div className={`bg-clouds-pattern rounded-lg  p-4 mb-4 ${hasBorder ? 'border' : ''} ${className ?? ''}`}>
       {hasMenu ? (
         <ContextMenu
           button={
             <div className='flex flex-row items-center gap-2 justify-end'>
               {userProfile?.wallet_address ? (
-                <p>{`${userProfile?.wallet_address.substr(0, 15)}...${userProfile?.wallet_address.substr(30, userProfile?.wallet_address?.length)}`}</p>
+                <p className='font-semibold font-anek-latin'>{`${userProfile?.wallet_address.substr(0, 15)}...${userProfile?.wallet_address.substr(30, userProfile?.wallet_address?.length)}`}</p>
               ) : (
-                <p>{userProfile?.email}</p>
+                <p className='font-semibold font-anek-latin'>{userProfile?.email}</p>
               )}
               <span 
-                className='inline-block border-2 border-gray-300 p-2 rounded-full border-black-light' 
+                className='inline-block border border-black p-2 bg-black rounded-full shadow-md' 
                 aria-expanded="false" 
                 aria-haspopup="true"
               >
-                <SlUser className='text-gray-500' />
+                <SlUser className='text-white' />
               </span>
             </div>
           }

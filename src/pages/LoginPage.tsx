@@ -32,12 +32,12 @@ const LoginPage: React.FC = () => {
 
               <p className="text-white text-afacad text-sm hidden md:block">/</p>
               <p className="text-white text-afacad text-sm">
-                  <a href="https://x.com/ConvolutionSOL" target="_blank">X</a>
+                  <a href="https://x.com/WuAIBSC" target="_blank">X</a>
               </p>
               {/*
               <p className="text-white text-afacad text-sm hidden md:block">/</p>
               <p className="text-white text-afacad text-sm">
-                  <a href="https://github.com/ConvolutionSOL" target="_blank">GitHub</a>
+                  <a href="https://github.com/WuAIBSC" target="_blank">GitHub</a>
               </p>
               */}
           </div>
@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
     return (
       <div className="flex h-screen items-center justify-center bg-black-ultra">
         <div className="text-center p-8 border rounded-lg shadow-lg w-10/12 bg-gradient-secondary">
-          <img src={convolutionLogo} alt="Convolution Logo" className="mx-auto w-24 mb-4" />
+          <img src={convolutionLogo} alt="WuAI Logo" className="mx-auto w-24 mb-4" />
           <h1 className="text-2xl font-bold mb-2 font-anek-latin">Soon</h1>
           <p className="text-gray-600">
             This application <b>is only available for desktop users</b>. Please access it from a desktop computer.
@@ -103,12 +103,12 @@ const LoginPage: React.FC = () => {
 
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
                     <p className="text-white text-afacad text-sm">
-                        <a href="https://x.com/ConvolutionSOL" target="_blank">X</a>
+                        <a href="https://x.com/WuAIBSC" target="_blank">X</a>
                     </p>
                     {/*
                     <p className="text-white text-afacad text-sm hidden md:block">/</p>
                     <p className="text-white text-afacad text-sm">
-                        <a href="https://github.com/ConvolutionSOL" target="_blank">GitHub</a>
+                        <a href="https://github.com/WuAIBSC" target="_blank">GitHub</a>
                     </p>
                     */}
                 </div>

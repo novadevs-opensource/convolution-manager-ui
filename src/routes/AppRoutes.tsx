@@ -12,6 +12,7 @@ import CreateCharacterPage from '../pages/character/CreateCharacterPage';
 import RegisterPage from '../pages/RegisterPage';
 import PublicLayout from '../components/common/layouts/public/PublicLayout';
 import ProfilePage from '../pages/ProfilePage';
+import ListAgentPage from '../pages/character/ListAgentPage';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -53,15 +54,23 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/agent/:id"
         element={
-          <PrivateRoute pageTitle='ICON data'>
+          <PrivateRoute pageTitle='Agent data'>
             <AgentDetailPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/agent/list"
+        element={
+          <PrivateRoute pageTitle='Your agents'>
+            <ListAgentPage />
           </PrivateRoute>
         }
       />
       <Route
         path="/agent/character/:id"
         element={
-          <PrivateRoute pageTitle='Edit ICON settings'>
+          <PrivateRoute pageTitle='Edit Agent settings'>
             <EditCharacterPage />
           </PrivateRoute>
         }
@@ -69,7 +78,7 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/agent/character"
         element={
-          <PrivateRoute pageTitle='Create ICON'>
+          <PrivateRoute pageTitle='Create Agent'>
             <CreateCharacterPage />
           </PrivateRoute>
         }

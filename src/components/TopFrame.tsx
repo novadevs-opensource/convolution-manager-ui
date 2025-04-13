@@ -26,10 +26,10 @@ function SiteBranding() {
     <div className="site-branding">
       <img
         src={convolutionLogo}
-        alt="Convolution Icon"
+        alt="WuAI Icon"
         className="site-icon"
       />
-      <h1 className="site-title">Convolution Character Generator</h1>
+      <h1 className="site-title">WuAI Character Generator</h1>
     </div>
   );
 }
@@ -40,14 +40,14 @@ function ExternalLinks({ toggleTheme }: { toggleTheme: () => void, theme: 'light
     <div className="external-links">
       <a
         href="/dashboard"
-        title="Convolution Main Repository"
+        title="WuAI Main Repository"
         rel="noopener"
       >
         Dashboard
       </a>
       <a
         href="/agent/character"
-        title="Convolution Main Repository"
+        title="WuAI Main Repository"
         rel="noopener"
       >
         Create agent
@@ -55,7 +55,7 @@ function ExternalLinks({ toggleTheme }: { toggleTheme: () => void, theme: 'light
       {isAuthenticated ? (
         <a
           href="#"
-          title="Convolution Main Repository"
+          title="WuAI Main Repository"
           rel="noopener"
           onClick={logout}
         >
@@ -64,23 +64,23 @@ function ExternalLinks({ toggleTheme }: { toggleTheme: () => void, theme: 'light
       ) : (
         <a
           href="/login"
-          title="Convolution Main Repository"
+          title="WuAI Main Repository"
           rel="noopener"
         >
           Login
         </a>
       )}
       <a
-        href="https://github.com/ConvolutionSOL"
-        title="Convolution Main Repository"
+        href="https://github.com/WuAIBSC"
+        title="WuAI Main Repository"
         target="_blank"
         rel="noopener"
       >
         <i className="fa-brands fa-github external-icon"></i>
       </a>
       <a
-        href="https://github.com/ConvolutionSOL"
-        title="Convolution Installer"
+        href="https://github.com/WuAIBSC"
+        title="WuAI Installer"
         target="_blank"
         rel="noopener"
       >

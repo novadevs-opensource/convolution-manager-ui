@@ -32,8 +32,8 @@ export interface WizardStepConfig {
 export const WIZARD_STEPS_CONFIG: WizardStepConfig[] = [
   {
     id: 'step-generate',
-    title: 'Autogenerate your ICON',
-    subtitle: 'Create your ICON personality with a seed prompt',
+    title: 'Autogenerate your Agent',
+    subtitle: 'Create your Agent personality with a seed prompt',
     validationType: null, // No specific validation for this step
     skipValidation: false,
     canSkip: true,
@@ -121,7 +121,7 @@ export const WIZARD_STEPS_CONFIG: WizardStepConfig[] = [
     fieldLabels: {
       'postExamples': 'Post Examples',
       'messageExamples': 'Message Examples',
-      'messageExamples.*.*.content.text': 'user/ICON message content'
+      'messageExamples.*.*.content.text': 'user/Agent message content'
     },
     dependencies: {
       fields: ['name', 'clients', 'modelProvider'],

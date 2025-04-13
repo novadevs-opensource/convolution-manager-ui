@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/apiClient';
 import { Agent, CharactersResponse, Pagination } from '../types'; // Assuming `Agent` and `Pagination` types are declared in `types`
 
-export function useCharacters(page: number = 1, perPage: number = 10) {
+export function useCharacters(page: number = 1, perPage: number = 100) {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

@@ -1,4 +1,4 @@
-# Convolution Manager UI
+# WuAI Manager UI
 
 A comprehensive web-based tool for creating, managing, and customizing AI agents with their character definitions. This tool integrates with various AI models through OpenRouter API and provides extensive knowledge integration capabilities.
 
@@ -178,11 +178,11 @@ This project is licensed under the [MIT License](LICENSE).
 
 ### Core Team
 
-- Convolution Created by [ConvolutionSOL](https://github.com/ConvolutionSOL)
+- WuAI Created by [WuAIBSC](https://github.com/WuAIBSC)
 - Tool Development by [bruno.sh](https://github.com/brunolorente)
 
 ## Support
 
 For support, please:
 1. Check the [GitHub Issues](https://github.com/brunolorente/convolution-character-generator/issues)
-2. Join the [Convolution DAO](https://www.daos.fun/)
+2. Join the [WuAI DAO](https://www.daos.fun/)

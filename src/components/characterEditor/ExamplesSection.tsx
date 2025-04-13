@@ -103,7 +103,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                     onChange={(e) =>
                       handleCharacterMessageChange(index, e.target.value)
                     }
-                    label='Your ICON response example'
+                    label='Your Agent response example'
                     plain={true}
                   ></GenericTextArea>
                 </div>

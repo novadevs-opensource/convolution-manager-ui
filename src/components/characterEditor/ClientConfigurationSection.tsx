@@ -273,7 +273,7 @@ const ClientConfigurationSection: React.FC<ClientConfigurationSectionProps> = ({
             {/* Twitter credentials */}
             <div className='mb-4 py-2'>
               <h3 className='font-anek-latin text-2xl text-gray-500 font-semibold'>Credentials</h3>
-              <p className='text-gray-500'>Used by your ICON to login</p>
+              <p className='text-gray-500'>Used by your Agent to login</p>
             </div>
             <FormGroup className='flex md:flex-row flex-col'>
               <div className='flex flex-row sm:w-1/2 w-1/2'>
@@ -335,7 +335,7 @@ const ClientConfigurationSection: React.FC<ClientConfigurationSectionProps> = ({
             {/* Twitter cookies */}
             <div className='mb-4 py-2'>
               <h3 className='font-anek-latin text-2xl text-gray-500 font-semibold'>Cookies</h3>
-              <p className='text-gray-500'>Your ICON will use them to login smoothly</p>
+              <p className='text-gray-500'>Your Agent will use them to login smoothly</p>
             </div>
             <FormGroup className='flex md:flex-row flex-col'>
               <GenericTextInput

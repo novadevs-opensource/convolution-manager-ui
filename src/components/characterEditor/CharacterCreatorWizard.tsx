@@ -515,7 +515,7 @@ const CharacterCreatorWizard: React.FC<CharacterCreatorWizardProps> = ({
         />
         
         {/* Step Content */}
-        <div className="my-8 p-8 rounded-lg bg-black-ultra border-gray-200 shadow-lg transition duration-150 ease-in-out">
+        <div className="my-8 p-8 rounded-lg bg-white border border-yellow-200 transition duration-150 ease-in-out">
           {renderStepContent()}
         </div>
       </WizardContent>

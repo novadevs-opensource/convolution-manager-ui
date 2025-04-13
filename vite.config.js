@@ -34,4 +34,8 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    host: 'app.wuai.local',
+    port: 5173,
+  },
 });

@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 import { Link } from "react-router-dom";
 import { useAuth } from '../../../../hooks/useAuth';
 import { GrLogout } from "react-icons/gr";
-import logoWhite from "../../../../assets/images/convolution-logo-white.svg"
+import logoWhite from "../../../../assets/images/wuai-logo-long-black.svg"
 
 
 type SidebarProps = {
@@ -18,8 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
   return (
     <aside 
       className={`
-        fixed sm:static bg-black sm:max-w-[260px] w-[80%] z-40 
-        h-screen flex flex-col transition-transform duration-300 ease-in-out transform
+        sm:my-[3vh] sm:ml-8 sm:rounded-lg fixed sm:static bg-yellow-500 sm:max-w-[260px] w-[80%] z-40 
+        sm:h-[94vh] h-screen flex flex-col transition-transform duration-300 ease-in-out transform
         ${show ? 'translate-x-0' : '-translate-x-full sm:translate-x-0'}
       `}
     >
@@ -31,16 +31,13 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
             alt="Logo"
             className="h-12 max-w-[190px]"
           />
-          <span className='text-white text-xs'>
-            <i>v.{__APP_VERSION__}</i>
-          </span>
         </div>
         <button 
-          className='sm:hidden block bg-dark rounded-lg' 
+          className='sm:hidden block rounded-lg' 
           onClick={onClose}
           aria-label="Close menu"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="w-10 h-10">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="black" className="w-10 h-10">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -53,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
             <li key={item.path}>
               <Link
                 to={item.path}
-                className="block px-8 py-4 hover:bg-gradient-secondary hover:text-black text-white ease-in-out duration-300"
+                className="block px-8 py-4 hover:bg-black hover:text-yellow-500 text-black ease-in-out duration-300"
                 onClick={() => {
                   // Cierra el sidebar en móvil al hacer clic en un enlace
                   if (window.innerWidth < 640) {
@@ -71,11 +68,11 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
         </ul>
         
         <div>
-          <hr className='mt-8 border-0 h-[2px] bg-gradient-primary'/>
+          <hr className='mt-8 border-0 h-[1px] bg-black max-w-[90%] mx-auto'/>
             {isAuthenticated && (
               <div>
                 <a
-                  className="block px-8 py-4 hover:bg-gradient-secondary hover:text-black text-white ease-in-out duration-300"
+                  className="block px-8 py-4 hover:rounded-b-lg hover:bg-black text-black hover:text-yellow-500 hover:-mt-1 ease-in-out duration-300"
                   href="#"
                   title="Logout"
                   rel="noopener"
