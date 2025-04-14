@@ -15,7 +15,7 @@ const ActionToolsBlock = ({ children, className }: ActionToolsBlockProps) => {
 
     useEffect(() => {
         if (!isOpen) {
-            setCloseClass('translate-x-[235px]')
+            setCloseClass('translate-x-[245px]')
         } else {
             setCloseClass('-translate-x-[0px]')
         }

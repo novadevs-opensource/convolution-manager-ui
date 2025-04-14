@@ -172,7 +172,7 @@ const CharacterDetailPage: React.FC = () => {
       id: 'tab1', 
       label: 'Personality', 
       content:
-        <div className='flex flex-row gap-4 w-full mb-12'>
+        <div className='flex sm:flex-row flex-col gap-4 w-full mb-12'>
           {/* biography card*/}
           <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
             <div className='p-4'>
@@ -190,8 +190,8 @@ const CharacterDetailPage: React.FC = () => {
           {/* lore card*/}
           <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
             <div className='p-4'>
-              <h5 className="mb-2 text-black text-xl font-semibold font-anek-latin">
-                Backstory elements and unique character traits
+              <h5 className="mb-6 text-black text-xl font-semibold font-anek-latin">
+                Backstory and unique character traits
               </h5>
               <ul className="ml-6 list-disc font-light">
                 {character?.definition.lore.map((row: string, index: number) => (
@@ -204,7 +204,7 @@ const CharacterDetailPage: React.FC = () => {
           {/* topics */}
           <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
             <div className='p-4'>
-              <h5 className="mb-2 text-black text-xl font-semibold font-anek-latin">
+              <h5 className="mb-6 text-black text-xl font-semibold font-anek-latin">
                 Topics of interests
               </h5>
               <div className="text-slate-600 font-light flex flex-wrap gap-2">
@@ -220,7 +220,7 @@ const CharacterDetailPage: React.FC = () => {
       id: 'tab2', 
       label: 'Style', 
       content:
-        <div className='flex flex-row gap-4 w-full mb-12'>
+        <div className='flex sm:flex-row flex-col gap-4 w-full mb-12'>
           {/* all style */}
           <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
             <div className='p-4'>
@@ -268,7 +268,7 @@ const CharacterDetailPage: React.FC = () => {
       id: 'tab3', 
       label: 'Examples', 
       content: 
-        <div className='flex flex-row gap-4 w-full mb-12'>
+        <div className='flex sm:flex-row flex-col gap-4 w-full mb-12'>
           {/* chat */}
           <div className="relative bg-white p-4 rounded-lg sm:w-[440px] w-full">
             {/* Heading */}
@@ -434,7 +434,8 @@ const CharacterDetailPage: React.FC = () => {
             </div>
           </div>
 
-          <div className='flex flex-row my-4 justify-start gap-4'>
+          {/* desktop controls */}
+          <div className='hidden sm:flex flex-row my-4 justify-start gap-4'>
             <StartAgentButton 
               onClick={() => setShouldLoadBoot(true)} 
               isRunning={isRunning} 
