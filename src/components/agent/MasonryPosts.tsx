@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { CiHeart, CiBookmark } from 'react-icons/ci';
 import { IoChatbubbleOutline } from 'react-icons/io5';
 import { BiRepost } from 'react-icons/bi';
+import wuaiLogoBlack from '../../assets/images/wuai-logo.svg';
 
 // Type for the separator component props
 type SeparatorProps = {
@@ -83,17 +84,12 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
         {allPosts.map((item) => (
           <div 
             key={`post-${item.columnIndex}-${item.postIndex}`} 
-            className="flex flex-col border p-2 rounded-lg bg-white shadow-md w-full mb-4"
+            className="flex flex-col p-2 rounded-lg w-full mb-4"
           >
             {/* Post header */}
             <div className="flex flex-row items-center gap-2">
               <div className="rounded-full bg-gray-100 border p-1">
-                <svg stroke="none" fill="black" strokeWidth="1.5"
-                  viewBox="0 0 24 24" aria-hidden="true" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z">
-                  </path>
-                </svg>
+                <img src={wuaiLogoBlack} className="h-[24px] w-[24px]" alt="wuai logo"/>
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-xs capitalize">{username}</span>
@@ -137,7 +133,7 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
   };
   
   return (
-    <div className={`bg-gray-50 p-4 flex flex-col shadow-sm border border-slate-200 rounded-lg w-full ${className}`}>
+    <div className={`flex flex-col rounded-lg w-full ${className}`}>
       {scroll ? (
         <div className="overflow-y-hidden" style={{height: scrollSize}}>
           <div className="overflow-y-scroll" style={{height: scrollSize}}>
@@ -147,23 +143,18 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
             </div>
             
             {/* Masonry layout for tablets and desktop */}
-            <div className="hidden md:flex w-full gap-4">
+            <div className="hidden md:flex w-full gap-4 rounded-lg">
               {columnData.map((column, columnIndex) => (
                 <div key={`column-${columnIndex}`} className="flex flex-col gap-4 flex-1">
                   {column.map((post, postIndex) => (
                     <div 
                       key={`post-${columnIndex}-${postIndex}`} 
-                      className="flex flex-col border p-2 rounded-lg bg-white shadow-md"
+                      className="flex flex-col p-2 rounded-lg bg-beige-200"
                     >
                       {/* Post header */}
                       <div className="flex flex-row items-center gap-2">
                         <div className="rounded-full bg-gray-100 border p-1">
-                          <svg stroke="none" fill="black" strokeWidth="1.5"
-                            viewBox="0 0 24 24" aria-hidden="true" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round"
-                              d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z">
-                            </path>
-                          </svg>
+                          <img src={wuaiLogoBlack} className="h-[24px] w-[24px]" alt="wuai logo"/>
                         </div>
                         <div className="flex flex-col">
                           <span className="font-bold text-xs capitalize">{username}</span>
@@ -226,12 +217,7 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
                     {/* Post header */}
                     <div className="flex flex-row items-center gap-2">
                       <div className="rounded-full bg-gray-100 border p-1">
-                        <svg stroke="none" fill="black" strokeWidth="1.5"
-                          viewBox="0 0 24 24" aria-hidden="true" height="30" width="30" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round"
-                            d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z">
-                          </path>
-                        </svg>
+                        <img src={wuaiLogoBlack} className="h-[24px] w-[24px]" alt="wuai logo"/>
                       </div>
                       <div className="flex flex-col">
                         <span className="font-bold text-xs capitalize">{username}</span>

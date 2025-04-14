@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className='sm:grid sm:grid-cols-2 flex flex-col gap-4'>
-        <FormGroup className='bg-white border border-yellow-200 p-8 rounded-lg'>
+        <FormGroup className='bg-white p-8 rounded-lg'>
           <h2 className='font-anek-latin text-2xl font-bold mb-8'>Wallet settings</h2>
           <GenericTextInput 
             className='w-full bg-gray-50 !border-gray-200'
@@ -79,7 +79,7 @@ const ProfilePage: React.FC = () => {
             disabled={true}
             plain={true}
           />
-          <div className="shadow-md bg-beige-200 flex flex-row rounded-lg text-black">
+          <div className="bg-beige-200 flex flex-row rounded-lg text-black">
             <div className="ml-[18px] flex h-[90px] w-auto flex-row items-center">
               <div className="rounded-full bg-lightPrimary p-3">
                 <span className="flex items-center text-black">
@@ -94,7 +94,7 @@ const ProfilePage: React.FC = () => {
           </div>
         </FormGroup>
 
-        <FormGroup className='bg-white border border-yellow-200 p-8 rounded-lg'>
+        <FormGroup className='bg-white p-8 rounded-lg'>
           <h2 className='font-anek-latin text-2xl font-bold mb-8'>OpenRouter settings</h2>
           <div className="flex flex-col md:flex-row gap-2 items-end">
             <GenericTextInput 
@@ -128,7 +128,7 @@ const ProfilePage: React.FC = () => {
             </div>
           </div>
           {creditsData && (
-            <div className="shadow-md bg-beige-200 flex flex-row rounded-lg">
+            <div className="bg-beige-200 flex flex-row rounded-lg">
               <div className="ml-[18px] flex h-[90px] flex-row items-center">
                 <div className="rounded-full bg-lightPrimary p-3 ">
                   <span className="flex items-center text-brand-500 ">

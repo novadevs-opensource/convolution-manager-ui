@@ -20,7 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   className = ''
 }) => {
-  const buttonClass = 'flex flex-row min-w[120px] py-2 px-6 gap-4 shadow-md font-normal font-afacad uppercase justify-start items-center rounded-sm border-2 border-yellow-500 transition-colors bg-yellow-500';
+  const buttonClass = 'flex flex-row min-w[120px] py-2 px-6 gap-4 font-normal font-afacad uppercase justify-start items-center rounded-md border-2 border-yellow-500 transition-colors bg-yellow-500';
   
   return (
     <button 

@@ -98,7 +98,7 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, cardKey }) => {
               <i className='fa fa-user fa-2x'></i>
             </div>
           )}
-          <AgentStatus id={agent?.id!} className='border-0 bg-white absolute top-2 right-2 px-2'/>
+          <AgentStatus id={agent?.id!} className='absolute top-2 right-2 px-2'/>
         </div>
         {/* Card content */}
         <div className='bg-yellow-50 p-4'>

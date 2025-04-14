@@ -10,6 +10,7 @@ interface AgentStatusProps {
   id: string;
   refreshInterval?: number;
   className?: string;
+  withLoader?: boolean
 }
 
 /**
@@ -18,7 +19,8 @@ interface AgentStatusProps {
 const AgentStatus: React.FC<AgentStatusProps> = ({ 
   id, 
   refreshInterval = 5000,
-  className = ''
+  className = '',
+  withLoader = false
 }) => {
   const { statusData, loading, error } = useRuntimeStatus(id, refreshInterval);
   const { addNotification } = useToasts();
@@ -34,7 +36,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   // Loading state
   if (loading && !statusData) {
     return (
-      <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
+      <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full bg-white items-center gap-2 uppercase ${className}`}>
         <span className='text-black-light text-xs uppercase'>
           Loading
         </span>
@@ -49,46 +51,60 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
   switch (statusData?.status) {
     case 'running':
       return (
-        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
-          <span className='text-black-light text-xs uppercase'>
-            Running
+        <div className={`size-fit flex flex-row px-2 py-1 rounded-full bg-green-50 items-center gap-2 font-anek-latin ${className}`}>
+          <span className='text-green-400'>
+            <FaCircle size={11}/>
           </span>
-          <span className='text-green-400 text-xs'>
-            <FaCircle />
+          <span className='text-black text-xs uppercase'>
+            Running
           </span>
         </div>
       );
       
     case 'stopped':
       return (
-        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
-          <span className='text-black-light text-xs'>
-            Stopped
-          </span>
+        <div className={`size-fit flex flex-row px-2 py-1 rounded-full bg-red-100 items-center gap-2 font-anek-latin ${className}`}>
           <span className='text-red-400'>
-            <FaCircle />
+            <FaCircle size={11}/>
+          </span>
+          <span className='text-black text-xs font-semibold'>
+            Stopped
           </span>
         </div>
       );
       
     case 'unknown':
+      if (withLoader) {
+        return (
+          <div className="rounded-lg w-full">
+            <AgentLoader 
+              loadingText={`Pending`}
+              timeFrom={character?.updated_at!}
+            />
+          </div>
+        );        
+      }
+
       return (
-        <div className="p-4 bg-black-ultra rounded-lg w-full">
-          <AgentLoader 
-            loadingText={`Pending`}
-            timeFrom={character?.updated_at!}
-          />
+        <div className={`size-fit flex px-2 py-1 rounded-full bg-orange-50 items-center gap-2 font-anek-latin ${className}`}>
+          <span className='text-orange-400 animate-pulse'>
+            <FaCircle size={11}/>
+          </span>
+          <span className='text-black text-xs font-semibold'>
+            Pending
+          </span>
         </div>
       );
+
       
     default:
       return (
-        <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase ${className}`}>
-          <span className='text-black-light text-xs'>
-            Offline
+        <div className={`size-fit flex px-2 py-1 rounded-full bg-slate-200 items-center gap-2 font-anek-latin ${className}`}>
+          <span className='text-slate-500'>
+            <FaCircle size={11}/>
           </span>
-          <span className='text-gray-400'>
-            <FaCircle />
+          <span className='text-black text-xs font-semibold'>
+            Offline
           </span>
         </div>
       );

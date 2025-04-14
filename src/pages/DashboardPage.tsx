@@ -62,7 +62,7 @@ const DashboardPage: React.FC = () => {
       <div className='flex flex-col sm:flex-row justify-center items-stretch gap-4'>
         {/* metrics */}
         <div className='sm:w-1/3'>
-          <div className='p-4 w-full bg-white border border-yellow-200 rounded-lg'>
+          <div className='p-4 w-full bg-white rounded-lg'>
             <div className="w-full flex justify-between items-center mb-6 mt-1">
               <div>
                 <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Metrics {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
@@ -131,7 +131,7 @@ const DashboardPage: React.FC = () => {
         </div>
         
         {/* live trading */}
-        <div className="p-4 w-full sm:w-2/3 bg-white border border-yellow-200 rounded-lg flex flex-col">
+        <div className="p-4 w-full sm:w-2/3 bg-white rounded-lg flex flex-col">
           <div className="w-full flex justify-between items-center mb-6 mt-1">
             <div>
               <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Live trading</h3>
@@ -154,7 +154,7 @@ const DashboardPage: React.FC = () => {
       </div>
 
       {/* featured list */}
-      <div className='p-4 mt-4 bg-white border border-yellow-200 rounded-lg'>
+      <div className='p-4 mt-4 bg-white rounded-lg'>
         <div className="w-full flex justify-between items-center mb-6 mt-1">
           <div>
             <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Featured Agents {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>

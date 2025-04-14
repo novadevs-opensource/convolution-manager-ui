@@ -114,12 +114,12 @@ const WizardSidebar: React.FC<WizardSidebarProps> = ({
             <div key={step.id} className="relative">
               <div className="flex items-start mb-6">
                 {/* Dot/status indicator */}
-                <div className="flex-shrink-0 relative z-10 border-t-4 border-b-4 rounded-full border-yellow-50">
+                <div className="flex-shrink-0 relative z-10 border-4 rounded-full border-yellow-50">
                   <button
                     onClick={() => !isDisabled && onStepClick(index)}
                     disabled={isDisabled}
                     className={`flex items-center justify-center h-8 w-8 rounded-full transition-all duration-300 ${
-                      isDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:ring-2 hover:ring-yellow-300'
+                      isDisabled ? 'cursor-not-allowed bg-gray-400' : 'cursor-pointer hover:ring-4 hover:ring-yellow-300'
                     } ${getStepStatusClass(index)}`}
                   >
                     {getStepStatusIcon(index)}
@@ -148,7 +148,7 @@ const WizardSidebar: React.FC<WizardSidebarProps> = ({
               {/* Vertical line connecting to next step */}
               {!isLastStep && (
                 <div 
-                  className={`absolute left-4 top-8 w-0.5 h-full ml-0 -translate-x-1/2 ${getLineColor(index)}`}
+                  className={`absolute left-5 top-8 w-1 h-full ml-0 -translate-x-1/2 ${getLineColor(index)}`}
                 >
                 </div>
               )}

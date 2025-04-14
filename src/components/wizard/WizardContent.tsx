@@ -34,7 +34,7 @@ const WizardContent: React.FC<WizardContentProps> = ({
 }) => {
   return (
     <div className="lg:w-3/4 w-full">
-      <div className="sm:p-6 p-0 rounded-lg">
+      <div className="p-6 rounded-lg bg-white">
         {/* Content area */}
         {children}
 

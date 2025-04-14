@@ -1,6 +1,6 @@
 // src/components/ClientStatus.tsx
 import React from 'react';
-import { FaRegCircle, FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa";
+import { FaRegTimesCircle, FaCircle } from "react-icons/fa";
 import { Client } from '../../types'; // Asegúrate de importar el tipo Client
 
 // Definimos los requisitos de cada cliente
@@ -46,19 +46,23 @@ const ClientStatus: React.FC<ClientStatusProps> = ({ character }) => {
       return {
         active: false,
         configured: false,
-        icon: <FaRegCircle />,
-        color: 'text-black-light'
+        icon: <FaCircle />,
+        color: 'text-slate-500',
+        text: 'Inactive',
+        bg: 'bg-slate-200'
       };
     }
 
     // Verifica la configuración específica del cliente
     const isConfigured = clientRequirements[client]?.(character) || false;
-    
+    console.log(client);
     return {
       active: true,
       configured: isConfigured,
-      icon: isConfigured ? <FaRegCheckCircle /> : <FaRegTimesCircle />,
-      color: isConfigured ? 'text-green-500' : 'text-red-500'
+      icon: isConfigured ? <FaCircle /> : <FaRegTimesCircle />,
+      color: isConfigured ? 'text-green-500' : 'text-red-500',
+      bg: isConfigured ? 'bg-green-200' : 'bg-red-200',
+      text: isConfigured ? 'Active' : 'Not configured'
     };
   };
 
@@ -66,21 +70,24 @@ const ClientStatus: React.FC<ClientStatusProps> = ({ character }) => {
   const clientsToRender: Client[] = ['telegram', 'twitter'];
 
   return (
-    <div className='grid grid-cols-2 gap-2'>
+    <div className='flex flex-col gap-2'>
       {clientsToRender.map((client) => {
         const status = getClientStatus(client);
         
         return (
           <div 
             key={client}
-            className='sm:p-4 p-2 border-gray-200 border rounded-lg flex flex-row items-center justify-between'
+            className='sm:p-4 p-2 bg-beige-200 rounded-lg flex flex-row items-center justify-between font-anek-latin'
           >
-            <span className='text-sm font-bold text-black-light uppercase'>
-              {clientDisplayNames[client]}
-            </span>
-            <span className={status.color}>
-              {status.icon}
-            </span>
+            <div className='flex flex-row items-center gap-2'>
+              <i className={`fa-brands fa-xl fa-${client} text-orange-500`}></i>
+              <span className='text-black'>
+                {clientDisplayNames[client]}
+              </span>
+            </div>
+            <div className={`${status.color} ${status.bg} rounded-xl px-2 pr-3 py-1 flex flex-row items-center justify-between gap-2 text-xs`}>
+              {status.icon} <span className='text-black font-semibold'>{status.text}</span>
+            </div>
           </div>
         );
       })}

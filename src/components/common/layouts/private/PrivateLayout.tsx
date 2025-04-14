@@ -49,7 +49,8 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
         onClose={closeSidebar} 
       />
       
-      <main className="sm:px-8 my-[3vh] px-4 w-full max-h-[100vh] overflow-y-scroll">
+      <main className="sm:px-8 py-[3vh] px-4 w-full max-h-[100vh] overflow-y-scroll">
+        {/* header */}
         <div className='flex flex-row justify-between gap-4'>
           <Header title={pageTitle} />
           <UserBlock className={'hidden sm:block'} hasBorder={false} hasMenu={true}/>
@@ -69,12 +70,10 @@ const PrivateLayout: React.FC<LayoutProps> = ({ children, pageTitle }) => {
             </button>
           }
         </div>
-        {/*<div className="sm:p-4 p-1 sm:bg-white sm:rounded-lg sm:border">*/}
-        <div className="rounded">
-          {children}
-        </div>
+        {/* body */}
+        {children}
       </main>
-      <div className='absolute right-8 bottom-0'>
+      <div className='absolute left-8 bottom-0'>
         <span className='text-gray-400 text-xs'>{__APP_VERSION__}</span>
       </div>
     </div>

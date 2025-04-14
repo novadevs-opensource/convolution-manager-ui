@@ -73,17 +73,17 @@ const AgentLoader: React.FC<AgentLoaderProps> = ({
   // Define colors for different segments of the progress bar
   const getSegments = () => {
     if (progress <= 30) {
-      return [{ width: `${progress}%`, color: 'bg-purple-500' }];
+      return [{ width: `${progress}%`, color: 'bg-blue-400' }];
     } else if (progress <= 60) {
       return [
-        { width: '30%', color: 'bg-purple-500' },
-        { width: `${progress - 30}%`, color: 'bg-gradient-primary' }
+        { width: '30%', color: 'bg-blue-400' },
+        { width: `${progress - 30}%`, color: 'bg-blue-400' }
       ];
     } else {
       return [
-        { width: '30%', color: 'bg-purple-500' },
-        { width: '30%', color: 'bg-gradient-primary' },
-        { width: `${progress - 60}%`, color: 'bg-gradient-secondary' }
+        { width: '30%', color: 'bg-blue-400' },
+        { width: '30%', color: 'bg-blue-400' },
+        { width: `${progress - 60}%`, color: 'bg-blue-400' }
       ];
     }
   };
@@ -94,15 +94,15 @@ const AgentLoader: React.FC<AgentLoaderProps> = ({
   const displayProgress = progress.toFixed(2);
   
   return (
-    <div className="relative pt-1">
+    <div className="relative p-2 rounded-lg">
       <div className="flex mb-2 items-center justify-between">
         <div>
-          <div className={`size-fit border flex inline-flex px-4 py-1 rounded-full border-gray-200 bg-white items-center gap-2 uppercase`}>
-            <span className='text-black-light text-xs'>
-              {loadingText}
-            </span>
+          <div className={`size-fit flex px-2 py-1 rounded-full bg-orange-50 items-center gap-2 font-anek-latin`}>
             <span className={`text-orange-400 ${isCompleted ? 'animate-pulse' : 'animate-ping'}`}>
-              <FaCircle />
+              <FaCircle size={11}/>
+            </span>
+            <span className='text-black font-semibold text-xs'>
+              {loadingText}
             </span>
           </div>
         </div>
@@ -112,7 +112,7 @@ const AgentLoader: React.FC<AgentLoaderProps> = ({
           </span>
         </div>
       </div>
-      <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+      <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
         {segments.map((segment, index) => (
           <div 
             key={index}

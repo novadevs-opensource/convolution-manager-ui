@@ -37,7 +37,7 @@ const WizardHeader: React.FC<WizardHeaderProps> = ({
   return (
     <div className="mb-6">
       <div className='sm:grid sm:grid-cols-2 flex flex-col items-center'>
-        <div className='flex flex-col'>
+        <div className='flex flex-col w-full'>
           <h2 className="text-3xl font-bold font-anek-latin">{title}</h2>
           {subtitle && (
             <h3 className="text-lg font-afacad">{subtitle}</h3>
