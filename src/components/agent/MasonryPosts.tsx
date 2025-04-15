@@ -135,13 +135,8 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
   return (
     <div className={`flex flex-col rounded-lg w-full ${className}`}>
       {scroll ? (
-        <div className="overflow-y-hidden" style={{height: scrollSize}}>
-          <div className="overflow-y-scroll" style={{height: scrollSize}}>
-            {/* Mobile layout: one post per row */}
-            <div className="flex flex-col w-full md:hidden">
-              {renderAllPosts()}
-            </div>
-            
+        <div className={scroll ? `overflow-y-hidden h-[${scrollSize}px]` : ``}>
+          <div className={scroll ? `overflow-y-scroll h-[${scrollSize}px]` : ``}>
             {/* Masonry layout for tablets and desktop */}
             <div className="hidden md:flex w-full gap-4 rounded-lg">
               {columnData.map((column, columnIndex) => (
@@ -153,7 +148,7 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
                     >
                       {/* Post header */}
                       <div className="flex flex-row items-center gap-2">
-                        <div className="rounded-full bg-gray-100 border p-1">
+                        <div className="rounded-full p-1">
                           <img src={wuaiLogoBlack} className="h-[24px] w-[24px]" alt="wuai logo"/>
                         </div>
                         <div className="flex flex-col">
@@ -171,7 +166,7 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
                           {new Date().getHours()}:{new Date().getMinutes()} · {new Date().toDateString()} · 
                           <b className="font-bold">{getRandomInt(10000, 100000)}</b> Views
                         </span>
-                        <Separator />
+                        <Separator className='!bg-black' />
                         <div className="flex flex-row justify-between">
                           <div className="flex flex-row items-center gap-1">
                             <IoChatbubbleOutline size={12} />
@@ -197,6 +192,11 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
               ))}
             </div>
           </div>
+
+          {/* Mobile layout: one post per row */}
+          <div className="flex flex-col w-full md:hidden">
+            {renderAllPosts()}
+          </div>
         </div>
       ) : (
         <>
@@ -212,11 +212,11 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
                 {column.map((post, postIndex) => (
                   <div 
                     key={`post-${columnIndex}-${postIndex}`} 
-                    className="flex flex-col border p-2 rounded-lg bg-white shadow-md"
+                    className="flex flex-col p-2 rounded-lg bg-beige-200"
                   >
                     {/* Post header */}
                     <div className="flex flex-row items-center gap-2">
-                      <div className="rounded-full bg-gray-100 border p-1">
+                      <div className="rounded-full p-1">
                         <img src={wuaiLogoBlack} className="h-[24px] w-[24px]" alt="wuai logo"/>
                       </div>
                       <div className="flex flex-col">
@@ -234,7 +234,7 @@ const MasonryPostsLayout: React.FC<MasonryPostsLayoutProps> = ({
                         {new Date().getHours()}:{new Date().getMinutes()} · {new Date().toDateString()} · 
                         <b className="font-bold">{getRandomInt(10000, 100000)}</b> Views
                       </span>
-                      <Separator />
+                      <Separator className='!bg-black' />
                       <div className="flex flex-row justify-between">
                         <div className="flex flex-row items-center gap-1">
                           <IoChatbubbleOutline size={12} />

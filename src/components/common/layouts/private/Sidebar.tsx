@@ -24,12 +24,12 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems, show, onClose }) => {
       `}
     >
       {/* logo */}
-      <div className="ml-4 px-4 pr-6 py-4 flex mb-8 justify-between items-baseline">
+      <div className="ml-4 px-4 pr-6 py-4 flex mb-8 justify-between items-baseline mt-4">
         <div className='flex flex-col'>
           <img
             src={logoWhite}
             alt="Logo"
-            className="h-12 max-w-[190px]"
+            className="h-12 max-w-[130px]"
           />
         </div>
         <button 

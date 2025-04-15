@@ -73,7 +73,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             <h3 className='text-lg font-bold font-anek-latin'>Message Examples <span className='text-sm text-gray-500 font-medium'>({messageExamples.length} entries)</span></h3>
             <button
               id="add-example"
-              className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+              className="w-10 h-10 bg-yellow-500 hover:border-black hover:bg-black hover:text-white rounded-full border border-yellow-500 border-2"
               title="Add Example"
               onClick={handleAddExample}
             >
@@ -86,7 +86,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                 <div className="message-pair grow">
                   <GenericTextArea
                     placeholder="Write an example user message..."
-                    className="border-0 border-b-2 bg-white min-h-[140px]"
+                    className="border-0 bg-beige-50 min-h-[140px]"
                     value={example[0].content.text}
                     onChange={(e) =>
                       handleUserMessageChange(index, e.target.value)
@@ -98,7 +98,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                 <div className="message-pair grow">
                   <GenericTextArea
                     placeholder="Write the character's response..."
-                    className="border-0 border-b-2 bg-white min-h-[140px]"
+                    className="border-0 bg-beige-50 min-h-[140px]"
                     value={example[1].content.text}
                     onChange={(e) =>
                       handleCharacterMessageChange(index, e.target.value)
@@ -108,7 +108,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                   ></GenericTextArea>
                 </div>
                 <button
-                  className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                  className="w-10 h-10 bg-yellow-500 hover:bg-black hover:text-white rounded-full border border-yellow-500 hover:border-black border-2"
                   title="Remove Example"
                   onClick={() => handleRemoveExample(index)}
                 >
@@ -125,7 +125,8 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             customLabel={<h3 className='text-lg font-bold font-anek-latin mb-4'>Post Examples <span className='text-sm text-gray-500 font-medium'>({postExamples.length} entries)</span></h3>}
             id='post-examples'
             name='post-examples'
-            placeholder="Write example posts that demonstrate the character's writing style. Include different types of content they might create. Write one complete post per line."
+            plain={true}
+            placeholder="Write example posts that demostrate the character's writing style. Include different types of content they might create. Write one complete post per line."
             value={postExamples} 
             className="border-0 border-b-2 bg-white min-h-[140px]"
             onChange={(val) => onPostExamplesChange(val)}
@@ -203,7 +204,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             label='Post Examples'
             id='post-examples'
             name='post-examples'
-            placeholder="Write example posts that demonstrate the character's writing style. Include different types of content they might create. Write one complete post per line."
+            placeholder="Write example posts that demontrate the character's writing style. Include different types of content they might create. Write one complete post per line."
             value={postExamples} 
             onChange={(val) => onPostExamplesChange(val)}
           />

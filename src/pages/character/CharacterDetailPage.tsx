@@ -167,14 +167,19 @@ const CharacterDetailPage: React.FC = () => {
   if (characterLoading) return <p>Loading character...</p>;
   if (characterError) return <p>Error: {characterError}</p>;
 
+  const contentSeparatorClasses = {
+    "before": "relative before:content-[''] before:absolute before:h-full before:right-0 before:w-[1px] before:bg-beige-200 before:text-beige-200",
+    "after": "relative after:content-[''] after:absolute after:h-full after:right-0 after:w-[1px] after:bg-beige-200 after:text-beige-200"
+  };
+
   const tabSetup = [
     { 
       id: 'tab1', 
       label: 'Personality', 
       content:
-        <div className='flex sm:flex-row flex-col gap-4 w-full mb-12'>
+        <div className='flex sm:flex-row flex-col gap-4 w-full'>
           {/* biography card*/}
-          <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
+          <div className={`flex flex-col bg-white rounded-lg sm:w-1/3 w-full ${contentSeparatorClasses['before']}`}>
             <div className='p-4'>
               <h5 className="mb-6 text-black text-xl font-semibold font-anek-latin">
                 Biographical statements about the character
@@ -188,7 +193,7 @@ const CharacterDetailPage: React.FC = () => {
           </div>
 
           {/* lore card*/}
-          <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
+          <div className={`flex flex-col bg-white rounded-lg sm:w-1/3 w-full ${contentSeparatorClasses['before']}`}>
             <div className='p-4'>
               <h5 className="mb-6 text-black text-xl font-semibold font-anek-latin">
                 Backstory and unique character traits
@@ -202,7 +207,7 @@ const CharacterDetailPage: React.FC = () => {
           </div>
 
           {/* topics */}
-          <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
+          <div className={`flex flex-col bg-white rounded-lg sm:w-1/3 w-full`}>
             <div className='p-4'>
               <h5 className="mb-6 text-black text-xl font-semibold font-anek-latin">
                 Topics of interests
@@ -220,9 +225,9 @@ const CharacterDetailPage: React.FC = () => {
       id: 'tab2', 
       label: 'Style', 
       content:
-        <div className='flex sm:flex-row flex-col gap-4 w-full mb-12'>
+        <div className='flex sm:flex-row flex-col gap-4 w-full'>
           {/* all style */}
-          <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
+          <div className={`flex flex-col bg-white rounded-lg sm:w-1/3 w-full ${contentSeparatorClasses['before']}`}>
             <div className='p-4'>
               <h5 className="mb-2 text-black text-xl font-semibold font-anek-latin">
                 General style instructions for all interactions
@@ -236,7 +241,7 @@ const CharacterDetailPage: React.FC = () => {
           </div>
 
           {/* chat style */}
-          <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
+          <div className={`flex flex-col bg-white rounded-lg sm:w-1/3 w-full ${contentSeparatorClasses['before']}`}>
             <div className='p-4'>
               <h5 className="mb-2 text-black text-xl font-semibold font-anek-latin">
                 Specific instructions for chat interactions
@@ -250,7 +255,7 @@ const CharacterDetailPage: React.FC = () => {
           </div>
 
           {/* post style */}
-          <div className="flex flex-col bg-white rounded-lg sm:w-1/3 w-full">
+          <div className={`flex flex-col bg-white rounded-lg sm:w-1/3 w-full`}>
             <div className='p-4'>
               <h5 className="mb-2 text-black text-xl font-semibold font-anek-latin">
                 Specific instructions for social media posts
@@ -268,9 +273,9 @@ const CharacterDetailPage: React.FC = () => {
       id: 'tab3', 
       label: 'Examples', 
       content: 
-        <div className='flex sm:flex-row flex-col gap-4 w-full mb-12'>
+        <div className={`flex sm:flex-row flex-col gap-4 w-full`}>
           {/* chat */}
-          <div className="relative bg-white p-4 rounded-lg sm:w-[440px] w-full">
+          <div className={`relative bg-white p-4 rounded-lg sm:w-[440px] w-full`}>
             {/* Heading */}
             <div className="flex flex-col space-y-1.5 mb-4">
               <h5 className="text-black text-xl font-semibold font-anek-latin">
@@ -278,45 +283,69 @@ const CharacterDetailPage: React.FC = () => {
               </h5>
             </div>
             {/* Chat Container */}
-            <div className="h-[550px] rounded-lg bg-yellow-100" style={{overflowY: 'scroll'}}>
-              <div className="h-[200px] p-4" style={{minWidth: '100%', display: 'table'}}>
+            <div className={`h-max-[550px] rounded-lg bg-beige-50`} style={{overflowY: 'scroll'}}>
+              <div className={`h-[200px] p-4`} style={{minWidth: '100%', display: 'table'}}>
               {character?.definition.messageExamples.map((conversation: MessageExample[], index: number) => (
                 <div key={index}>
                 {conversation.map((message: MessageExample, messageIndex: number) => (
                   message.user === "{{user1}}" || message.user === "You" ? (
                     //  User Chat Message
-                    <div key={messageIndex} className="flex gap-3 my-4 text-gray-600 text-sm flex-1">
+                    <div key={messageIndex} className="flex gap-3 my-4 text-sm flex-1">
                       <span className="flex flex-col rounded-full w-9 h-9">
-                        <div className="rounded-full bg-yellow-100 border border-yellow-100 p-1">
-                          <svg stroke="none" fill="black" strokeWidth="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <div className="rounded-full bg-black border border-black p-1 -mt-1">
+                          <svg stroke="none" fill="white" strokeWidth="0" viewBox="0 0 16 16" height="20" width="20" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z">
                             </path>
                           </svg>
                         </div>
                       </span>
                       <div className="leading-relaxed">
-                        <span className="block font-bold text-gray-700">You</span>
-                        <div className='bg-beige-200 p-8 rounded-b-[35px] rounded-tr-[35px]'>
+                        <span className="block font-bold text-black">You</span>
+                        <div className={`
+                          relative
+                          before:content-[''] 
+                          before:absolute 
+                          before:top-0 
+                          before:-left-2
+                          before:w-0 
+                          before:h-5 
+                          before:border-t-[0px] before:border-t-transparent
+                          before:border-r-[10px] before:border-r-beige-200
+                          before:border-b-[20px] before:border-b-transparent
+                          bg-beige-200 p-3 pl-6 rounded-bl-[35px] rounded-br-[35px] rounded-tr-[25px]`}
+                        >
                           {message.content.text}
                         </div>
                       </div>
                     </div>
                   ) : (
                     // Chat Message AI
-                    <div key={messageIndex} className="flex flex-row-reverse gap-3 my-4 text-gray-600 text-sm">
+                    <div key={messageIndex} className="flex flex-row-reverse gap-3 my-4 text-sm">
                       {/* avatar */}
                         {!agentAvatar ? (
-                          <img src={wuaiLogoBlack} className="h-[20px] w-[20px]" alt="wuai logo"/>
+                          <img src={wuaiLogoBlack} className="h-[29px] w-[29px] -mt-1" alt="wuai logo"/>
                         ) : (
                           <div 
-                            className={`h-[20px] w-[20px] rounded rounded-lg flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
+                            className={`h-[29px] w-[29px] rounded rounded-lg flex !bg-cover cursor-pointer hover:opacity-60 ease-in-out duration-300 `}
                             style={{background: `url(${agentAvatar}`}} 
                             onClick={() => avatarModal.open()} 
                           />
                         )}
                       <div key={messageIndex} className="leading-relaxed">
-                        <span className="block font-bold text-gray-700 text-right capitalize">{character?.definition.name}</span>
-                        <div className='bg-beige-200 p-8 rounded-b-[35px] rounded-tl-[35px]'>
+                        <span className="block font-bold text-black text-right capitalize">{character?.definition.name}</span>
+                        <div className={`
+                          relative
+                          after:content-[''] 
+                          after:absolute 
+                          after:top-0
+                          after:-right-3
+                          after:w-0 
+                          after:h-5 
+                          after:border-t-[0px] after:border-t-transparent
+                          after:border-l-[10px] after:border-l-beige-200
+                          after:border-b-[20px] after:border-b-transparent
+                          bg-beige-200 p-3 pl-6 rounded-b-[35px] rounded-br-[35px] rounded-tl-[25px]`}
+                        >
                           {message.content.text}
                         </div>
                       </div>
@@ -338,15 +367,16 @@ const CharacterDetailPage: React.FC = () => {
             </div>
             */}
           </div>
+          <div className={`${contentSeparatorClasses['after']}`}></div>
           {/* social media examples */}
-          <div className="bg-white p-4 rounded-lg w-full">
+          <div className={`bg-white p-4 rounded-lg w-full`}>
             {/* Heading */}
             <div className="flex flex-col space-y-1.5 mb-2 mb-4">
               <h5 className="text-black text-xl font-semibold font-anek-latin">
                 Post examples
               </h5>
             </div>
-            <MasonryPostsLayout scroll={true} scrollSize={600} columns={3} posts={character?.definition.postExamples ?? []} username={character?.definition.name || 'WuAI'}></MasonryPostsLayout>
+            <MasonryPostsLayout scroll={false} columns={3} posts={character?.definition.postExamples ?? []} username={character?.definition.name || 'WuAI'}></MasonryPostsLayout>
           </div>
         </div> 
     }
@@ -358,7 +388,7 @@ const CharacterDetailPage: React.FC = () => {
         {/* summary */}
         <div className='flex flex-col gap-4 sm:w-9/12 p-4 w-full flex-grow bg-white rounded-lg'>
           {/* block header */}
-          <div className='flex flex-row items-center'>
+          <div className='flex sm:flex-row flex-col sm:items-center items-left'>
             <div className='flex flex-col w-3/4'>
               <h2 className='font-bold text-2xl font-anek-latin'>
                 Basic information
@@ -369,7 +399,7 @@ const CharacterDetailPage: React.FC = () => {
             </div>
 
             {/* status */}
-            <div className='flex flex-col w-1/4 w-full h-full sm:items-end items-start justify-start mt-2'>
+            <div className='flex flex-col sm:w-1/4 w-full rounded-lg h-full sm:items-end sm:bg-white bg-beige-200 items-start justify-start mt-2'>
               <AgentStatus id={character?.id!} withLoader={true}/>
             </div>
           </div>
@@ -396,20 +426,20 @@ const CharacterDetailPage: React.FC = () => {
                     {/* name */}
                     <p className='font-semibold text-xl font-anek-latin'>{character?.definition.name}</p>
                     {/* llm-model */}
-                    <p className=''>
-                      <i>{character?.llm_provider_settings.llm_provider_model}</i>
+                    <p className='font-anek-latin text-sm'>
+                      {character?.llm_provider_settings.llm_provider_model}
                     </p>
                   </div>
               </div>
             </div>
 
             {/* timestamps and counters */}
-            <div className='flex flex-col sm:flex-row justify-between h-full sm:items-center gap-4'>
+            <div className='flex flex-col sm:flex-row justify-between h-full sm:items-center gap-4 font-anek-latin text-sm'>
               {/* created at */}
               <div className='flex flex-col'>
                 <div className='flex flex-row items-center gap-1'>
                   <TbClockCheck size={18}/>
-                  <span className='text-sm text-black font-anek-latin font-bold'>Created at</span>
+                  <span className='text-black'>Created at</span>
                 </div>
                 <span className='font-semibold'>{formatDateFromString(character?.created_at!)}</span>
               </div>
@@ -418,7 +448,7 @@ const CharacterDetailPage: React.FC = () => {
               <div className='flex flex-col'>
                 <div className='flex flex-row items-center gap-1'>
                   <TbClockPlay size={18}/>
-                  <span className='text-sm text-black font-anek-latin font-bold'>Total uptime</span>
+                  <span className='text-black'>Total uptime</span>
                 </div>
                 <span className='font-semibold'>{formatSeconds(totalUptime)}</span>
               </div>
@@ -427,7 +457,7 @@ const CharacterDetailPage: React.FC = () => {
               <div className='flex flex-col'>
                 <div className='flex flex-row items-center gap-1'>
                   <TbClockBolt size={18}/>
-                  <span className='text-sm text-black font-anek-latin font-bold'>Current uptime</span>
+                  <span className='text-black'>Current uptime</span>
                 </div>
                 <span className='font-semibold'>{formatSeconds(currentUptime)}</span>
               </div>
@@ -482,7 +512,7 @@ const CharacterDetailPage: React.FC = () => {
 
       {/* tabs */}
       <div className='flex flex-col gap-4 rounded-lg'>
-        <Tabs tabs={tabSetup} />
+        <Tabs tabs={tabSetup} contentClassName='bg-white rounded-tr-lg rounded-b-lg p-4' />
       </div>
 
       {/* navigation */}
@@ -522,12 +552,14 @@ const CharacterDetailPage: React.FC = () => {
         footer={
           <div className='w-full'>
             <div className='flex flex-row gap-2'>
+              {/*
               <Button 
                 onClick={() => handleGenerateAvatar()} 
                 label={'Create vision face'}
                 disabled={true}
                 className='!px-6'
               />
+              */}
               <Button 
                 onClick={() => handleGenerateAvatar()} 
                 icon={isGeneratingAvatar ? 'fa fa-spin fa-gear' : 'fa fa-image'}
@@ -539,21 +571,14 @@ const CharacterDetailPage: React.FC = () => {
           </div>
         }
       >
-        {!agentAvatar && isGeneratingAvatar ? (
+        {!agentAvatar ? (
           <div className='justify-center flex flex-row'>
-            {isGeneratingAvatar ? (
-              <div className={`h-[250px] w-full flex justify-center items-center gap-2 border rounded-md`}>
-                <i className='fa fa-gear fa-spin'/>
-                <span>Your request is in queue...</span>
-              </div>
-            ) : (
-              <div className='p-4 border rounded-md w-full flex justify-center'>
-                <img src={wuaiLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="wuai logo"/>
-              </div>
-            )}
+            <div className='p-4 rounded-md w-full flex justify-center bg-beige-50'>
+              <img src={wuaiLogoBlack} className={`h-[250px] w-[250px] opacity-10 self-center`} alt="wuai logo"/>
+            </div>
           </div>
         ) : (
-          <div className='flex items-center justify-center m-auto size-fit group'>
+          <div className='flex items-center justify-center m-auto size-fit group bg-beige-50 rounded-lg'>
             <Button 
               className='!p-4 absolute duration-300 group-hover:opacity-100 opacity-0 transition-opacity z-10' 
               onClick={() => {
@@ -571,14 +596,14 @@ const CharacterDetailPage: React.FC = () => {
               icon="fa fa-download"
             />
             <div 
-              className={`h-[250px] w-[250px] flex !bg-cover cursor-pointer group-hover:opacity-60 ease-in-out duration-300`}
+              className={`h-[400px] w-[400px] flex !bg-cover cursor-pointer group-hover:opacity-60 ease-in-out duration-300`}
               style={{background: `url(${agentAvatar}`}} 
             />
           </div>
         )}
         <GenericTextArea
-          placeholder="Write an example user message..."
-          className="user-message"
+          placeholder="Example: young female, yellow-eyes:1.4, blue hair, angel wings, white skin, huge lips, blue lips, elf ears"
+          className={'user-message'}
           value={avatarPromt ?? (character?.face_image_generation_prompt || undefined)}
           onChange={(e) => setAvatarPromt(e.target.value)}
           plain={true}

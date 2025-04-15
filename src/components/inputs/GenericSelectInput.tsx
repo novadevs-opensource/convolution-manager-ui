@@ -116,14 +116,41 @@ const GenericSelectInput: React.FC<ModelProviderSelectProps> = ({
         isClearable
         formatOptionLabel={formatOptionLabel}
         formatGroupLabel={formatGroupLabel}
-        classNames={{
-          control: (state) => `!border-${hasError ? 'red' : 'gray'}-${hasError ? '500' : '300'} !rounded-md bg-white ${state.isFocused ? `!border-${hasError ? 'red' : 'blue'}-500 !shadow-sm` : ''}`,
-          placeholder: () => '!text-base',
-          singleValue: () => '!-ml-2',
-          valueContainer: () => '',
-          container: () => hasError ? 'border-red-500' : '',
+        styles={{
+          control: (base, state) => ({
+            ...base,
+            backgroundColor: '#FFF4E3',
+            border: hasError
+              ? '1px solid #ef4444' // red-500
+              : state.isFocused
+              ? '1px solid #3b82f6' // blue-500
+              : '1px solid #FFF4E3',
+            boxShadow: state.isFocused
+              ? '0 0 0 1px #3b82f6' // emula `ring-1 ring-blue-500`
+              : 'none',
+            borderRadius: '0.375rem', // rounded-md
+            minHeight: '2.5rem', // para no colapsar
+            transition: 'all 0.2s ease',
+          }),
+          placeholder: (base) => ({
+            ...base,
+            fontSize: '1rem',
+          }),
+          singleValue: (base) => ({
+            ...base,
+            marginLeft: '-0.5rem',
+          }),
+          valueContainer: (base) => ({
+            ...base,
+            paddingLeft: '0.5rem',
+          }),
+          container: (base) => ({
+            ...base,
+            width: '100%',
+          }),
         }}
       />
+
       
       {hasError && renderErrorMessages()}
     </div>

@@ -17,7 +17,7 @@ const LoginPage: React.FC = () => {
 
   const renderFooter = () => {
     return (
-      <section className="sm:hidden px-8 py-4 bg-black left-0 bottom-0 w-full absolute">
+      <section className="sm:hidden px-8 py-4 bg-beige-700 left-0 bottom-0 w-full absolute">
         <div className="mx-auto flex flex-row gap-3 md:items-center justify-between">
           <p className="text-white text-afacad text-sm"><a href='https://wuai.io' target='_blank'>2025 © wuai.io</a></p>
           <div className="flex flex-row gap-3">
@@ -88,7 +88,7 @@ const LoginPage: React.FC = () => {
           <div className="text-center rounded-md h-[250px] w-[350px] justify-center items-center flex">
             <img src={wuaiLogo} className="logo w-[250px]" alt="Vite logo" />
           </div>
-          <section className="px-8 py-4 bg-black absolute left-0 bottom-0 w-full">
+          <section className="px-8 py-4 bg-beige-700 absolute left-0 bottom-0 w-full">
             <div className="mx-auto flex md:flex-row gap-3 flex-col md:items-center justify-between">
                 <p className="text-white text-afacad text-sm"><a href='https://wuai.io' target='_blank'>2025 © wuai.io</a></p>
                 <div className="flex md:flex-row flex-col gap-3">

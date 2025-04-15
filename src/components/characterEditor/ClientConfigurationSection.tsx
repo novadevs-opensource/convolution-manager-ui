@@ -491,7 +491,7 @@ const ClientConfigurationSection: React.FC<ClientConfigurationSectionProps> = ({
 
       {/* Show tip section for wizard mode */}
       {forWizard && character.clients.length > 0 && (
-        <div className="p-4 bg-gray-800 rounded-lg text-gray-300">
+        <div className="p-4 bg-beige-200 rounded-lg text-black">
           <h4 className="font-semibold mb-2">
             <i className="fa-solid fa-circle-info mr-2"></i>
             Supported platforms Tips:

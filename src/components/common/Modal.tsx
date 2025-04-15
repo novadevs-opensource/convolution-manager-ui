@@ -152,14 +152,14 @@ const Modal = forwardRef((props: ModalProps, ref: ForwardedRef<ModalHandles>) =>
             style={{ animationDuration: `${animationDuration}ms` }}
           >
             {/* Modal header */}
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <div className="flex items-center justify-between bg-beige-200 p-4 md:p-5 rounded-t border-gray-200">
+              <h3 className="text-xl font-semibold text-black font-anek-latin">
                 {title}
               </h3>
               <button 
                 onClick={handleClose} 
                 type="button" 
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                className="text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                 disabled={isClosing}
               >
                 <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -176,7 +176,7 @@ const Modal = forwardRef((props: ModalProps, ref: ForwardedRef<ModalHandles>) =>
             
             {/* Modal footer - conditionally rendered */}
             {footer && (
-              <div className="flex items-center gap-2 justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+              <div className="flex items-center gap-2 justify-end p-4 md:p-5 bg-beige-200 border-gray-200 rounded-b">
                 {footer}
               </div>
             )}

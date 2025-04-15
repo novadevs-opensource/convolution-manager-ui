@@ -197,11 +197,11 @@ const SplitTextArea = forwardRef<HTMLTextAreaElement, SplitTextAreaProps>(({
           rows={rows}
           maxLength={maxLength}
           className={`
-            w-full px-4 py-2 rounded-t-md resize-y
-            ${isInvalid ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}
+            placeholder:text-beige-600 w-full px-4 py-2 rounded-md resize-y !bg-beige-50
+            ${isInvalid ? 'bg-red-100 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}
             ${iconSource ? 'pl-10' : ''}
             ${props.disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}
-            ${plain ? 'border' : 'border shadow-md'}
+            ${plain ? 'border border-beige-50' : 'border shadow-md'}
             ${className || ''}
           `}
           {...props}

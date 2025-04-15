@@ -41,20 +41,26 @@ const Tabs: React.FC<TabsProps> = ({
     <div className={`w-full ${className}`}>
       {/* Contenedor de las pestañas */}
       <div className={`flex ${tabsContainerClassName}`}>
-        {tabs.map((tab) => (
+        {tabs.map((tab, index) => (
           <button
             key={tab.id}
             onClick={() => handleTabClick(tab.id)}
             className={`
-              px-4 py-3 text-2xl font-bold font-anek-latin transition-colors border-b-2 border-[transparent]
+              px-4 py-3 font-bold text-xl font-anek-latin transition-colors border-b-2  border-[transparent] bg-white
               ${activeTab === tab.id
-                ? `!border-blue-500 text-black ${activeTabClassName}`
-                : `text-gray-400 hover:text-gray-700 hover:border-gray-300 ${tabClassName}`
+                ? `rounded-tr-lg text-black ${activeTabClassName}`
+                : `text-black !bg-gray-100 hover:bg-beige-400 hover:border-gray-300 ${tabClassName}`
               }
+              ${index === tabs.length -1 ? 'rounded-tr-lg' : ''}
             `}
             aria-current={activeTab === tab.id ? 'page' : undefined}
           >
-            <div className="flex items-center">
+            <div className={`flex items-center
+              ${activeTab === tab.id
+                ? `border-b-2 !border-blue-500 ${activeTabClassName}`
+                : ``
+              }  
+            `}>
               {tab.icon && <span className="mr-2">{tab.icon}</span>}
               {tab.label}
             </div>
@@ -63,7 +69,7 @@ const Tabs: React.FC<TabsProps> = ({
       </div>
 
       {/* Contenido de la pestaña activa */}
-      <div className={`py-4 ${contentClassName}`}>
+      <div className={`${contentClassName}`}>
         {tabs.find(tab => tab.id === activeTab)?.content}
       </div>
     </div>

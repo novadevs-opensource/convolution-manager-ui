@@ -77,7 +77,6 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
             value={prompt}
             showCharCount={true}
             maxLength={650}
-            className={'border-0 border-b-2'}
             plain={true}
             errorMessages={[status]}
             disabled={isGenerating}
@@ -102,7 +101,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
           </div>
         </FormGroup>
         
-        <div className="mt-6 p-4 bg-black rounded-lg text-white">
+        <div className="mt-6 p-4 bg-beige-200 rounded-lg text-black">
           <h4 className="font-semibold mb-2 font-afacad">Prompt Tips:</h4>
           <ul className="list-disc list-inside space-y-1 text-sm font-anek-latin">
             <li>Include a specific name for your character</li>
@@ -134,7 +133,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
             showCharCount={true}
             maxLength={650}
             className={forWizard 
-              ? 'h-[250px] border-0 border-b-2 rounded-none bg-black-ultra placeholder-gray-400' 
+              ? 'h-[250px] rounded-none placeholder-gray-400' 
               : ''
             }
             plain={true}

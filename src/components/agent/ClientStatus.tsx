@@ -80,7 +80,7 @@ const ClientStatus: React.FC<ClientStatusProps> = ({ character }) => {
             className='sm:p-4 p-2 bg-beige-200 rounded-lg flex flex-row items-center justify-between font-anek-latin'
           >
             <div className='flex flex-row items-center gap-2'>
-              <i className={`fa-brands fa-xl fa-${client} text-orange-500`}></i>
+              <i className={`fa-brands fa-xl fa-${client === 'twitter' ? 'x-twitter' : client } text-orange-500`}></i>
               <span className='text-black'>
                 {clientDisplayNames[client]}
               </span>

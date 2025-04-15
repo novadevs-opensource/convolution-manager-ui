@@ -56,7 +56,7 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                   <h3 className='text-lg font-bold font-anek-latin'>Character Adjectives</h3>
                   <button
                     id="add-adjective"
-                    className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                    className="w-10 h-10 bg-yellow-500 border-yellow-500 hover:bg-black hover:text-white rounded-full border hover:border-black boder-yellow-500 border-2"
                     title="Add Adjective"
                     onClick={handleAddAdjective}
                   >
@@ -73,7 +73,7 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                         onChange={(e) => handleAdjectiveChange(index, e.target.value)}
                       />
                       <button
-                        className="w-11 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                        className="w-11 h-10 bg-yellow-500 hover:bg-black hover:text-white rounded-full border border-yellow-500 hover:border-black border-2"
                         title="Remove Adjective"
                         onClick={() => handleRemoveAdjective(index)}
                       >
@@ -89,7 +89,7 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                   <h3 className='text-lg font-bold font-anek-latin'>Known People</h3>
                   <button
                     id="add-person"
-                    className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                    className="w-10 h-10 bg-yellow-500 border-yellow-500 hover:bg-black hover:text-white rounded-full border hover:border-black border-2"
                     title="Add Person"
                     onClick={handleAddPerson}
                   >
@@ -107,7 +107,7 @@ const AdjectivesAndPeopleSection: React.FC<AdjectivesAndPeopleSectionProps> = ({
                         onChange={(e) => handlePersonChange(index, e.target.value)}
                       />
                       <button
-                        className="w-11 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                        className="w-11 h-10 bg-yellow-500 border-yellow-500 hover:bg-black hover:text-white rounded-full border hover:border-black border-2"
                         title="Remove Person"
                         onClick={() => handleRemovePerson(index)}
                       >

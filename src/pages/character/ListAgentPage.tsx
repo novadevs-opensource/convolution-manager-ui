@@ -6,6 +6,7 @@ import Pagination from '../../components/common/Pagination';
 import { Agent } from '../../types';
 import { PiSpinnerBallDuotone } from "react-icons/pi";
 import { renderClientBadges } from '../../components/agent/AgentCard';
+import { formatDateFromString } from '../../utils/character';
 
 
 
@@ -67,9 +68,9 @@ const ListAgentPage: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className='bg-beige-50'>
               {agents.map((agent: Agent) => (
-                <tr key={agent.id} className="hover:bg-slate-50 border-b border-slate-200">
+                <tr key={agent.id} className="hover:bg-beige-100 border-b border-beige-200">
                   <td className="sm:table-cell hidden p-4 py-2">
                     <Link to={`/agent/${agent.id}`}>
                       {agent.face_image_path ? (
@@ -102,12 +103,12 @@ const ListAgentPage: React.FC = () => {
                   </td>
                   <td className="sm:table-cell hidden p-4 py-2">
                     <p className="text-sm">
-                      {agent.created_at}
+                      {formatDateFromString(agent.created_at)}
                     </p>
                   </td>
                   <td className="sm:table-cell hidden p-4 py-2">
                     <p className="text-sm">
-                      {agent.updated_at}
+                      {formatDateFromString(agent.updated_at)}
                     </p>
                   </td>
                 </tr>

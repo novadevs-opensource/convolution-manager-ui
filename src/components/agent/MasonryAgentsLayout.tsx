@@ -82,7 +82,7 @@ const StyledMasonryAgentsLayout: React.FC<MasonryAgentsLayoutProps> = ({
         {allAgents.map((item) => (
           <AgentCard 
             agent={item.agent} 
-            cardKey={`mobile-${item.columnIndex}-${item.agentIndex}`} 
+            key={`mobile-${item.columnIndex}-${item.agentIndex}`} 
           />
         ))}
       </>
@@ -109,7 +109,7 @@ const StyledMasonryAgentsLayout: React.FC<MasonryAgentsLayoutProps> = ({
                   {column.map((agent, agentIndex) => (
                     <AgentCard 
                       agent={agent} 
-                      cardKey={`desktop-${columnIndex}-${agentIndex}`} 
+                      key={`desktop-${columnIndex}-${agentIndex}`} 
                     />
                   ))}
                 </div>
@@ -130,8 +130,8 @@ const StyledMasonryAgentsLayout: React.FC<MasonryAgentsLayoutProps> = ({
               <div key={`column-${columnIndex}`} className="flex flex-col">
                 {column.map((agent, agentIndex) => (
                   <AgentCard 
-                    agent={agent} 
-                    cardKey={`desktop-${columnIndex}-${agentIndex}`} 
+                    agent={agent}
+                    key={`desktop-${columnIndex}-${agentIndex}`} 
                   />
                 ))}
               </div>

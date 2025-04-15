@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import CharacterEditorSection from './CharacterEditorSection';
 import Button from '../common/Button';
+import GenericTextInput from '../inputs/GenericTextInput';
 
 interface KnowledgeProcessingSectionProps {
   knowledge: string[];
@@ -166,7 +167,7 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
           <div className="knowledge-header">
             <h3 className='text-lg font-bold font-anek-latin'>Knowledge Base <span className='text-sm text-gray-500 font-medium'>({knowledge.length} entries)</span></h3>
             <button
-              className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+              className="w-10 h-10 bg-yellow-500 hover:bg-black hover:text-white rounded-full border border-yellow-500 hover:border-black border-2"
               title="Add Knowledge Entry"
               onClick={handleAddKnowledgeEntry}
             >
@@ -174,20 +175,22 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
             </button>
           </div>
           {knowledge.length > 0 &&
-            <div id="knowledge-entries" className="knowledge-entries rounded-md border-0 py-2">
+            <div id="knowledge-entries" className="knowledge-entries rounded-lg border-0 p-3">
               {knowledge?.map((entry, index) => (
-                <div key={index} className="knowledge-entry items-center border-0">
-                  <span className="entry-number">{index + 1}.</span>
-                  <input
+                <div key={index} className="flex flex-row items-center border-0 mb-4">
+                  <span className="entry-number mr-3">{index + 1}.</span>
+                  <GenericTextInput
                     type="text"
-                    className="knowledge-text"
+                    plain={true}
+                    containerClassName="!mb-0"
+                    className='!w-full'
                     value={entry}
                     placeholder="Enter knowledge..."
                     onChange={(e) => handleKnowledgeEntryChange(index, e.target.value)}
                     onBlur={(e) => handleKnowledgeEntryBlur(index, e.target.value)}
                   />
                   <button
-                    className="w-10 h-10 bg-white hover:bg-black hover:text-white rounded-full border border-black border-2 shadow-md"
+                    className="ml-3 w-11 h-10 bg-yellow-500 hover:bg-black hover:text-white rounded-full border hover:border-black border-2 border-yellow-500"
                     title="Remove Knowledge"
                     onClick={() => handleRemoveKnowledgeEntry(index)}
                   >
@@ -270,18 +273,18 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
           </div>
           <div id="knowledge-entries" className="knowledge-entries rounded-md">
             {knowledge?.map((entry, index) => (
-              <div key={index} className="knowledge-entry items-center">
-                <span className="entry-number">{index + 1}.</span>
-                <input
+              <div key={index} className="flex flex-row items-center border-0 mb-4">
+                <span className="entry-number mr-3">{index + 1}.</span>
+                <GenericTextInput
                   type="text"
-                  className="knowledge-text"
+                  containerClassName="!mb-0"
                   value={entry}
                   placeholder="Enter knowledge..."
                   onChange={(e) => handleKnowledgeEntryChange(index, e.target.value)}
                   onBlur={(e) => handleKnowledgeEntryBlur(index, e.target.value)}
                 />
                 <button
-                  className="action-button delete-button !border border-gray-300"
+                  className="ml-3 action-button delete-button !border border-gray-300"
                   title="Remove Knowledge"
                   onClick={() => handleRemoveKnowledgeEntry(index)}
                 >
