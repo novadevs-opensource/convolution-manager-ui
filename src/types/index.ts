@@ -128,6 +128,32 @@ export interface CharactersResponse {
   total: number;
 }
 
+export interface AgentOverview {
+  id: string
+  name: string
+  bio: string[]
+  face_image_path?: string
+  clients: OverviewClient[];
+  model: string
+}
+
+export interface OverviewClient {
+  twitter?: Twitter
+  telegram?: Telegram
+}
+
+export interface Twitter {
+  link: string
+}
+
+export interface Telegram {
+  link: string
+}
+
+export interface FeaturedCharactersResponse {
+  data: AgentOverview[];
+}
+
 // Response for fetching a single character
 export interface CharacterResponse {
   character: Agent;

@@ -9,28 +9,23 @@ import wuaiLogoWhite from '../assets/images/wuai-logo.svg';
 import { Agent } from '../types';
 
 import { useCharacters } from '../hooks/useCharacters';
+import { useFeaturedAgents } from '../hooks/useFeaturedAgents';
 import { useAuth } from '../hooks/useAuth';
 
 
 import { formatSeconds } from '../utils/character';
-
-import MasonryAgentsLayout from '../components/agent/MasonryAgentsLayout';
 import { getTokenBalanceForCurrentToken } from '../utils/web3/getTokenBalanceForCurrentToken';
 
+import MasonryAgentsLayout from '../components/agent/MasonryAgentsLayout';
+
 const DashboardPage: React.FC = () => {
-  const [currentPage, _setCurrentPage] = useState(1);
-  const { agents, loading, error, pagination } = useCharacters(currentPage);
   const {agents: allAgents, loading: loadingAllAgents} = useCharacters(1, 1000);
+  const {agents: featuredAgents, loading: loadingFeaturedAgents} = useFeaturedAgents();
   //const {totalCredits: remainingCredits, totalUsage: totalCreditsUsage, loading: loadingCredits} = useCredits();
   const { userProfile } = useAuth();
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
   const [totalUptime, setTotalUptime] = useState<number>();
   const [runningAgents, setRunningAgents] = useState<number>();
-  /*
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-  */
 
   // Fetch token balance when wallet address changes.
   useEffect(() => {
@@ -53,8 +48,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div>
-      {loading && <p>Loading characters...</p>}
-      {error && <p>Error: {error}</p>}
+      {loadingAllAgents || loadingFeaturedAgents && <p>Loading characters...</p>}
       
        {/* metrics & live trading */}
       <div className='flex flex-col sm:flex-row justify-center items-stretch gap-4'>
@@ -63,8 +57,8 @@ const DashboardPage: React.FC = () => {
           <div className='p-4 w-full bg-white rounded-lg'>
             <div className="w-full flex justify-between items-center mb-6 mt-1">
               <div>
-                <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Metrics {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
-                <p className="text-lg font-afacad text-black">Quick data about rout token balance and your agents.</p>
+                <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Metrics {loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
+                <p className="text-lg font-afacad text-black">Quick data about your token balance and your agents.</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -107,7 +101,7 @@ const DashboardPage: React.FC = () => {
                 </div>
                 <div className="flex w-auto flex-col justify-center items-center">
                   <p className="text-sm font-medium font-anek-latin">Created Agents</p>
-                  <h4 className="text-xl font-bold font-anek-latin">{pagination?.total}</h4>
+                  <h4 className="text-xl font-bold font-anek-latin">{allAgents?.length}</h4>
                 </div>
               </div>
               {/* running agents */}
@@ -121,7 +115,7 @@ const DashboardPage: React.FC = () => {
                 </div>
                 <div className="flex w-auto flex-col justify-center items-center">
                   <p className="text-sm font-medium font-anek-latin">Running Agents</p>
-                  <h4 className="text-xl font-bold font-anek-latin">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : runningAgents}</h4>
+                  <h4 className="text-xl font-bold font-anek-latin">{loadingAllAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : runningAgents ?? 0}</h4>
                 </div>
               </div>
             </div>
@@ -155,13 +149,13 @@ const DashboardPage: React.FC = () => {
       <div className='p-4 mt-4 bg-white rounded-lg'>
         <div className="w-full flex justify-between items-center mb-6 mt-1">
           <div>
-            <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Featured Agents {loading ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
+            <h3 className="text-2xl font-anek-latin font-bold text-slate-800 flex flex-row gap-2">Featured Agents {loadingFeaturedAgents ? <PiSpinnerBallDuotone className='animate-spin self-center'/> : ''}</h3>
             <p className="text-lg font-afacad text-black">Overview of the most popular Agents.</p>
           </div>
         </div>
 
         <MasonryAgentsLayout 
-            agents={agents}
+            agents={featuredAgents}
             columns={4}
             // Optional: uncomment if you want scrolling container
             // scroll={true}

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Pagination from '../../components/common/Pagination';
 import { Agent } from '../../types';
 import { PiSpinnerBallDuotone } from "react-icons/pi";
-import { renderClientBadges } from '../../components/agent/AgentCard';
+import { renderClientBadges } from '../../components/agent/AgentCardAgent';
 import { formatDateFromString } from '../../utils/character';
 
 

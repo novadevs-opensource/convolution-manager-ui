@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { Agent } from '../../types';
+import { AgentOverview } from '../../types';
 import AgentCard from './AgentCard';
 
 // Interface for the main component props
 interface MasonryAgentsLayoutProps {
-  agents: Agent[];
+  agents: AgentOverview[];
   className?: string;
   columns?: number;
   scroll?: boolean;
@@ -26,8 +26,8 @@ const StyledMasonryAgentsLayout: React.FC<MasonryAgentsLayoutProps> = ({
   }, [scroll, scrollSize]);
   
   // Distribute agents into columns to create the masonry effect
-  const distributeIntoColumns = (): Agent[][] => {
-    const columnArrays: Agent[][] = Array.from({ length: columns }, () => []);
+  const distributeIntoColumns = (): AgentOverview[][] => {
+    const columnArrays: AgentOverview[][] = Array.from({ length: columns }, () => []);
     
     agents.forEach((agent, index) => {
       // Distribute into columns in an alternating pattern
@@ -65,7 +65,7 @@ const StyledMasonryAgentsLayout: React.FC<MasonryAgentsLayoutProps> = ({
   // Render all agents in a responsive layout for mobile
   const renderAllAgents = () => {
     // Convert the column arrays into a flat array of all agents
-    const allAgents: Array<{agent: Agent, columnIndex: number, agentIndex: number}> = [];
+    const allAgents: Array<{agent: AgentOverview, columnIndex: number, agentIndex: number}> = [];
     
     columnData.forEach((column, columnIndex) => {
       column.forEach((agent, agentIndex) => {
