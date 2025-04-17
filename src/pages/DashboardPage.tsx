@@ -11,10 +11,11 @@ import { Agent } from '../types';
 import { useCharacters } from '../hooks/useCharacters';
 import { useAuth } from '../hooks/useAuth';
 
-import { getTokenBalance } from '../utils/web3/getTokenBalance';
+
 import { formatSeconds } from '../utils/character';
 
 import MasonryAgentsLayout from '../components/agent/MasonryAgentsLayout';
+import { getTokenBalanceForCurrentToken } from '../utils/web3/getTokenBalanceForCurrentToken';
 
 const DashboardPage: React.FC = () => {
   const [currentPage, _setCurrentPage] = useState(1);
@@ -36,10 +37,7 @@ const DashboardPage: React.FC = () => {
     const fetchBalance = async () => {
       if (userProfile?.wallet_address) {
         // Ensure the mint address is a string from your environment variables.
-        const balance = await getTokenBalance(
-          userProfile.wallet_address,
-          import.meta.env.VITE_TOKEN_MINT as string
-        );
+        const balance = await getTokenBalanceForCurrentToken(userProfile.wallet_address);
         setTokenBalance(balance.uiBalance);
       }
     };

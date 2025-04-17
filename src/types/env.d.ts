@@ -24,6 +24,9 @@ interface ImportMetaEnv {
 
   VITE_SUPPORT_URL?: string;
   VITE_DOC_URL?: string;
+
+  VITE_BSCSCAN_API_KEY: string;
+  VITE_PRIVY_APP_ID: string;
 }
 
 interface ImportMeta {

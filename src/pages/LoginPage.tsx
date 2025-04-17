@@ -4,8 +4,8 @@ import { Navigate } from 'react-router-dom';
 
 import { useAuth } from '../hooks/useAuth';
 import wuaiLogo from '../assets/images/wuai-logo-long-black.svg';
-import PhantomLogin from '../components/PhantomLogin';
 import useIsMobile from '../hooks/useIsMobile';
+import PrivyLogin from '../components/PrivyLogin';
 
 const LoginPage: React.FC = () => {
   const { login: _login, isAuthenticated } = useAuth();
@@ -135,7 +135,7 @@ const LoginPage: React.FC = () => {
                   ></span>
                 </h2>
               </div>
-              <PhantomLogin />
+              <PrivyLogin></PrivyLogin>
               {/*
               <div className="mt-4 flex flex-col items-center justify-between gap-2">
                 <div className="w-full">

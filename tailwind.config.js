@@ -63,7 +63,7 @@ export default {
           200: '#FFE98D',
           300: '#FFE264',
           400: '#FFDB47',
-          500: '#F6CA28', // base
+          500: '#FCD535', // base (original: #f0b90b)
           600: '#E6C22E',
           700: '#B39823',
           800: '#806E19',

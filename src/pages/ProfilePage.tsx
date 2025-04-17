@@ -7,9 +7,10 @@ import FormGroup from '../components/common/FormGroup';
 import GenericTextInput from '../components/inputs/GenericTextInput';
 import { useLLMProviderApiKey } from '../hooks/useLLMProviderApiKey';
 import { useToasts } from '../hooks/useToasts';
-import { getTokenBalance } from '../utils/web3/getTokenBalance';
+//import { getTokenBalance } from '../utils/web3/getTokenBalance';
 import wuaiLogoBlack from '../assets/images/wuai-logo.svg';
 import openRouterLogoBlack from '../assets/images/openrouter-logo.svg';
+import { getTokenBalanceForCurrentToken } from '../utils/web3/getTokenBalanceForCurrentToken';
 
 const ProfilePage: React.FC = () => {
   const { addNotification } = useToasts();
@@ -51,9 +52,9 @@ const ProfilePage: React.FC = () => {
     const fetchBalance = async () => {
       if (userProfile?.wallet_address) {
         // Ensure the mint address is a string from your environment variables.
-        const balance = await getTokenBalance(
+        const balance = await getTokenBalanceForCurrentToken(
           userProfile.wallet_address,
-          import.meta.env.VITE_TOKEN_MINT as string
+          //import.meta.env.VITE_TOKEN_MINT as string
         );
         setTokenBalance(balance.uiBalance);
       }

@@ -1,13 +1,30 @@
 // src/utils/web3/getTokenBalance.ts
-import { Connection, PublicKey } from '@solana/web3.js';
-import { getAssociatedTokenAddress } from '@solana/spl-token';
-import { getRpcEndpoint } from './rpcProviders';
+
+import { ethers } from 'ethers';
 
 interface TokenBalanceResult {
   balance: number;
   decimals: number;
   uiBalance: number;
 }
+
+// ABI mínimo para balanceOf y decimals
+const TOKEN_ABI = [
+  {
+    constant: true,
+    inputs: [{ name: "_owner", type: "address" }],
+    name: "balanceOf",
+    outputs: [{ name: "balance", type: "uint256" }],
+    type: "function",
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: "decimals",
+    outputs: [{ name: "", type: "uint8" }],
+    type: "function",
+  },
+];
 
 /**
  * Gets the token balance for a specific token in the given wallet
@@ -18,73 +35,51 @@ interface TokenBalanceResult {
  */
 export const getTokenBalance = async (
   walletAddress: string, 
-  tokenMintAddress: string,
-  rpcUrl?: string
+  tokenIdentifier: string, // Puede ser 'bnb' o una CA
+  rpcUrl: string = 'https://bsc-dataseed.binance.org/'
 ): Promise<TokenBalanceResult> => {
-  // Use the provided RPC or get it from the rpcProviders utility
-  const endpoint = rpcUrl || getRpcEndpoint();
-  console.log('Using RPC endpoint:', endpoint);
-  const connection = new Connection(endpoint, 'confirmed');
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl, { name: 'bsc', chainId: 56 });
 
   try {
-    const walletPublicKey = new PublicKey(walletAddress);
-    const tokenMintPublicKey = new PublicKey(tokenMintAddress);
+    if (!ethers.utils.isAddress(walletAddress)) {
+      throw new Error('Invalid wallet address');
+    }
 
-    // Get the associated token address for this wallet and token
-    const tokenAccount = await getAssociatedTokenAddress(
-      tokenMintPublicKey,
-      walletPublicKey
-    );
-
-    // Get token mint information to determine decimals
-    const tokenMintInfo = await connection.getParsedAccountInfo(tokenMintPublicKey);
-    let decimals = 0;
-    
-    // Extract decimals information if available
+    // Si es BNB nativo
     if (
-      tokenMintInfo.value && 
-      'parsed' in tokenMintInfo.value.data && 
-      tokenMintInfo.value.data.parsed.info.decimals
+      tokenIdentifier.toLowerCase() === 'bnb' ||
+      tokenIdentifier.toLowerCase() === 'native'
     ) {
-      decimals = tokenMintInfo.value.data.parsed.info.decimals;
+      const balance = await provider.getBalance(walletAddress);
+      const uiBalance = parseFloat(ethers.utils.formatEther(balance));
+      console.log(balance, uiBalance);
+      return {
+        balance: parseFloat(balance.toString()),
+        decimals: 18,
+        uiBalance,
+      };
     }
 
-    try {
-      // Try to get the token account information
-      const tokenAccountInfo = await connection.getParsedAccountInfo(tokenAccount);
-      
-      // If token account exists and has balance information
-      if (
-        tokenAccountInfo.value && 
-        'parsed' in tokenAccountInfo.value.data && 
-        tokenAccountInfo.value.data.parsed.info.tokenAmount
-      ) {
-        const rawBalance = tokenAccountInfo.value.data.parsed.info.tokenAmount.amount;
-        const uiBalance = tokenAccountInfo.value.data.parsed.info.tokenAmount.uiAmount || 0;
-        
-        return {
-          balance: Number(rawBalance),
-          decimals,
-          uiBalance
-        };
-      }
-    } catch (err) {
-      console.log('Token account likely does not exist', err);
-      // If there's an error finding the token account, it probably doesn't exist (zero balance)
+    // BEP20 token
+    if (!ethers.utils.isAddress(tokenIdentifier)) {
+      throw new Error('Invalid token contract address');
     }
-    
-    // If account not found or error occurs, return zero balance
+    const tokenContract = new ethers.Contract(tokenIdentifier, TOKEN_ABI, provider);
+    const decimals = await tokenContract.decimals();
+    const rawBalance = await tokenContract.balanceOf(walletAddress);
+    const uiBalance = parseFloat(ethers.utils.formatUnits(rawBalance, decimals));
+
     return {
-      balance: 0,
+      balance: parseFloat(rawBalance.toString()),
       decimals,
-      uiBalance: 0
+      uiBalance,
     };
   } catch (error) {
     console.error('Error getting token balance:', error);
     return {
       balance: 0,
       decimals: 0,
-      uiBalance: 0
+      uiBalance: 0,
     };
   }
 };

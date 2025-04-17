@@ -3,6 +3,7 @@ import React, { createContext, useState, useMemo } from 'react';
 import { getUserProfile } from '../services/authService'; // Asegúrate de importar tu servicio
 import { WalletService } from '../services/web3/walletService';
 import { ApiKeyService } from '../services/apiKeyService';
+import { useLogout } from '@privy-io/react-auth';
 
 // 1. Definir tipo de contexto
 interface AuthContextType {
@@ -30,6 +31,11 @@ export const AuthContext = createContext<AuthContextType>({
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [userProfile, setUserProfile] = useState<any>(null); // Estado para el perfil del usuario
+  const { logout: privyLogout  } = useLogout({
+    onSuccess: () => {
+      console.log('User successfully logged out');
+    },
+  });
 
   // Función para cargar el perfil del usuario
   const loadUserProfile = async () => {
@@ -47,17 +53,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loadUserProfile(); // Cargar perfil después de login
   };
 
-  const logout = () => {
-    setToken(null);
-    setUserProfile(null); // Limpiar el perfil al cerrar sesión
-    localStorage.removeItem('token');
-    // Remove openrouter api key from local storage
-    const apiKeyService = ApiKeyService.getInstance();
-    apiKeyService.removeApiKey();
-    // Remove wallet key from local storage
-    const walletService = WalletService.getInstance()
-    walletService.removeWalletAddr()
+  const logout = async () => {
+    try {
+      await privyLogout(); // Espera a que se complete el logout de Privy
+      console.log('User logout OK');
+      setToken(null);
+      setUserProfile(null); // Limpiar el perfil al cerrar sesión
+      localStorage.removeItem('token');
+      // Remove openrouter api key from local storage
+      const apiKeyService = ApiKeyService.getInstance();
+      apiKeyService.removeApiKey();
+      // Remove wallet key from local storage
+      const walletService = WalletService.getInstance()
+      walletService.removeWalletAddr()
+    } catch (error) {
+      console.error('Privy error logging out:', error);
+    }
   };
+  
 
   const value = useMemo(() => ({
     token,
