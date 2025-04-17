@@ -57,7 +57,7 @@ const ListAgentPage: React.FC = () => {
                     Status
                   </p>
                 </th>
-                <th className="p-4 font-semibold">
+                <th className="sm:table-cell hidden p-4 font-semibold">
                   <p className="text-md font-afacad leading-none">
                     Model
                   </p>
@@ -103,7 +103,7 @@ const ListAgentPage: React.FC = () => {
                       {renderClientBadges(agent.definition.clients)}
                     </p>
                   </td>
-                  <td className="sm:table-cell hidden p-4 py-2">
+                  <td className="p-4 py-2 relative">
                     <AgentStatus id={agent.id} className="absolute top-2 right-4 px-2" />
                   </td>
                   <td className="sm:table-cell hidden p-4 py-2">
