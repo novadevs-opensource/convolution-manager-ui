@@ -7,6 +7,7 @@ import { Agent } from '../../types';
 import { PiSpinnerBallDuotone } from "react-icons/pi";
 import { renderClientBadges } from '../../components/agent/AgentCardAgent';
 import { formatDateFromString } from '../../utils/character';
+import AgentStatus from '../../components/agent/AgentStatus';
 
 
 
@@ -53,6 +54,11 @@ const ListAgentPage: React.FC = () => {
                 </th>
                 <th className="p-4 font-semibold">
                   <p className="text-md font-afacad leading-none">
+                    Status
+                  </p>
+                </th>
+                <th className="p-4 font-semibold">
+                  <p className="text-md font-afacad leading-none">
                     Model
                   </p>
                 </th>
@@ -66,6 +72,7 @@ const ListAgentPage: React.FC = () => {
                     Updated at
                   </p>
                 </th>
+
               </tr>
             </thead>
             <tbody className='bg-beige-50'>
@@ -95,6 +102,9 @@ const ListAgentPage: React.FC = () => {
                     <p className="text-sm gap-2 flex flex-row">
                       {renderClientBadges(agent.definition.clients)}
                     </p>
+                  </td>
+                  <td className="sm:table-cell hidden p-4 py-2">
+                    <AgentStatus id={agent.id} className="absolute top-2 right-4 px-2" />
                   </td>
                   <td className="sm:table-cell hidden p-4 py-2">
                     <p className="text-sm">

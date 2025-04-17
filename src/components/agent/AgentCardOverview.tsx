@@ -1,5 +1,6 @@
 import React from 'react';
 import { AgentOverview, Client } from '../../types';
+import AgentStatus from './AgentStatus';
 
 interface AgentCardOverviewProps {
   agent: AgentOverview;
@@ -106,6 +107,7 @@ const AgentCardOverview: React.FC<AgentCardOverviewProps> = ({ agent }) => {
               <i className="fa fa-user fa-2x"></i>
             </div>
           )}
+          <AgentStatus id={agent.id} className="absolute top-2 right-4 px-2" />
         </div>
 
         <div className="bg-yellow-50 p-4 pt-14 cursor-default">
@@ -113,6 +115,14 @@ const AgentCardOverview: React.FC<AgentCardOverviewProps> = ({ agent }) => {
             <span className="text-2xl font-anek-latin font-bold text-center">
               {agent.name}
             </span>
+            <div className="flex flex-row items-center gap-2 font-semibold w-full">
+              <div className="w-8 h-8 p-2 rounded-full flex items-center justify-center bg-orange-300 text-white shadow-sm">
+                <i className="fa fa-brain"></i>
+              </div>
+              <span className="font-anek-latin font-light">
+                {agent.model?.split('/')[1]}
+              </span>
+            </div>
           </div>
 
           <div className="mt-6 text-center font-black">
