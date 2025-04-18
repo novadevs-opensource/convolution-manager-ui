@@ -60,7 +60,7 @@ const clientIcons: Record<Client, {
 
 export const renderClientBadges = (clients: Client[]) => {
   return (
-    <div className="flex flex-wrap justify-center gap-3">
+    <div className="flex flex-wrap justify-center gap-1">
       {clients.map((client, index) => {
         const config = clientIcons[client];
 
@@ -115,8 +115,8 @@ const AgentCardAgent: React.FC<AgentCardAgentProps> = ({ agent }) => {
               {agent.definition.name}
             </span>
 
-            <div className="flex flex-row items-center gap-2 font-semibold w-full">
-              <div className="w-8 h-8 p-2 rounded-full flex items-center justify-center bg-orange-300 text-white shadow-sm">
+            <div className="flex flex-row items-center font-semibold w-full">
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-orange-300">
                 <i className="fa fa-brain"></i>
               </div>
               <span className="font-anek-latin font-light">

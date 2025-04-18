@@ -55,7 +55,7 @@ const AgentStatus: React.FC<AgentStatusProps> = ({
           <span className='text-green-400'>
             <FaCircle size={11}/>
           </span>
-          <span className='text-black text-xs uppercase'>
+          <span className='text-black text-xs font-semibold'>
             Running
           </span>
         </div>

@@ -104,7 +104,7 @@ const ListAgentPage: React.FC = () => {
                     </p>
                   </td>
                   <td className="p-4 py-2 relative">
-                    <AgentStatus id={agent.id} className="absolute top-2 right-4 px-2" />
+                    <AgentStatus id={agent.id} />
                   </td>
                   <td className="sm:table-cell hidden p-4 py-2">
                     <p className="text-sm">
